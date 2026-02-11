@@ -2,345 +2,219 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>boneCV Studio | Ultra HD Editor</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>boneCV | Studio CV Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="master.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400&display=swap');
         
-        :root {
-            --accent: #2563eb;
-            --bg-dark: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --accent-glow: rgba(37, 99, 235, 0.35);
-        }
+        :root { --accent: #2563eb; --bg: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg-dark); color: #fff; 
-            overflow: hidden; height: 100vh; margin: 0;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* --- SIDEBAR ELITARE (IDENTIKE ME PROJEKTIN) --- */
+        /* --- UI STRUCTURE (Identik me kontrata.html) --- */
         #sidebar {
-            width: 280px; background: rgba(5, 5, 5, 0.96);
-            backdrop-filter: blur(40px) saturate(180%);
-            border-right: 1px solid var(--border);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateX(-100%); z-index: 1000;
+            width: 280px; background: rgba(5,5,5,0.95); backdrop-filter: blur(50px);
+            border-right: 1px solid rgba(255,255,255,0.06); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-100%); z-index: 3000;
         }
         #sidebar.active { transform: translateX(0); }
 
-        /* --- APP STRUCTURE --- */
-        #main-workspace {
-            display: grid; grid-template-columns: 460px 1fr;
-            height: 100vh; width: 100%;
-        }
+        #main-wrapper { transition: padding-left 0.5s; display: grid; grid-template-columns: 450px 1fr; height: 100vh; }
 
-        /* --- EDITOR ZONE (SIDEBAR I MAJTË) --- */
-        .editor-zone {
-            background: #080808; border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; overflow: hidden;
-            position: relative;
-        }
-
-        .scroll-v { 
-            flex: 1; overflow-y: auto; padding: 40px; 
-            scrollbar-width: none; scroll-behavior: smooth;
-        }
-        .scroll-v::-webkit-scrollbar { display: none; }
-
-        /* --- INPUTS & UI --- */
-        .input-group { position: relative; margin-bottom: 24px; }
-        .label-style {
-            font-[900] text-[10px] uppercase tracking-[2px] text-slate-500 mb-2 block ml-1;
-        }
-        .modern-input {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 18px; padding: 16px 22px; width: 100%; color: #fff;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); outline: none; font-size: 15px;
-        }
-        .modern-input:focus { 
-            border-color: var(--accent); background: rgba(37, 99, 235, 0.05);
-            box-shadow: 0 0 0 4px var(--accent-glow); transform: translateY(-2px);
-        }
-
-        /* --- PREVIEW STAGE (CENTRAL FOCUS) --- */
-        .preview-stage {
+        .editor-panel { background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.05); overflow-y: auto; scrollbar-width: none; }
+        .editor-panel::-webkit-scrollbar { display: none; }
+        
+        .preview-area { 
             background: radial-gradient(circle at center, #111 0%, #000 100%);
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            display: flex; align-items: center; justify-content: center;
-            overflow: auto; position: relative; padding: 100px;
+            overflow-y: auto; display: flex; justify-content: center; padding: 60px 0;
         }
 
-        #cv-canvas {
-            width: 210mm; min-height: 297mm; background: #fff; color: #000;
-            padding: 70px 85px; box-shadow: 0 60px 150px rgba(0,0,0,0.8);
-            transform: scale(0.6); transform-origin: center;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+        /* --- PAPER DESIGN --- */
+        #cv-paper {
+            width: 210mm; min-height: 297mm; background: #fff; color: #111;
+            padding: 20mm 20mm; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            transform: scale(0.75); transform-origin: top center;
+            transition: 0.4s all ease; position: relative;
         }
 
-        /* --- DESIGN CARDS --- */
-        .design-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        .design-card {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 20px; padding: 20px; cursor: pointer; transition: 0.3s;
-        }
-        .design-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
-        .design-card.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.15); }
+        /* --- INPUT STYLES --- */
+        .glass-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .input-elite { width: 100%; background: #151515; border: 1px solid #222; border-radius: 12px; padding: 14px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none; transition: 0.3s; }
+        .input-elite:focus { border-color: var(--accent); background: #1a1a1a; }
+        
+        .tmpl-card { cursor: pointer; border: 2px solid transparent; transition: 0.3s; border-radius: 12px; opacity: 0.5; overflow: hidden; }
+        .tmpl-card.active { border-color: var(--accent); opacity: 1; transform: translateY(-3px); }
 
-        /* --- BUTTONS --- */
-        .btn-main {
-            background: #fff; color: #000; padding: 14px 28px; border-radius: 18px;
-            font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
-            transition: all 0.3s;
-        }
-        .btn-main:hover { transform: scale(1.05); background: var(--accent); color: #fff; box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3); }
-
-        /* --- RESPONSIVE & PRINT --- */
-        @media (max-width: 1100px) {
-            #main-workspace { grid-template-columns: 1fr; }
-            .preview-stage { position: fixed; inset: 0; z-index: 2000; transform: translateY(100%); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); background: #fff; }
-            .preview-stage.active { transform: translateY(0); }
-            #cv-canvas { transform: scale(0.38); margin-top: -300px; box-shadow: none; }
-        }
+        #photo-preview { width: 120px; height: 120px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; display: none; }
 
         @media print {
             @page { size: A4; margin: 0; }
             body { background: white !important; overflow: visible !important; }
-            .no-print { display: none !important; }
-            #main-workspace { display: block !important; }
-            .preview-stage { background: white !important; padding: 0 !important; position: static; transform: none; }
-            #cv-canvas { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+            .no-print, #sidebar, .editor-panel, header { display: none !important; }
+            #main-wrapper { display: block !important; padding: 0 !important; }
+            .preview-area { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; }
+            #cv-paper { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 210mm !important; height: 297mm !important; position: absolute; top: 0; left: 0; }
+        }
+
+        @media (max-width: 1024px) {
+            #main-wrapper { grid-template-columns: 1fr; }
+            .preview-area { display: none; }
+            #cv-paper { width: 100%; transform: scale(1); }
         }
     </style>
 </head>
 <body class="flex">
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8 no-print">
-        <div class="flex items-center justify-between mb-16">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-900/40">
-                    <i class="fa-solid fa-bolt text-white text-xl"></i>
-                </div>
-                <h2 class="text-3xl font-black italic tracking-tighter text-white">boneCV</h2>
-            </div>
-            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+        <div class="flex items-center justify-between mb-12">
+            <h2 class="text-2xl font-black italic tracking-tighter text-white">boneCV</h2>
+            <button onclick="toggleSidebar()" class="text-slate-500"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <nav class="flex-1 space-y-3">
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-house"></i> Dashboard</a>
-            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-900/40 font-bold"><i class="fa-solid fa-id-card"></i> Studio CV</a>
-            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
-            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-paper-plane"></i> Kërkesat</a>
-            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
+        <nav class="flex-1 space-y-1 text-sm font-bold">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-xl bg-blue-600 text-white"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
+            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Kerkesa</a>
+            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
         </nav>
-        <div class="p-6 bg-white/5 rounded-3xl mt-10">
-            <p class="text-[9px] font-black text-blue-500 uppercase tracking-widest mb-1">Statusi i Sistemit</p>
-            <p class="text-xs font-bold text-slate-400">Verzioni 2.5.0 Pro</p>
-        </div>
     </aside>
 
-    <main id="main-workspace">
-        <section class="editor-zone no-print">
-            <header class="h-28 flex items-center justify-between px-10 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl z-20">
-                <button onclick="toggleSidebar()" class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
-                    <i class="fa-solid fa-bars-staggered text-blue-500 text-xl"></i>
+    <main id="main-wrapper" class="flex-1 w-full">
+        <section class="editor-panel no-print">
+            <header class="p-6 sticky top-0 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 flex justify-between items-center z-50">
+                <button onclick="toggleSidebar()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 text-white">
+                    <i class="fa-solid fa-bars-staggered"></i>
                 </button>
-                <div class="text-center">
-                    <span class="text-[10px] font-black text-blue-500 uppercase tracking-[4px] block mb-1">Editor Zone</span>
-                    <h1 class="text-sm font-bold text-white tracking-tight">boneCV Studio Pro</h1>
-                </div>
-                <button onclick="saveAndPrint()" class="btn-main">Export PDF</button>
+                <button onclick="superGenerate()" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black text-[11px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20">
+                    Eksporto PDF
+                </button>
             </header>
 
-            <div class="scroll-v">
-                <div class="flex gap-2 mb-12 overflow-x-auto pb-4 no-scrollbar">
-                    <button class="tab-btn active px-6 py-3 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest" onclick="switchTab('info', this)">Identiteti</button>
-                    <button class="tab-btn px-6 py-3 rounded-xl bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-white" onclick="switchTab('exp', this)">Përvoja</button>
-                    <button class="tab-btn px-6 py-3 rounded-xl bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-white" onclick="switchTab('edu', this)">Edukimi</button>
-                    <button class="tab-btn px-6 py-3 rounded-xl bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-white" onclick="switchTab('design', this)">Dizajni</button>
+            <div class="p-6 md:p-10">
+                <h1 class="text-3xl font-black tracking-tighter mb-2">Studio <span class="text-blue-600 italic">CV</span></h1>
+                <p class="text-zinc-500 text-xs mb-8 uppercase tracking-widest font-bold">Krijo Profilin Tënd Profesional</p>
+
+                <div class="glass-card">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Informacioni Personal</p>
+                    <input type="text" id="in-name" class="input-elite" placeholder="Emri i Plotë" oninput="sync()">
+                    <input type="text" id="in-pos" class="input-elite" placeholder="Pozita Profesionale" oninput="sync()">
+                    <input type="text" id="in-email" class="input-elite" placeholder="Email Adresa" oninput="sync()">
+                    <input type="text" id="in-phone" class="input-elite" placeholder="Numri i Telefonit" oninput="sync()">
                 </div>
 
-                <div id="tab-info" class="tab-content animate-in">
-                    <div class="input-group">
-                        <label class="label-style">Emri i Plotë</label>
-                        <input type="text" id="in-name" class="modern-input" placeholder="p.sh. Filan Fisteku" oninput="liveUpdate()">
-                    </div>
-                    <div class="input-group">
-                        <label class="label-style">Pozita Profesionale</label>
-                        <input type="text" id="in-title" class="modern-input" placeholder="p.sh. Full Stack Developer" oninput="liveUpdate()">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="input-group">
-                            <label class="label-style">Email</label>
-                            <input type="text" id="in-email" class="modern-input" placeholder="email@shembull.com" oninput="liveUpdate()">
-                        </div>
-                        <div class="input-group">
-                            <label class="label-style">Telefon</label>
-                            <input type="text" id="in-phone" class="modern-input" placeholder="+383..." oninput="liveUpdate()">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="label-style">Përmbledhja (Bio)</label>
-                        <textarea id="in-bio" class="modern-input h-48 resize-none" placeholder="Përshkruani veten profesionalisht..." oninput="liveUpdate()"></textarea>
-                    </div>
+                <div class="glass-card">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Foto / Profil</p>
+                    <input type="file" id="in-photo" class="input-elite" accept="image/*" onchange="handlePhoto(this)">
                 </div>
 
-                <div id="tab-exp" class="tab-content hidden">
-                    <div class="input-group">
-                        <label class="label-style">Kompania & Vendi</label>
-                        <input type="text" id="in-exp-comp" class="modern-input" oninput="liveUpdate()">
-                    </div>
-                    <div class="input-group">
-                        <label class="label-style">Pozita & Kohëzgjatja</label>
-                        <input type="text" id="in-exp-pos" class="modern-input" oninput="liveUpdate()">
-                    </div>
-                    <div class="input-group">
-                        <label class="label-style">Detyrat Kryesore</label>
-                        <textarea id="in-exp-desc" class="modern-input h-40" oninput="liveUpdate()"></textarea>
-                    </div>
+                <div class="glass-card">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Përshkrimi & Përvoja</p>
+                    <textarea id="in-bio" class="input-elite h-24" placeholder="Përmbledhje e shkurtër..." oninput="sync()"></textarea>
+                    <input type="text" id="in-exp-title" class="input-elite" placeholder="Kompania & Titulli" oninput="sync()">
+                    <textarea id="in-exp-desc" class="input-elite h-32" placeholder="Detyrat dhe arritjet..." oninput="sync()"></textarea>
                 </div>
 
-                <div id="tab-edu" class="tab-content hidden">
-                    <div class="input-group">
-                        <label class="label-style">Universiteti / Shkolla</label>
-                        <input type="text" id="in-edu-sch" class="modern-input" oninput="liveUpdate()">
-                    </div>
-                    <div class="input-group">
-                        <label class="label-style">Drejtimi / Titulli</label>
-                        <input type="text" id="in-edu-deg" class="modern-input" oninput="liveUpdate()">
-                    </div>
-                </div>
-
-                <div id="tab-design" class="tab-content hidden">
-                    <div class="design-grid">
-                        <div class="design-card active" onclick="setStyle('modern', this)">
-                            <h4 class="font-black text-white text-sm">Jakarta Premium</h4>
-                            <p class="text-[10px] text-slate-500 uppercase">E pastër, Korporative</p>
+                <div class="glass-card">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-4">Zgjidh Stilimin</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="tmpl-card active" onclick="setTmpl('modern', this)">
+                            <div class="h-12 bg-zinc-800 flex items-center justify-center text-[9px] font-bold">MODERN</div>
                         </div>
-                        <div class="design-card" onclick="setStyle('luxury', this)">
-                            <h4 class="font-black text-white text-sm">Luxury Playfair</h4>
-                            <p class="text-[10px] text-slate-500 uppercase">Elegante, Serioze</p>
-                        </div>
-                        <div class="design-card" onclick="setStyle('tech', this)">
-                            <h4 class="font-black text-white text-sm">Developer Mono</h4>
-                            <p class="text-[10px] text-slate-500 uppercase">Teknike, Minimaliste</p>
+                        <div class="tmpl-card" onclick="setTmpl('classic', this)">
+                            <div class="h-12 bg-zinc-800 flex items-center justify-center text-[9px] font-serif font-bold">CLASSIC</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="preview-area" class="preview-stage">
-            <button onclick="togglePreview()" class="fixed top-10 right-10 w-16 h-16 bg-black text-white rounded-2xl lg:hidden flex items-center justify-center z-[3000] shadow-2xl">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-
-            <div id="cv-canvas">
-                <header id="cv-header" class="border-b-4 border-black pb-10 mb-12 flex justify-between items-end transition-all duration-700">
+        <section class="preview-area">
+            <div id="cv-paper">
+                <div class="flex justify-between items-start mb-12">
                     <div>
-                        <h1 id="out-name" class="text-6xl font-black tracking-tighter uppercase leading-[0.85]">Emri Juaj</h1>
-                        <p id="out-title" class="text-2xl font-bold text-blue-600 mt-4">Pozita Profesionale</p>
+                        <img id="photo-preview" src="" alt="Profile">
+                        <h1 id="out-name" class="text-5xl font-black uppercase tracking-tighter leading-none mb-2">Emri Juaj</h1>
+                        <p id="out-pos" class="text-xl font-bold text-blue-600 uppercase tracking-widest">Profesioni Juaj</p>
                     </div>
-                    <div class="text-right text-[12px] font-black uppercase tracking-tighter space-y-1 opacity-70">
-                        <p id="out-email">email@profesional.com</p>
-                        <p id="out-phone">+383 4X 000 000</p>
+                    <div class="text-right text-[11px] font-bold space-y-1 opacity-60">
+                        <p id="out-email">email@shembull.com</p>
+                        <p id="out-phone">+383 44 000 000</p>
                     </div>
-                </header>
+                </div>
 
-                <div class="grid grid-cols-12 gap-16">
-                    <div class="col-span-8 space-y-12">
-                        <section>
-                            <h3 id="h-sum" class="text-xs font-black bg-black text-white px-4 py-1.5 inline-block mb-6 uppercase tracking-[3px]">Profili Im</h3>
-                            <p id="out-bio" class="text-sm leading-[1.7] text-slate-800 font-medium italic">Filloni të shkruani në editor për të krijuar një CV që bie në sy...</p>
-                        </section>
-                        <section>
-                            <h3 id="h-exp" class="text-xs font-black bg-black text-white px-4 py-1.5 inline-block mb-6 uppercase tracking-[3px]">Eksperienca</h3>
-                            <div>
-                                <h4 id="out-exp-comp" class="text-lg font-black">Kompania</h4>
-                                <p id="out-exp-pos" class="text-sm font-bold text-blue-600 mb-3">Pozicioni</p>
-                                <p id="out-exp-desc" class="text-xs text-slate-600 leading-relaxed">Përshkrimi i detyrave...</p>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="col-span-4 space-y-12">
-                        <section>
-                            <h3 id="h-edu" class="text-xs font-black bg-black text-white px-4 py-1.5 inline-block mb-6 uppercase tracking-[3px]">Arsimimi</h3>
-                            <h4 id="out-edu-sch" class="text-sm font-black">Institucioni</h4>
-                            <p id="out-edu-deg" class="text-xs text-slate-500 font-bold">Titulli</p>
-                        </section>
-                    </div>
+                <div class="grid grid-cols-1 gap-10">
+                    <section>
+                        <h3 class="text-[10px] font-black uppercase tracking-[4px] border-b-2 border-black pb-2 mb-4">Profili</h3>
+                        <p id="out-bio" class="text-[14px] leading-relaxed text-zinc-700">Shënoni një përmbledhje të shkurtër të karrierës suaj këtu...</p>
+                    </section>
+
+                    <section>
+                        <h3 class="text-[10px] font-black uppercase tracking-[4px] border-b-2 border-black pb-2 mb-4">Përvoja Profesionale</h3>
+                        <div class="mb-6">
+                            <h4 id="out-exp-title" class="text-lg font-bold uppercase">Emri i Kompanisë</h4>
+                            <p id="out-exp-desc" class="text-[14px] leading-relaxed text-zinc-700 mt-2">Detajet mbi eksperiencën tuaj do të shfaqen këtu pasi t'i shënoni në editor.</p>
+                        </div>
+                    </section>
                 </div>
             </div>
         </section>
     </main>
 
-    <button onclick="togglePreview()" class="fixed bottom-10 right-10 w-20 h-20 bg-blue-600 text-white rounded-3xl flex lg:hidden items-center justify-center shadow-2xl z-[1500] animate-bounce no-print">
-        <i class="fa-solid fa-eye text-2xl"></i>
-    </button>
-
     <script>
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function togglePreview() { document.getElementById('preview-area').classList.toggle('active'); }
-
-        function switchTab(tab, btn) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.getElementById('tab-' + tab).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('bg-blue-600', 'text-white');
-                b.classList.add('bg-white/5', 'text-slate-400');
-            });
-            btn.classList.remove('bg-white/5', 'text-slate-400');
-            btn.classList.add('bg-blue-600', 'text-white');
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const wr = document.getElementById('main-wrapper');
+        sb.classList.toggle('active');
+        if(window.innerWidth > 1024) {
+            wr.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0';
         }
+    }
 
-        function liveUpdate() {
-            const fields = ['name', 'title', 'email', 'phone', 'bio', 'exp-comp', 'exp-pos', 'exp-desc', 'edu-sch', 'edu-deg'];
-            fields.forEach(f => {
-                const val = document.getElementById('in-' + f).value;
-                const out = document.getElementById('out-' + f);
-                if(out) out.innerText = val || "...";
-            });
+    function sync() {
+        const map = {
+            'in-name': 'out-name',
+            'in-pos': 'out-pos',
+            'in-email': 'out-email',
+            'in-phone': 'out-phone',
+            'in-bio': 'out-bio',
+            'in-exp-title': 'out-exp-title',
+            'in-exp-desc': 'out-exp-desc'
+        };
+        for(let id in map) {
+            let val = document.getElementById(id).value;
+            if(val) document.getElementById(map[id]).innerText = val;
         }
+    }
 
-        function setStyle(style, el) {
-            const canvas = document.getElementById('cv-canvas');
-            const header = document.getElementById('cv-header');
-            const headers = ['h-sum', 'h-exp', 'h-edu'];
-
-            document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-
-            // Reset Defaults
-            canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-            header.className = "border-b-4 border-black pb-10 mb-12 flex justify-between items-end transition-all";
-
-            if(style === 'luxury') {
-                canvas.style.fontFamily = "'Playfair Display', serif";
-                header.className = "border-b-2 border-double border-zinc-800 pb-10 mb-12 flex flex-col items-center text-center";
-            } else if(style === 'tech') {
-                canvas.style.fontFamily = "'JetBrains Mono', monospace";
-                header.className = "border-2 border-black p-8 mb-12 flex flex-col";
-            }
+    function handlePhoto(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.getElementById('photo-preview');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 
-        function saveAndPrint() {
-            if(window.saveToArchive) window.saveToArchive("CV", document.getElementById('in-name').value || "Dokument");
-            window.print();
-        }
+    function setTmpl(style, el) {
+        const paper = document.getElementById('cv-paper');
+        document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        paper.style.fontFamily = (style === 'classic') ? "'Playfair Display', serif" : "'Plus Jakarta Sans', sans-serif";
+    }
 
-        window.onload = () => {
-            if(window.applyGlobalSettings) applyGlobalSettings();
-            setTimeout(() => document.getElementById('sidebar').classList.add('active'), 600);
-        }
+    function superGenerate() {
+        const emri = document.getElementById('in-name').value || "CV-Dokument";
+        if(window.saveToArchive) window.saveToArchive("CV", emri);
+        window.print();
+    }
+
+    window.onload = () => { if(window.innerWidth > 1024) setTimeout(toggleSidebar, 600); };
     </script>
 </body>
 </html>
