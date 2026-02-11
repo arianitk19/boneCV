@@ -1,0 +1,18 @@
+{
+  "short_name": "boneCV",
+  "name": "boneCV | Studio Profesionale",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135697.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#050505",
+  "display": "standalone",
+  "scope": "./",
+  "theme_color": "#2563eb",
+  "description": "Gjenerata e re e krijimit të CV-ve dhe Kontratave."
+}
