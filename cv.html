@@ -3,93 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>boneCV</title>
+    <title>boneCV Studio | Ultra HD Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="master.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&family=Crimson+Pro:wght@400;700&family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&family=Crimson+Pro:wght@400;700&family=Montserrat:wght@900&display=swap');
         
         :root {
             --accent: #2563eb;
             --bg-dark: #050505;
             --card-bg: rgba(255, 255, 255, 0.03);
+            --border-glow: rgba(37, 99, 235, 0.2);
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background: var(--bg-dark); color: #fff; 
             overflow: hidden; height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SIDEBAR (IDENTIK ME INDEX.HTML) --- */
+        /* --- SIDEBAR ELITARE --- */
         #sidebar {
-            width: 280px; background: rgba(5, 5, 5, 0.95);
-            backdrop-filter: blur(40px) saturate(180%);
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            width: 280px; background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(50px) saturate(200%);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             transform: translateX(-100%); z-index: 1000;
         }
         #sidebar.active { transform: translateX(0); }
 
-        /* --- APP STRUCTURE --- */
+        /* --- APP STRUCTURE REFINED --- */
         #content-area { 
             transition: padding-left 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
-            display: grid; grid-template-columns: 480px 1fr; height: 100vh;
+            display: grid; grid-template-columns: 450px 1fr; height: 100vh;
         }
 
         .editor-container {
-            background: rgba(255, 255, 255, 0.01);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 100%);
             border-right: 1px solid rgba(255,255,255,0.05);
             display: flex; flex-direction: column; height: 100vh;
+            z-index: 10;
         }
 
-        .scroll-v { flex: 1; overflow-y: auto; padding: 30px; scrollbar-width: none; }
-        .scroll-v::-webkit-scrollbar { display: none; }
+        .scroll-v { 
+            flex: 1; overflow-y: auto; padding: 40px 30px; 
+            scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+        }
+        .scroll-v::-webkit-scrollbar { width: 4px; }
+        .scroll-v::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
+        /* --- PREVIEW STAGE (CINEMATIC) --- */
         .preview-stage {
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            display: flex; align-items: center; justify-content: center; position: relative;
-            overflow-y: auto;
+            background: #0a0a0a;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+            display: flex; align-items: flex-start; justify-content: center; position: relative;
+            overflow: auto; padding: 60px 20px;
         }
 
         /* --- HD CANVAS ENGINE --- */
         #cv-canvas {
             width: 210mm; min-height: 297mm;
-            background: #fff; color: #000; padding: 40px 60px;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
-            transform: scale(0.5); transform-origin: center;
+            background: #fff; color: #000; padding: 45px 55px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            transform: scale(0.65); transform-origin: top center;
         }
 
-        /* --- UI COMPONENTS --- */
+        /* --- SUPERIOR UI COMPONENTS --- */
         .modern-input {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px; padding: 12px 16px; width: 100%; color: #fff;
-            transition: 0.3s; margin-bottom: 15px; outline: none; font-size: 14px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 14px 18px; width: 100%; color: #fff;
+            transition: all 0.3s; margin-bottom: 20px; outline: none; font-size: 14px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
-        .modern-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.06); }
+        .modern-input:focus { 
+            border-color: var(--accent); background: rgba(255,255,255,0.07);
+            box-shadow: 0 0 0 4px var(--border-glow);
+        }
 
         .tab-btn {
-            padding: 10px 15px; border-radius: 12px; font-weight: 800; font-size: 10px;
-            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
-            background: rgba(255,255,255,0.03); color: #555;
+            padding: 12px 20px; border-radius: 14px; font-weight: 700; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.4s;
+            background: transparent; color: #666; border: 1px solid transparent;
         }
-        .tab-btn.active { background: var(--accent); color: #fff; }
+        .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .tab-btn.active { background: var(--accent); color: #fff; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
 
         .design-card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px; padding: 15px; cursor: pointer; transition: 0.3s;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px; padding: 18px; cursor: pointer; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex; flex-direction: column; gap: 5px;
         }
-        .design-card:hover { background: rgba(255,255,255,0.08); }
-        .design-card.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.1); }
+        .design-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+        .design-card.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.1); position: relative; }
+        .design-card.active::after {
+            content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: 15px; right: 15px; color: var(--accent);
+        }
 
-        /* --- TEMPLATE ENGINE CLASSES --- */
-        .sidebar-v { border-left: 15px solid var(--accent); }
-        .dark-header { background: #111 !important; color: white !important; }
-        .accent-text { color: var(--accent) !important; }
+        /* --- NAVIGATION BUTTONS --- */
+        .btn-export {
+            background: #fff; color: #000; padding: 12px 28px; border-radius: 16px;
+            font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .btn-export:hover { transform: scale(1.05); background: var(--accent); color: #fff; }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 1024px) {
+            #content-area { grid-template-columns: 1fr; }
+            .editor-container { height: 60vh; order: 2; border-right: none; border-top: 1px solid rgba(255,255,255,0.1); }
+            .preview-stage { height: 40vh; order: 1; padding: 20px; }
+            #cv-canvas { transform: scale(0.25); transform-origin: center top; }
+        }
 
         /* --- PRINT ENGINE --- */
         @media print {
@@ -97,14 +128,8 @@
             body { background: white !important; overflow: visible !important; }
             #sidebar, .editor-container, .no-print { display: none !important; }
             #content-area { display: block !important; padding: 0 !important; }
-            .preview-stage { background: white !important; padding: 0 !important; }
+            .preview-stage { background: white !important; padding: 0 !important; height: auto !important; }
             #cv-canvas { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
-        }
-
-        @media (max-width: 1024px) {
-            #content-area { grid-template-columns: 1fr; }
-            .preview-stage { height: 400px; }
-            #cv-canvas { transform: scale(0.3); }
         }
     </style>
 </head>
@@ -112,31 +137,36 @@
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8 no-print">
         <div class="flex items-center justify-between mb-16">
-            <h2 class="text-2xl font-black italic tracking-tighter text-white">boneCV</h2>
-            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-3xl font-black italic tracking-tighter text-white">bone<span class="text-blue-600">CV</span></h2>
+            <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white transition-all">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
         </div>
-        <nav class="flex-1 space-y-2 text-sm font-bold tracking-tight">
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-house"></i> Dashboard</a>
-            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-900/40"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+        <nav class="flex-1 space-y-3 text-sm font-bold tracking-tight">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition-all"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600/10 text-blue-500 border border-blue-600/20 shadow-lg shadow-blue-900/10"><i class="fa-solid fa-id-card"></i> Studio CV</a>
             <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
             <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-paper-plane"></i> Kërkesat</a>
             <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
         </nav>
+        <div class="mt-auto pt-8 border-t border-white/5 opacity-30 text-[9px] font-bold tracking-[3px] uppercase">
+            System v2.0.26
+        </div>
     </aside>
 
     <main id="content-area" class="flex-1">
         <section class="editor-container no-print">
-            <header class="h-20 flex items-center justify-between px-8 border-b border-white/5">
-                <button onclick="toggleSidebar()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/5">
-                    <i class="fa-solid fa-bars-staggered"></i>
+            <header class="h-24 flex items-center justify-between px-8 border-b border-white/5">
+                <button onclick="toggleSidebar()" class="group w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-bars-staggered group-hover:scale-110 transition-transform"></i>
                 </button>
-                <button onclick="saveAndPrint()" class="px-6 py-2.5 bg-white text-black rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition">
-                    Export Ultra HD
+                <button onclick="saveAndPrint()" class="btn-export">
+                    Export <span class="hidden sm:inline">Ultra HD</span> <i class="fa-solid fa-download ml-2"></i>
                 </button>
             </header>
 
             <div class="scroll-v">
-                <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
+                <div class="flex gap-1 mb-10 overflow-x-auto pb-4 no-scrollbar">
                     <button class="tab-btn active" onclick="switchTab('info', this)">Info</button>
                     <button class="tab-btn" onclick="switchTab('exp', this)">Përvoja</button>
                     <button class="tab-btn" onclick="switchTab('edu', this)">Arsimi</button>
@@ -145,67 +175,56 @@
                 </div>
 
                 <div id="tab-info" class="tab-content">
+                    <label class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 block">Të dhënat bazë</label>
                     <input type="text" id="in-name" class="modern-input" placeholder="Emri & Mbiemri" oninput="liveUpdate()">
-                    <input type="text" id="in-title" class="modern-input" placeholder="Pozicioni (p.sh. Arkitekt)" oninput="liveUpdate()">
+                    <input type="text" id="in-title" class="modern-input" placeholder="Pozicioni (p.sh. Arkitekt Sistemi)" oninput="liveUpdate()">
                     <div class="grid grid-cols-2 gap-4">
                         <input type="text" id="in-email" class="modern-input" placeholder="Email" oninput="liveUpdate()">
                         <input type="text" id="in-phone" class="modern-input" placeholder="Telefoni" oninput="liveUpdate()">
                     </div>
-                    <textarea id="in-bio" class="modern-input h-32 resize-none" placeholder="Përmbledhja profesionale..." oninput="liveUpdate()"></textarea>
+                    <textarea id="in-bio" class="modern-input h-40 resize-none" placeholder="Përmbledhja profesionale: Shkruani pikat tuaja të forta..." oninput="liveUpdate()"></textarea>
                 </div>
 
                 <div id="tab-exp" class="tab-content hidden">
-                    <p class="text-[10px] font-bold text-blue-500 mb-4 uppercase tracking-widest">Përvoja e Punës</p>
-                    <input type="text" id="in-exp-comp" class="modern-input" placeholder="Kompania" oninput="liveUpdate()">
-                    <input type="text" id="in-exp-pos" class="modern-input" placeholder="Pozita" oninput="liveUpdate()">
-                    <textarea id="in-exp-desc" class="modern-input h-24 resize-none" placeholder="Përshkrimi i detyrave..." oninput="liveUpdate()"></textarea>
+                    <label class="text-[10px] uppercase font-black tracking-widest text-blue-500 mb-4 block">Përvoja e Punës</label>
+                    <input type="text" id="in-exp-comp" class="modern-input" placeholder="Emri i Kompanisë" oninput="liveUpdate()">
+                    <input type="text" id="in-exp-pos" class="modern-input" placeholder="Pozita juaj" oninput="liveUpdate()">
+                    <textarea id="in-exp-desc" class="modern-input h-32 resize-none" placeholder="Përshkruani arritjet kryesore..." oninput="liveUpdate()"></textarea>
                 </div>
 
                 <div id="tab-edu" class="tab-content hidden">
-                    <p class="text-[10px] font-bold text-blue-500 mb-4 uppercase tracking-widest">Arsimimi</p>
-                    <input type="text" id="in-edu-sch" class="modern-input" placeholder="Shkolla/Universiteti" oninput="liveUpdate()">
-                    <input type="text" id="in-edu-deg" class="modern-input" placeholder="Drejtimi/Diploma" oninput="liveUpdate()">
+                    <label class="text-[10px] uppercase font-black tracking-widest text-blue-500 mb-4 block">Arsimimi</label>
+                    <input type="text" id="in-edu-sch" class="modern-input" placeholder="Shkolla / Universiteti" oninput="liveUpdate()">
+                    <input type="text" id="in-edu-deg" class="modern-input" placeholder="Drejtimi i Studimeve" oninput="liveUpdate()">
                 </div>
 
                 <div id="tab-skills" class="tab-content hidden">
-                    <p class="text-[10px] font-bold text-blue-500 mb-4 uppercase tracking-widest">Aftësitë (ndaji me presje)</p>
-                    <textarea id="in-skills" class="modern-input h-24 resize-none" placeholder="p.sh. Management, Adobe PS, Python..." oninput="liveUpdate()"></textarea>
+                    <label class="text-[10px] uppercase font-black tracking-widest text-blue-500 mb-4 block">Aftësitë (ndaji me presje)</label>
+                    <textarea id="in-skills" class="modern-input h-32 resize-none" placeholder="Adobe Suite, Management, Python, English..." oninput="liveUpdate()"></textarea>
                 </div>
 
                 <div id="tab-design" class="tab-content hidden">
-                    <p class="text-[10px] font-bold text-zinc-500 mb-4 uppercase tracking-widest">Premium Templates</p>
-                    <div class="grid grid-cols-1 gap-3">
+                    <label class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-6 block">Zgjidhni Estetikën</label>
+                    <div class="grid grid-cols-1 gap-4">
                         <div class="design-card active" onclick="setStyle('modern', this)">
                             <h4 class="text-sm font-bold">Modern Jakarta</h4>
-                            <p class="text-[10px] opacity-50">Dizajn korporativ, i pastër dhe HD.</p>
+                            <p class="text-[11px] opacity-40">Korporativ, i pastër, fokus tek lexueshmëria.</p>
                         </div>
                         <div class="design-card" onclick="setStyle('minimal', this)">
                             <h4 class="text-sm font-bold">Minimal Swiss</h4>
-                            <p class="text-[10px] opacity-50">Fokus maksimal tek teksti.</p>
+                            <p class="text-[11px] opacity-40">Stil helvetik, perfekt për minimalisët.</p>
                         </div>
                         <div class="design-card" onclick="setStyle('luxury', this)">
                             <h4 class="text-sm font-bold">Luxury Playfair</h4>
-                            <p class="text-[10px] opacity-50">Elegancë klasike elitare.</p>
+                            <p class="text-[11px] opacity-40">Elegancë dhe prestigj me font serif.</p>
                         </div>
                         <div class="design-card" onclick="setStyle('tech', this)">
                             <h4 class="text-sm font-bold">Developer Mono</h4>
-                            <p class="text-[10px] opacity-50">Për inxhinierë dhe kodues.</p>
+                            <p class="text-[11px] opacity-40">Dizajn teknik për inxhinierë softueri.</p>
                         </div>
                         <div class="design-card" onclick="setStyle('midnight', this)">
                             <h4 class="text-sm font-bold">Midnight Bold</h4>
-                            <p class="text-[10px] opacity-50">Header i zi me kontrast të lartë.</p>
-                        </div>
-                        <div class="design-card" onclick="setStyle('royal', this)">
-                            <h4 class="text-sm font-bold">Royal Gold</h4>
-                            <p class="text-[10px] opacity-50">Detaje ari dhe font serif.</p>
-                        </div>
-                        <div class="design-card" onclick="setStyle('creative', this)">
-                            <h4 class="text-sm font-bold">Creative Brutalist</h4>
-                            <p class="text-[10px] opacity-50">Tipografi e madhe dhe guximshme.</p>
-                        </div>
-                        <div class="design-card" onclick="setStyle('emerald', this)">
-                            <h4 class="text-sm font-bold">Emerald Professional</h4>
-                            <p class="text-[10px] opacity-50">E gjelbër e thellë dhe strukturë moderne.</p>
+                            <p class="text-[11px] opacity-40">Kontrast i lartë me elemente të errëta.</p>
                         </div>
                     </div>
                 </div>
@@ -214,41 +233,43 @@
 
         <section class="preview-stage">
             <div id="cv-canvas">
-                <div id="cv-header" class="border-b-2 border-black pb-6 mb-8 flex justify-between items-end transition-all">
+                <div id="cv-header" class="border-b-2 border-black pb-8 mb-10 flex justify-between items-end transition-all">
                     <div>
-                        <h1 id="out-name" class="text-4xl font-black tracking-tighter uppercase leading-none">Emri Juaj</h1>
-                        <p id="out-title" class="text-lg font-medium text-blue-600 mt-1">Pozicioni Juaj</p>
+                        <h1 id="out-name" class="text-5xl font-black tracking-tighter uppercase leading-none">Emri Juaj</h1>
+                        <p id="out-title" class="text-xl font-medium text-blue-600 mt-2">Pozicioni Profesional</p>
                     </div>
-                    <div class="text-right text-[10px] space-y-1 opacity-70">
-                        <p id="out-email">email@shembull.com</p>
-                        <p id="out-phone">+383 4X XXX XXX</p>
+                    <div class="text-right text-[11px] space-y-1 font-medium opacity-80">
+                        <p id="out-email"><i class="fa-solid fa-envelope mr-2"></i>email@bonecv.com</p>
+                        <p id="out-phone"><i class="fa-solid fa-phone mr-2"></i>+383 4X XXX XXX</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-12 gap-10">
-                    <div class="col-span-8 space-y-8" id="main-side">
+                <div class="grid grid-cols-12 gap-12">
+                    <div class="col-span-8 space-y-10" id="main-side">
                         <section>
-                            <h3 id="h-sum" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Përmbledhja</h3>
-                            <p id="out-bio" class="text-xs leading-relaxed text-zinc-700">Përshkrimi juaj profesional do të shfaqet këtu...</p>
+                            <h3 id="h-sum" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Përmbledhja</h3>
+                            <p id="out-bio" class="text-[13px] leading-relaxed text-zinc-700 font-normal italic">Këtu do të shfaqet rruga juaj profesionale...</p>
                         </section>
                         <section>
-                            <h3 id="h-exp" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Përvoja</h3>
-                            <div class="mb-4">
-                                <h4 id="out-exp-comp" class="text-sm font-bold">Kompania</h4>
-                                <p id="out-exp-pos" class="text-[11px] italic mb-2">Pozita</p>
-                                <p id="out-exp-desc" class="text-[11px] text-zinc-600 leading-relaxed">Detyrat dhe arritjet tuaja...</p>
+                            <h3 id="h-exp" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Përvoja</h3>
+                            <div class="group">
+                                <h4 id="out-exp-comp" class="text-base font-bold text-zinc-900">Emri i Kompanisë</h4>
+                                <p id="out-exp-pos" class="text-[12px] font-semibold text-blue-600 mb-3">Pozicioni i mbajtur</p>
+                                <p id="out-exp-desc" class="text-[12px] text-zinc-600 leading-relaxed font-normal">Detajet e kontributit tuaj...</p>
                             </div>
                         </section>
                     </div>
-                    <div class="col-span-4 space-y-8" id="left-side">
+                    <div class="col-span-4 space-y-10" id="left-side">
                         <section>
-                            <h3 id="h-edu" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Arsimi</h3>
-                            <h4 id="out-edu-sch" class="text-xs font-bold">Universiteti</h4>
-                            <p id="out-edu-deg" class="text-[10px] text-zinc-600">Diploma</p>
+                            <h3 id="h-edu" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Arsimi</h3>
+                            <h4 id="out-edu-sch" class="text-[13px] font-bold">Institucioni</h4>
+                            <p id="out-edu-deg" class="text-[11px] text-zinc-500 font-medium">Grada Shkencore</p>
                         </section>
                         <section>
-                            <h3 id="h-ski" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Aftësitë</h3>
-                            <div id="out-skills" class="flex flex-wrap gap-2 pt-2"></div>
+                            <h3 id="h-ski" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Aftësitë</h3>
+                            <div id="out-skills" class="flex flex-wrap gap-2 pt-2">
+                                <span class="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-lg border border-zinc-200">Skills</span>
+                            </div>
                         </section>
                     </div>
                 </div>
@@ -257,14 +278,17 @@
     </main>
 
 <script>
+    // Sidebar Logic
     function toggleSidebar() {
         const sb = document.getElementById('sidebar');
         sb.classList.toggle('active');
+        const content = document.getElementById('content-area');
         if(window.innerWidth > 1024) {
-            document.getElementById('content-area').style.paddingLeft = sb.classList.contains('active') ? '280px' : '0px';
+            content.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0px';
         }
     }
 
+    // Tab Switcher
     function switchTab(tab, btn) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
         document.getElementById('tab-' + tab).classList.remove('hidden');
@@ -272,88 +296,82 @@
         btn.classList.add('active');
     }
 
+    // Real-time Engine
     function liveUpdate() {
         const fields = ['name', 'title', 'email', 'phone', 'bio', 'exp-comp', 'exp-pos', 'exp-desc', 'edu-sch', 'edu-deg'];
         fields.forEach(f => {
             const val = document.getElementById('in-' + f).value;
             const out = document.getElementById('out-' + f);
-            if(out) out.innerText = val || (f.includes('in-') ? "" : out.innerText);
+            if(out) out.innerText = val || out.getAttribute('data-placeholder') || "...";
         });
 
-        const skills = document.getElementById('in-skills').value.split(',');
+        // Skills logic
+        const skillsVal = document.getElementById('in-skills').value;
         const container = document.getElementById('out-skills');
         container.innerHTML = '';
-        skills.forEach(s => {
-            if(s.trim()) {
-                const span = document.createElement('span');
-                span.className = "px-2 py-1 bg-zinc-100 text-[9px] font-bold rounded uppercase border border-zinc-200";
-                span.innerText = s.trim();
-                container.appendChild(span);
-            }
-        });
+        if(skillsVal) {
+            skillsVal.split(',').forEach(s => {
+                if(s.trim()) {
+                    const span = document.createElement('span');
+                    span.className = "px-3 py-1.5 bg-zinc-900 text-white text-[10px] font-bold rounded-md uppercase tracking-wider";
+                    span.innerText = s.trim();
+                    container.appendChild(span);
+                }
+            });
+        }
     }
 
+    // Style Engine
     function setStyle(style, el) {
         const canvas = document.getElementById('cv-canvas');
         const header = document.getElementById('cv-header');
         const title = document.getElementById('out-title');
+        const name = document.getElementById('out-name');
         const headers = ['h-sum', 'h-exp', 'h-edu', 'h-ski'];
         
         document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
 
-        // Reset default
-        canvas.className = "";
+        // Defaults
         canvas.style = "";
-        header.style = "";
-        header.className = "pb-6 mb-8 flex justify-between items-end border-b-2 border-black";
-        title.className = "text-lg font-medium text-blue-600 mt-1";
-        headers.forEach(h => document.getElementById(h).className = "text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest");
+        header.className = "border-b-2 border-black pb-8 mb-10 flex justify-between items-end transition-all";
+        name.className = "text-5xl font-black tracking-tighter uppercase leading-none";
+        title.className = "text-xl font-medium text-blue-600 mt-2";
+        headers.forEach(h => document.getElementById(h).className = "text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest");
 
         if(style === 'modern') {
             canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
         } else if(style === 'minimal') {
             canvas.style.fontFamily = "'Inter', sans-serif";
-            header.className = "pb-6 mb-8 border-b border-zinc-100 flex flex-col items-start";
-            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold text-zinc-400 mb-3 uppercase tracking-tighter");
+            header.className = "border-b border-zinc-200 pb-10 mb-10 flex flex-col items-center text-center";
+            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold text-zinc-400 mb-4 uppercase tracking-widest border-none pl-0 text-center");
         } else if(style === 'luxury') {
             canvas.style.fontFamily = "'Playfair Display', serif";
-            header.className = "border-double border-b-4 border-zinc-800 pb-10 mb-10 text-center flex-col items-center justify-center";
-            headers.forEach(h => document.getElementById(h).className = "text-xs font-serif italic border-b border-zinc-200 pb-2 mb-4 text-center");
+            header.className = "border-double border-b-4 border-zinc-800 pb-10 mb-10 flex flex-col items-center text-center";
+            headers.forEach(h => document.getElementById(h).className = "text-base font-serif italic border-b border-zinc-200 pb-2 mb-6 text-center pl-0 border-l-0");
         } else if(style === 'tech') {
             canvas.style.fontFamily = "'JetBrains Mono', monospace";
-            header.className = "border-l-8 border-black pl-6 pb-6 mb-8 flex flex-col";
-            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold bg-black text-white px-2 py-1 mb-4 inline-block");
+            header.className = "border-2 border-black p-8 mb-10 flex flex-col";
+            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold bg-black text-white px-3 py-1 mb-6 inline-block w-max border-none pl-3");
         } else if(style === 'midnight') {
             canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-            header.className = "bg-zinc-900 text-white p-10 -mx-[60px] -mt-[40px] mb-10 flex justify-between items-center";
-            title.className = "text-lg font-light text-zinc-400";
-        } else if(style === 'royal') {
-            canvas.style.fontFamily = "'Crimson Pro', serif";
-            header.className = "border-b border-yellow-600 pb-6 mb-8 flex justify-between items-end";
-            title.className = "text-lg italic text-yellow-700 mt-1";
-            headers.forEach(h => document.getElementById(h).className = "text-sm font-bold text-yellow-800 border-b border-yellow-200 mb-3 uppercase");
-        } else if(style === 'creative') {
-            canvas.style.fontFamily = "'Montserrat', sans-serif";
-            header.className = "flex flex-col mb-12";
-            document.getElementById('out-name').className = "text-6xl font-black tracking-tighter uppercase leading-[0.8]";
-            headers.forEach(h => document.getElementById(h).className = "text-2xl font-black mb-4 tracking-tighter bg-yellow-300 inline-block px-1");
-        } else if(style === 'emerald') {
-            canvas.style.fontFamily = "'Inter', sans-serif";
-            header.className = "border-r-[20px] border-emerald-900 pr-6 pb-6 mb-8 flex flex-col items-end text-right";
-            headers.forEach(h => document.getElementById(h).className = "text-xs font-black text-emerald-900 border-r-4 border-emerald-900 pr-3 mb-3 uppercase text-right w-full");
+            header.className = "bg-zinc-900 text-white p-12 -mx-[55px] -mt-[45px] mb-12 flex justify-between items-center";
+            title.className = "text-lg font-light text-blue-400 mt-1";
+            headers.forEach(h => document.getElementById(h).className = "text-sm font-black border-l-4 border-blue-500 pl-4 mb-4 uppercase tracking-widest");
         }
     }
 
     function saveAndPrint() {
-        const emri = document.getElementById('in-name').value || "CV_HD";
-        if(window.saveToArchive) window.saveToArchive("CV", emri);
         window.print();
     }
 
+    // Auto-init
     window.onload = () => {
-        setTimeout(toggleSidebar, 500);
-        if(typeof applySettings === "function") applySettings();
+        setTimeout(toggleSidebar, 800);
+        // Canvas Auto-scale for mobile
+        if(window.innerWidth < 1024) {
+            document.getElementById('cv-canvas').style.transform = "scale(" + (window.innerWidth / 900) + ")";
+        }
     };
 </script>
 
