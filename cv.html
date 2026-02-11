@@ -2,133 +2,123 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>boneCV Studio | Ultra HD Editor</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
     <script src="master.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&family=Crimson+Pro:wght@400;700&family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&family=Montserrat:wght@900&display=swap');
         
         :root {
             --accent: #2563eb;
             --bg-dark: #050505;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border-glow: rgba(37, 99, 235, 0.2);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent-glow: rgba(37, 99, 235, 0.35);
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background: var(--bg-dark); color: #fff; 
-            overflow: hidden; height: 100vh;
+            overflow: hidden; height: 100vh; margin: 0;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SIDEBAR ELITARE --- */
+        /* --- SIDEBAR ELITARE (IDENTIKE ME PROJEKTIN) --- */
         #sidebar {
-            width: 280px; background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(50px) saturate(200%);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            width: 280px; background: rgba(5, 5, 5, 0.96);
+            backdrop-filter: blur(40px) saturate(180%);
+            border-right: 1px solid var(--border);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             transform: translateX(-100%); z-index: 1000;
         }
         #sidebar.active { transform: translateX(0); }
 
-        /* --- APP STRUCTURE REFINED --- */
-        #content-area { 
-            transition: padding-left 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
-            display: grid; grid-template-columns: 450px 1fr; height: 100vh;
+        /* --- APP STRUCTURE --- */
+        #main-workspace {
+            display: grid; grid-template-columns: 460px 1fr;
+            height: 100vh; width: 100%;
         }
 
-        .editor-container {
-            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 100%);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex; flex-direction: column; height: 100vh;
-            z-index: 10;
+        /* --- EDITOR ZONE (SIDEBAR I MAJTË) --- */
+        .editor-zone {
+            background: #080808; border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; overflow: hidden;
+            position: relative;
         }
 
         .scroll-v { 
-            flex: 1; overflow-y: auto; padding: 40px 30px; 
-            scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+            flex: 1; overflow-y: auto; padding: 40px; 
+            scrollbar-width: none; scroll-behavior: smooth;
         }
-        .scroll-v::-webkit-scrollbar { width: 4px; }
-        .scroll-v::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .scroll-v::-webkit-scrollbar { display: none; }
 
-        /* --- PREVIEW STAGE (CINEMATIC) --- */
-        .preview-stage {
-            background: #0a0a0a;
-            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
-            background-size: 40px 40px;
-            display: flex; align-items: flex-start; justify-content: center; position: relative;
-            overflow: auto; padding: 60px 20px;
+        /* --- INPUTS & UI --- */
+        .input-group { position: relative; margin-bottom: 24px; }
+        .label-style {
+            font-[900] text-[10px] uppercase tracking-[2px] text-slate-500 mb-2 block ml-1;
         }
-
-        /* --- HD CANVAS ENGINE --- */
-        #cv-canvas {
-            width: 210mm; min-height: 297mm;
-            background: #fff; color: #000; padding: 45px 55px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            transform: scale(0.65); transform-origin: top center;
-        }
-
-        /* --- SUPERIOR UI COMPONENTS --- */
         .modern-input {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 14px 18px; width: 100%; color: #fff;
-            transition: all 0.3s; margin-bottom: 20px; outline: none; font-size: 14px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: 18px; padding: 16px 22px; width: 100%; color: #fff;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); outline: none; font-size: 15px;
         }
         .modern-input:focus { 
-            border-color: var(--accent); background: rgba(255,255,255,0.07);
-            box-shadow: 0 0 0 4px var(--border-glow);
+            border-color: var(--accent); background: rgba(37, 99, 235, 0.05);
+            box-shadow: 0 0 0 4px var(--accent-glow); transform: translateY(-2px);
         }
 
-        .tab-btn {
-            padding: 12px 20px; border-radius: 14px; font-weight: 700; font-size: 11px;
-            text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.4s;
-            background: transparent; color: #666; border: 1px solid transparent;
+        /* --- PREVIEW STAGE (CENTRAL FOCUS) --- */
+        .preview-stage {
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: auto; position: relative; padding: 100px;
         }
-        .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
-        .tab-btn.active { background: var(--accent); color: #fff; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
 
+        #cv-canvas {
+            width: 210mm; min-height: 297mm; background: #fff; color: #000;
+            padding: 70px 85px; box-shadow: 0 60px 150px rgba(0,0,0,0.8);
+            transform: scale(0.6); transform-origin: center;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        /* --- DESIGN CARDS --- */
+        .design-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         .design-card {
-            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px; padding: 18px; cursor: pointer; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            display: flex; flex-direction: column; gap: 5px;
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: 20px; padding: 20px; cursor: pointer; transition: 0.3s;
         }
-        .design-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
-        .design-card.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.1); position: relative; }
-        .design-card.active::after {
-            content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900;
-            position: absolute; top: 15px; right: 15px; color: var(--accent);
-        }
+        .design-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+        .design-card.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.15); }
 
-        /* --- NAVIGATION BUTTONS --- */
-        .btn-export {
-            background: #fff; color: #000; padding: 12px 28px; border-radius: 16px;
+        /* --- BUTTONS --- */
+        .btn-main {
+            background: #fff; color: #000; padding: 14px 28px; border-radius: 18px;
             font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
-            transition: all 0.3s; position: relative; overflow: hidden;
+            transition: all 0.3s;
         }
-        .btn-export:hover { transform: scale(1.05); background: var(--accent); color: #fff; }
+        .btn-main:hover { transform: scale(1.05); background: var(--accent); color: #fff; box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3); }
 
-        /* --- MOBILE OPTIMIZATION --- */
-        @media (max-width: 1024px) {
-            #content-area { grid-template-columns: 1fr; }
-            .editor-container { height: 60vh; order: 2; border-right: none; border-top: 1px solid rgba(255,255,255,0.1); }
-            .preview-stage { height: 40vh; order: 1; padding: 20px; }
-            #cv-canvas { transform: scale(0.25); transform-origin: center top; }
+        /* --- RESPONSIVE & PRINT --- */
+        @media (max-width: 1100px) {
+            #main-workspace { grid-template-columns: 1fr; }
+            .preview-stage { position: fixed; inset: 0; z-index: 2000; transform: translateY(100%); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); background: #fff; }
+            .preview-stage.active { transform: translateY(0); }
+            #cv-canvas { transform: scale(0.38); margin-top: -300px; box-shadow: none; }
         }
 
-        /* --- PRINT ENGINE --- */
         @media print {
             @page { size: A4; margin: 0; }
             body { background: white !important; overflow: visible !important; }
-            #sidebar, .editor-container, .no-print { display: none !important; }
-            #content-area { display: block !important; padding: 0 !important; }
-            .preview-stage { background: white !important; padding: 0 !important; height: auto !important; }
+            .no-print { display: none !important; }
+            #main-workspace { display: block !important; }
+            .preview-stage { background: white !important; padding: 0 !important; position: static; transform: none; }
             #cv-canvas { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
         }
     </style>
@@ -137,139 +127,155 @@
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8 no-print">
         <div class="flex items-center justify-between mb-16">
-            <h2 class="text-3xl font-black italic tracking-tighter text-white">bone<span class="text-blue-600">CV</span></h2>
-            <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white transition-all">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-900/40">
+                    <i class="fa-solid fa-bolt text-white text-xl"></i>
+                </div>
+                <h2 class="text-3xl font-black italic tracking-tighter text-white">boneCV</h2>
+            </div>
+            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <nav class="flex-1 space-y-3 text-sm font-bold tracking-tight">
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition-all"><i class="fa-solid fa-house"></i> Dashboard</a>
-            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600/10 text-blue-500 border border-blue-600/20 shadow-lg shadow-blue-900/10"><i class="fa-solid fa-id-card"></i> Studio CV</a>
-            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
-            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-paper-plane"></i> Kërkesat</a>
-            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
+        <nav class="flex-1 space-y-3">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-900/40 font-bold"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
+            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-paper-plane"></i> Kërkesat</a>
+            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition font-bold"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
         </nav>
-        <div class="mt-auto pt-8 border-t border-white/5 opacity-30 text-[9px] font-bold tracking-[3px] uppercase">
-            System v2.0.26
+        <div class="p-6 bg-white/5 rounded-3xl mt-10">
+            <p class="text-[9px] font-black text-blue-500 uppercase tracking-widest mb-1">Statusi i Sistemit</p>
+            <p class="text-xs font-bold text-slate-400">Verzioni 2.5.0 Pro</p>
         </div>
     </aside>
 
-    <main id="content-area" class="flex-1">
-        <section class="editor-container no-print">
-            <header class="h-24 flex items-center justify-between px-8 border-b border-white/5">
-                <button onclick="toggleSidebar()" class="group w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all">
-                    <i class="fa-solid fa-bars-staggered group-hover:scale-110 transition-transform"></i>
+    <main id="main-workspace">
+        <section class="editor-zone no-print">
+            <header class="h-28 flex items-center justify-between px-10 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl z-20">
+                <button onclick="toggleSidebar()" class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                    <i class="fa-solid fa-bars-staggered text-blue-500 text-xl"></i>
                 </button>
-                <button onclick="saveAndPrint()" class="btn-export">
-                    Export <span class="hidden sm:inline">Ultra HD</span> <i class="fa-solid fa-download ml-2"></i>
-                </button>
+                <div class="text-center">
+                    <span class="text-[10px] font-black text-blue-500 uppercase tracking-[4px] block mb-1">Editor Zone</span>
+                    <h1 class="text-sm font-bold text-white tracking-tight">boneCV Studio Pro</h1>
+                </div>
+                <button onclick="saveAndPrint()" class="btn-main">Export PDF</button>
             </header>
 
             <div class="scroll-v">
-                <div class="flex gap-1 mb-10 overflow-x-auto pb-4 no-scrollbar">
-                    <button class="tab-btn active" onclick="switchTab('info', this)">Info</button>
-                    <button class="tab-btn" onclick="switchTab('exp', this)">Përvoja</button>
-                    <button class="tab-btn" onclick="switchTab('edu', this)">Arsimi</button>
-                    <button class="tab-btn" onclick="switchTab('skills', this)">Aftësitë</button>
-                    <button class="tab-btn" onclick="switchTab('design', this)">Dizajni</button>
+                <div class="flex gap-2 mb-12 overflow-x-auto pb-4 no-scrollbar">
+                    <button class="tab-btn active px-6 py-3 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest" onclick="switchTab('info', this)">Identiteti</button>
+                    <button class="tab-btn px-6 py-3 rounded-xl bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-white" onclick="switchTab('exp', this)">Përvoja</button>
+                    <button class="tab-btn px-6 py-3 rounded-xl bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-white" onclick="switchTab('edu', this)">Edukimi</button>
+                    <button class="tab-btn px-6 py-3 rounded-xl bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-white" onclick="switchTab('design', this)">Dizajni</button>
                 </div>
 
-                <div id="tab-info" class="tab-content">
-                    <label class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-2 block">Të dhënat bazë</label>
-                    <input type="text" id="in-name" class="modern-input" placeholder="Emri & Mbiemri" oninput="liveUpdate()">
-                    <input type="text" id="in-title" class="modern-input" placeholder="Pozicioni (p.sh. Arkitekt Sistemi)" oninput="liveUpdate()">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="in-email" class="modern-input" placeholder="Email" oninput="liveUpdate()">
-                        <input type="text" id="in-phone" class="modern-input" placeholder="Telefoni" oninput="liveUpdate()">
+                <div id="tab-info" class="tab-content animate-in">
+                    <div class="input-group">
+                        <label class="label-style">Emri i Plotë</label>
+                        <input type="text" id="in-name" class="modern-input" placeholder="p.sh. Filan Fisteku" oninput="liveUpdate()">
                     </div>
-                    <textarea id="in-bio" class="modern-input h-40 resize-none" placeholder="Përmbledhja profesionale: Shkruani pikat tuaja të forta..." oninput="liveUpdate()"></textarea>
+                    <div class="input-group">
+                        <label class="label-style">Pozita Profesionale</label>
+                        <input type="text" id="in-title" class="modern-input" placeholder="p.sh. Full Stack Developer" oninput="liveUpdate()">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label class="label-style">Email</label>
+                            <input type="text" id="in-email" class="modern-input" placeholder="email@shembull.com" oninput="liveUpdate()">
+                        </div>
+                        <div class="input-group">
+                            <label class="label-style">Telefon</label>
+                            <input type="text" id="in-phone" class="modern-input" placeholder="+383..." oninput="liveUpdate()">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label-style">Përmbledhja (Bio)</label>
+                        <textarea id="in-bio" class="modern-input h-48 resize-none" placeholder="Përshkruani veten profesionalisht..." oninput="liveUpdate()"></textarea>
+                    </div>
                 </div>
 
                 <div id="tab-exp" class="tab-content hidden">
-                    <label class="text-[10px] uppercase font-black tracking-widest text-blue-500 mb-4 block">Përvoja e Punës</label>
-                    <input type="text" id="in-exp-comp" class="modern-input" placeholder="Emri i Kompanisë" oninput="liveUpdate()">
-                    <input type="text" id="in-exp-pos" class="modern-input" placeholder="Pozita juaj" oninput="liveUpdate()">
-                    <textarea id="in-exp-desc" class="modern-input h-32 resize-none" placeholder="Përshkruani arritjet kryesore..." oninput="liveUpdate()"></textarea>
+                    <div class="input-group">
+                        <label class="label-style">Kompania & Vendi</label>
+                        <input type="text" id="in-exp-comp" class="modern-input" oninput="liveUpdate()">
+                    </div>
+                    <div class="input-group">
+                        <label class="label-style">Pozita & Kohëzgjatja</label>
+                        <input type="text" id="in-exp-pos" class="modern-input" oninput="liveUpdate()">
+                    </div>
+                    <div class="input-group">
+                        <label class="label-style">Detyrat Kryesore</label>
+                        <textarea id="in-exp-desc" class="modern-input h-40" oninput="liveUpdate()"></textarea>
+                    </div>
                 </div>
 
                 <div id="tab-edu" class="tab-content hidden">
-                    <label class="text-[10px] uppercase font-black tracking-widest text-blue-500 mb-4 block">Arsimimi</label>
-                    <input type="text" id="in-edu-sch" class="modern-input" placeholder="Shkolla / Universiteti" oninput="liveUpdate()">
-                    <input type="text" id="in-edu-deg" class="modern-input" placeholder="Drejtimi i Studimeve" oninput="liveUpdate()">
-                </div>
-
-                <div id="tab-skills" class="tab-content hidden">
-                    <label class="text-[10px] uppercase font-black tracking-widest text-blue-500 mb-4 block">Aftësitë (ndaji me presje)</label>
-                    <textarea id="in-skills" class="modern-input h-32 resize-none" placeholder="Adobe Suite, Management, Python, English..." oninput="liveUpdate()"></textarea>
+                    <div class="input-group">
+                        <label class="label-style">Universiteti / Shkolla</label>
+                        <input type="text" id="in-edu-sch" class="modern-input" oninput="liveUpdate()">
+                    </div>
+                    <div class="input-group">
+                        <label class="label-style">Drejtimi / Titulli</label>
+                        <input type="text" id="in-edu-deg" class="modern-input" oninput="liveUpdate()">
+                    </div>
                 </div>
 
                 <div id="tab-design" class="tab-content hidden">
-                    <label class="text-[10px] uppercase font-black tracking-widest text-slate-500 mb-6 block">Zgjidhni Estetikën</label>
-                    <div class="grid grid-cols-1 gap-4">
+                    <div class="design-grid">
                         <div class="design-card active" onclick="setStyle('modern', this)">
-                            <h4 class="text-sm font-bold">Modern Jakarta</h4>
-                            <p class="text-[11px] opacity-40">Korporativ, i pastër, fokus tek lexueshmëria.</p>
-                        </div>
-                        <div class="design-card" onclick="setStyle('minimal', this)">
-                            <h4 class="text-sm font-bold">Minimal Swiss</h4>
-                            <p class="text-[11px] opacity-40">Stil helvetik, perfekt për minimalisët.</p>
+                            <h4 class="font-black text-white text-sm">Jakarta Premium</h4>
+                            <p class="text-[10px] text-slate-500 uppercase">E pastër, Korporative</p>
                         </div>
                         <div class="design-card" onclick="setStyle('luxury', this)">
-                            <h4 class="text-sm font-bold">Luxury Playfair</h4>
-                            <p class="text-[11px] opacity-40">Elegancë dhe prestigj me font serif.</p>
+                            <h4 class="font-black text-white text-sm">Luxury Playfair</h4>
+                            <p class="text-[10px] text-slate-500 uppercase">Elegante, Serioze</p>
                         </div>
                         <div class="design-card" onclick="setStyle('tech', this)">
-                            <h4 class="text-sm font-bold">Developer Mono</h4>
-                            <p class="text-[11px] opacity-40">Dizajn teknik për inxhinierë softueri.</p>
-                        </div>
-                        <div class="design-card" onclick="setStyle('midnight', this)">
-                            <h4 class="text-sm font-bold">Midnight Bold</h4>
-                            <p class="text-[11px] opacity-40">Kontrast i lartë me elemente të errëta.</p>
+                            <h4 class="font-black text-white text-sm">Developer Mono</h4>
+                            <p class="text-[10px] text-slate-500 uppercase">Teknike, Minimaliste</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="preview-stage">
-            <div id="cv-canvas">
-                <div id="cv-header" class="border-b-2 border-black pb-8 mb-10 flex justify-between items-end transition-all">
-                    <div>
-                        <h1 id="out-name" class="text-5xl font-black tracking-tighter uppercase leading-none">Emri Juaj</h1>
-                        <p id="out-title" class="text-xl font-medium text-blue-600 mt-2">Pozicioni Profesional</p>
-                    </div>
-                    <div class="text-right text-[11px] space-y-1 font-medium opacity-80">
-                        <p id="out-email"><i class="fa-solid fa-envelope mr-2"></i>email@bonecv.com</p>
-                        <p id="out-phone"><i class="fa-solid fa-phone mr-2"></i>+383 4X XXX XXX</p>
-                    </div>
-                </div>
+        <section id="preview-area" class="preview-stage">
+            <button onclick="togglePreview()" class="fixed top-10 right-10 w-16 h-16 bg-black text-white rounded-2xl lg:hidden flex items-center justify-center z-[3000] shadow-2xl">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
 
-                <div class="grid grid-cols-12 gap-12">
-                    <div class="col-span-8 space-y-10" id="main-side">
+            <div id="cv-canvas">
+                <header id="cv-header" class="border-b-4 border-black pb-10 mb-12 flex justify-between items-end transition-all duration-700">
+                    <div>
+                        <h1 id="out-name" class="text-6xl font-black tracking-tighter uppercase leading-[0.85]">Emri Juaj</h1>
+                        <p id="out-title" class="text-2xl font-bold text-blue-600 mt-4">Pozita Profesionale</p>
+                    </div>
+                    <div class="text-right text-[12px] font-black uppercase tracking-tighter space-y-1 opacity-70">
+                        <p id="out-email">email@profesional.com</p>
+                        <p id="out-phone">+383 4X 000 000</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-12 gap-16">
+                    <div class="col-span-8 space-y-12">
                         <section>
-                            <h3 id="h-sum" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Përmbledhja</h3>
-                            <p id="out-bio" class="text-[13px] leading-relaxed text-zinc-700 font-normal italic">Këtu do të shfaqet rruga juaj profesionale...</p>
+                            <h3 id="h-sum" class="text-xs font-black bg-black text-white px-4 py-1.5 inline-block mb-6 uppercase tracking-[3px]">Profili Im</h3>
+                            <p id="out-bio" class="text-sm leading-[1.7] text-slate-800 font-medium italic">Filloni të shkruani në editor për të krijuar një CV që bie në sy...</p>
                         </section>
                         <section>
-                            <h3 id="h-exp" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Përvoja</h3>
-                            <div class="group">
-                                <h4 id="out-exp-comp" class="text-base font-bold text-zinc-900">Emri i Kompanisë</h4>
-                                <p id="out-exp-pos" class="text-[12px] font-semibold text-blue-600 mb-3">Pozicioni i mbajtur</p>
-                                <p id="out-exp-desc" class="text-[12px] text-zinc-600 leading-relaxed font-normal">Detajet e kontributit tuaj...</p>
+                            <h3 id="h-exp" class="text-xs font-black bg-black text-white px-4 py-1.5 inline-block mb-6 uppercase tracking-[3px]">Eksperienca</h3>
+                            <div>
+                                <h4 id="out-exp-comp" class="text-lg font-black">Kompania</h4>
+                                <p id="out-exp-pos" class="text-sm font-bold text-blue-600 mb-3">Pozicioni</p>
+                                <p id="out-exp-desc" class="text-xs text-slate-600 leading-relaxed">Përshkrimi i detyrave...</p>
                             </div>
                         </section>
                     </div>
-                    <div class="col-span-4 space-y-10" id="left-side">
+                    <div class="col-span-4 space-y-12">
                         <section>
-                            <h3 id="h-edu" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Arsimi</h3>
-                            <h4 id="out-edu-sch" class="text-[13px] font-bold">Institucioni</h4>
-                            <p id="out-edu-deg" class="text-[11px] text-zinc-500 font-medium">Grada Shkencore</p>
-                        </section>
-                        <section>
-                            <h3 id="h-ski" class="text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest">Aftësitë</h3>
-                            <div id="out-skills" class="flex flex-wrap gap-2 pt-2">
-                                <span class="px-3 py-1 bg-zinc-100 text-[10px] font-bold rounded-lg border border-zinc-200">Skills</span>
-                            </div>
+                            <h3 id="h-edu" class="text-xs font-black bg-black text-white px-4 py-1.5 inline-block mb-6 uppercase tracking-[3px]">Arsimimi</h3>
+                            <h4 id="out-edu-sch" class="text-sm font-black">Institucioni</h4>
+                            <p id="out-edu-deg" class="text-xs text-slate-500 font-bold">Titulli</p>
                         </section>
                     </div>
                 </div>
@@ -277,104 +283,64 @@
         </section>
     </main>
 
-<script>
-    // Sidebar Logic
-    function toggleSidebar() {
-        const sb = document.getElementById('sidebar');
-        sb.classList.toggle('active');
-        const content = document.getElementById('content-area');
-        if(window.innerWidth > 1024) {
-            content.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0px';
+    <button onclick="togglePreview()" class="fixed bottom-10 right-10 w-20 h-20 bg-blue-600 text-white rounded-3xl flex lg:hidden items-center justify-center shadow-2xl z-[1500] animate-bounce no-print">
+        <i class="fa-solid fa-eye text-2xl"></i>
+    </button>
+
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function togglePreview() { document.getElementById('preview-area').classList.toggle('active'); }
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white');
+                b.classList.add('bg-white/5', 'text-slate-400');
+            });
+            btn.classList.remove('bg-white/5', 'text-slate-400');
+            btn.classList.add('bg-blue-600', 'text-white');
         }
-    }
 
-    // Tab Switcher
-    function switchTab(tab, btn) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById('tab-' + tab).classList.remove('hidden');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    // Real-time Engine
-    function liveUpdate() {
-        const fields = ['name', 'title', 'email', 'phone', 'bio', 'exp-comp', 'exp-pos', 'exp-desc', 'edu-sch', 'edu-deg'];
-        fields.forEach(f => {
-            const val = document.getElementById('in-' + f).value;
-            const out = document.getElementById('out-' + f);
-            if(out) out.innerText = val || out.getAttribute('data-placeholder') || "...";
-        });
-
-        // Skills logic
-        const skillsVal = document.getElementById('in-skills').value;
-        const container = document.getElementById('out-skills');
-        container.innerHTML = '';
-        if(skillsVal) {
-            skillsVal.split(',').forEach(s => {
-                if(s.trim()) {
-                    const span = document.createElement('span');
-                    span.className = "px-3 py-1.5 bg-zinc-900 text-white text-[10px] font-bold rounded-md uppercase tracking-wider";
-                    span.innerText = s.trim();
-                    container.appendChild(span);
-                }
+        function liveUpdate() {
+            const fields = ['name', 'title', 'email', 'phone', 'bio', 'exp-comp', 'exp-pos', 'exp-desc', 'edu-sch', 'edu-deg'];
+            fields.forEach(f => {
+                const val = document.getElementById('in-' + f).value;
+                const out = document.getElementById('out-' + f);
+                if(out) out.innerText = val || "...";
             });
         }
-    }
 
-    // Style Engine
-    function setStyle(style, el) {
-        const canvas = document.getElementById('cv-canvas');
-        const header = document.getElementById('cv-header');
-        const title = document.getElementById('out-title');
-        const name = document.getElementById('out-name');
-        const headers = ['h-sum', 'h-exp', 'h-edu', 'h-ski'];
-        
-        document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
+        function setStyle(style, el) {
+            const canvas = document.getElementById('cv-canvas');
+            const header = document.getElementById('cv-header');
+            const headers = ['h-sum', 'h-exp', 'h-edu'];
 
-        // Defaults
-        canvas.style = "";
-        header.className = "border-b-2 border-black pb-8 mb-10 flex justify-between items-end transition-all";
-        name.className = "text-5xl font-black tracking-tighter uppercase leading-none";
-        title.className = "text-xl font-medium text-blue-600 mt-2";
-        headers.forEach(h => document.getElementById(h).className = "text-sm font-black border-l-4 border-blue-600 pl-4 mb-4 uppercase tracking-widest");
+            document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
 
-        if(style === 'modern') {
+            // Reset Defaults
             canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-        } else if(style === 'minimal') {
-            canvas.style.fontFamily = "'Inter', sans-serif";
-            header.className = "border-b border-zinc-200 pb-10 mb-10 flex flex-col items-center text-center";
-            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold text-zinc-400 mb-4 uppercase tracking-widest border-none pl-0 text-center");
-        } else if(style === 'luxury') {
-            canvas.style.fontFamily = "'Playfair Display', serif";
-            header.className = "border-double border-b-4 border-zinc-800 pb-10 mb-10 flex flex-col items-center text-center";
-            headers.forEach(h => document.getElementById(h).className = "text-base font-serif italic border-b border-zinc-200 pb-2 mb-6 text-center pl-0 border-l-0");
-        } else if(style === 'tech') {
-            canvas.style.fontFamily = "'JetBrains Mono', monospace";
-            header.className = "border-2 border-black p-8 mb-10 flex flex-col";
-            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold bg-black text-white px-3 py-1 mb-6 inline-block w-max border-none pl-3");
-        } else if(style === 'midnight') {
-            canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-            header.className = "bg-zinc-900 text-white p-12 -mx-[55px] -mt-[45px] mb-12 flex justify-between items-center";
-            title.className = "text-lg font-light text-blue-400 mt-1";
-            headers.forEach(h => document.getElementById(h).className = "text-sm font-black border-l-4 border-blue-500 pl-4 mb-4 uppercase tracking-widest");
+            header.className = "border-b-4 border-black pb-10 mb-12 flex justify-between items-end transition-all";
+
+            if(style === 'luxury') {
+                canvas.style.fontFamily = "'Playfair Display', serif";
+                header.className = "border-b-2 border-double border-zinc-800 pb-10 mb-12 flex flex-col items-center text-center";
+            } else if(style === 'tech') {
+                canvas.style.fontFamily = "'JetBrains Mono', monospace";
+                header.className = "border-2 border-black p-8 mb-12 flex flex-col";
+            }
         }
-    }
 
-    function saveAndPrint() {
-        window.print();
-    }
-
-    // Auto-init
-    window.onload = () => {
-        setTimeout(toggleSidebar, 800);
-        // Canvas Auto-scale for mobile
-        if(window.innerWidth < 1024) {
-            document.getElementById('cv-canvas').style.transform = "scale(" + (window.innerWidth / 900) + ")";
+        function saveAndPrint() {
+            if(window.saveToArchive) window.saveToArchive("CV", document.getElementById('in-name').value || "Dokument");
+            window.print();
         }
-    };
-</script>
 
+        window.onload = () => {
+            if(window.applyGlobalSettings) applyGlobalSettings();
+            setTimeout(() => document.getElementById('sidebar').classList.add('active'), 600);
+        }
+    </script>
 </body>
 </html>
-
