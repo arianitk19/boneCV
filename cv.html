@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>boneCV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="master.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&family=Crimson+Pro:wght@400;700&family=Montserrat:wght@900&display=swap');
+        
+        :root {
+            --accent: #2563eb;
+            --bg-dark: #050505;
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-dark); color: #fff; 
+            overflow: hidden; height: 100vh;
+        }
+
+        /* --- SIDEBAR (IDENTIK ME INDEX.HTML) --- */
+        #sidebar {
+            width: 280px; background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(40px) saturate(180%);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-100%); z-index: 1000;
+        }
+        #sidebar.active { transform: translateX(0); }
+
+        /* --- APP STRUCTURE --- */
+        #content-area { 
+            transition: padding-left 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+            display: grid; grid-template-columns: 480px 1fr; height: 100vh;
+        }
+
+        .editor-container {
+            background: rgba(255, 255, 255, 0.01);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; height: 100vh;
+        }
+
+        .scroll-v { flex: 1; overflow-y: auto; padding: 30px; scrollbar-width: none; }
+        .scroll-v::-webkit-scrollbar { display: none; }
+
+        .preview-stage {
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            display: flex; align-items: center; justify-content: center; position: relative;
+            overflow-y: auto;
+        }
+
+        /* --- HD CANVAS ENGINE --- */
+        #cv-canvas {
+            width: 210mm; min-height: 297mm;
+            background: #fff; color: #000; padding: 40px 60px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+            transform: scale(0.5); transform-origin: center;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .modern-input {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; padding: 12px 16px; width: 100%; color: #fff;
+            transition: 0.3s; margin-bottom: 15px; outline: none; font-size: 14px;
+        }
+        .modern-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.06); }
+
+        .tab-btn {
+            padding: 10px 15px; border-radius: 12px; font-weight: 800; font-size: 10px;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+            background: rgba(255,255,255,0.03); color: #555;
+        }
+        .tab-btn.active { background: var(--accent); color: #fff; }
+
+        .design-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px; padding: 15px; cursor: pointer; transition: 0.3s;
+        }
+        .design-card:hover { background: rgba(255,255,255,0.08); }
+        .design-card.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.1); }
+
+        /* --- TEMPLATE ENGINE CLASSES --- */
+        .sidebar-v { border-left: 15px solid var(--accent); }
+        .dark-header { background: #111 !important; color: white !important; }
+        .accent-text { color: var(--accent) !important; }
+
+        /* --- PRINT ENGINE --- */
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { background: white !important; overflow: visible !important; }
+            #sidebar, .editor-container, .no-print { display: none !important; }
+            #content-area { display: block !important; padding: 0 !important; }
+            .preview-stage { background: white !important; padding: 0 !important; }
+            #cv-canvas { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+        }
+
+        @media (max-width: 1024px) {
+            #content-area { grid-template-columns: 1fr; }
+            .preview-stage { height: 400px; }
+            #cv-canvas { transform: scale(0.3); }
+        }
+    </style>
+</head>
+<body class="flex">
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8 no-print">
+        <div class="flex items-center justify-between mb-16">
+            <h2 class="text-2xl font-black italic tracking-tighter text-white">boneCV</h2>
+            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <nav class="flex-1 space-y-2 text-sm font-bold tracking-tight">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-900/40"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
+            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-paper-plane"></i> Kërkesat</a>
+            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
+        </nav>
+    </aside>
+
+    <main id="content-area" class="flex-1">
+        <section class="editor-container no-print">
+            <header class="h-20 flex items-center justify-between px-8 border-b border-white/5">
+                <button onclick="toggleSidebar()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/5">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <button onclick="saveAndPrint()" class="px-6 py-2.5 bg-white text-black rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition">
+                    Export Ultra HD
+                </button>
+            </header>
+
+            <div class="scroll-v">
+                <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
+                    <button class="tab-btn active" onclick="switchTab('info', this)">Info</button>
+                    <button class="tab-btn" onclick="switchTab('exp', this)">Përvoja</button>
+                    <button class="tab-btn" onclick="switchTab('edu', this)">Arsimi</button>
+                    <button class="tab-btn" onclick="switchTab('skills', this)">Aftësitë</button>
+                    <button class="tab-btn" onclick="switchTab('design', this)">Dizajni</button>
+                </div>
+
+                <div id="tab-info" class="tab-content">
+                    <input type="text" id="in-name" class="modern-input" placeholder="Emri & Mbiemri" oninput="liveUpdate()">
+                    <input type="text" id="in-title" class="modern-input" placeholder="Pozicioni (p.sh. Arkitekt)" oninput="liveUpdate()">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="in-email" class="modern-input" placeholder="Email" oninput="liveUpdate()">
+                        <input type="text" id="in-phone" class="modern-input" placeholder="Telefoni" oninput="liveUpdate()">
+                    </div>
+                    <textarea id="in-bio" class="modern-input h-32 resize-none" placeholder="Përmbledhja profesionale..." oninput="liveUpdate()"></textarea>
+                </div>
+
+                <div id="tab-exp" class="tab-content hidden">
+                    <p class="text-[10px] font-bold text-blue-500 mb-4 uppercase tracking-widest">Përvoja e Punës</p>
+                    <input type="text" id="in-exp-comp" class="modern-input" placeholder="Kompania" oninput="liveUpdate()">
+                    <input type="text" id="in-exp-pos" class="modern-input" placeholder="Pozita" oninput="liveUpdate()">
+                    <textarea id="in-exp-desc" class="modern-input h-24 resize-none" placeholder="Përshkrimi i detyrave..." oninput="liveUpdate()"></textarea>
+                </div>
+
+                <div id="tab-edu" class="tab-content hidden">
+                    <p class="text-[10px] font-bold text-blue-500 mb-4 uppercase tracking-widest">Arsimimi</p>
+                    <input type="text" id="in-edu-sch" class="modern-input" placeholder="Shkolla/Universiteti" oninput="liveUpdate()">
+                    <input type="text" id="in-edu-deg" class="modern-input" placeholder="Drejtimi/Diploma" oninput="liveUpdate()">
+                </div>
+
+                <div id="tab-skills" class="tab-content hidden">
+                    <p class="text-[10px] font-bold text-blue-500 mb-4 uppercase tracking-widest">Aftësitë (ndaji me presje)</p>
+                    <textarea id="in-skills" class="modern-input h-24 resize-none" placeholder="p.sh. Management, Adobe PS, Python..." oninput="liveUpdate()"></textarea>
+                </div>
+
+                <div id="tab-design" class="tab-content hidden">
+                    <p class="text-[10px] font-bold text-zinc-500 mb-4 uppercase tracking-widest">Premium Templates</p>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="design-card active" onclick="setStyle('modern', this)">
+                            <h4 class="text-sm font-bold">Modern Jakarta</h4>
+                            <p class="text-[10px] opacity-50">Dizajn korporativ, i pastër dhe HD.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('minimal', this)">
+                            <h4 class="text-sm font-bold">Minimal Swiss</h4>
+                            <p class="text-[10px] opacity-50">Fokus maksimal tek teksti.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('luxury', this)">
+                            <h4 class="text-sm font-bold">Luxury Playfair</h4>
+                            <p class="text-[10px] opacity-50">Elegancë klasike elitare.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('tech', this)">
+                            <h4 class="text-sm font-bold">Developer Mono</h4>
+                            <p class="text-[10px] opacity-50">Për inxhinierë dhe kodues.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('midnight', this)">
+                            <h4 class="text-sm font-bold">Midnight Bold</h4>
+                            <p class="text-[10px] opacity-50">Header i zi me kontrast të lartë.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('royal', this)">
+                            <h4 class="text-sm font-bold">Royal Gold</h4>
+                            <p class="text-[10px] opacity-50">Detaje ari dhe font serif.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('creative', this)">
+                            <h4 class="text-sm font-bold">Creative Brutalist</h4>
+                            <p class="text-[10px] opacity-50">Tipografi e madhe dhe guximshme.</p>
+                        </div>
+                        <div class="design-card" onclick="setStyle('emerald', this)">
+                            <h4 class="text-sm font-bold">Emerald Professional</h4>
+                            <p class="text-[10px] opacity-50">E gjelbër e thellë dhe strukturë moderne.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="preview-stage">
+            <div id="cv-canvas">
+                <div id="cv-header" class="border-b-2 border-black pb-6 mb-8 flex justify-between items-end transition-all">
+                    <div>
+                        <h1 id="out-name" class="text-4xl font-black tracking-tighter uppercase leading-none">Emri Juaj</h1>
+                        <p id="out-title" class="text-lg font-medium text-blue-600 mt-1">Pozicioni Juaj</p>
+                    </div>
+                    <div class="text-right text-[10px] space-y-1 opacity-70">
+                        <p id="out-email">email@shembull.com</p>
+                        <p id="out-phone">+383 4X XXX XXX</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-10">
+                    <div class="col-span-8 space-y-8" id="main-side">
+                        <section>
+                            <h3 id="h-sum" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Përmbledhja</h3>
+                            <p id="out-bio" class="text-xs leading-relaxed text-zinc-700">Përshkrimi juaj profesional do të shfaqet këtu...</p>
+                        </section>
+                        <section>
+                            <h3 id="h-exp" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Përvoja</h3>
+                            <div class="mb-4">
+                                <h4 id="out-exp-comp" class="text-sm font-bold">Kompania</h4>
+                                <p id="out-exp-pos" class="text-[11px] italic mb-2">Pozita</p>
+                                <p id="out-exp-desc" class="text-[11px] text-zinc-600 leading-relaxed">Detyrat dhe arritjet tuaja...</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-span-4 space-y-8" id="left-side">
+                        <section>
+                            <h3 id="h-edu" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Arsimi</h3>
+                            <h4 id="out-edu-sch" class="text-xs font-bold">Universiteti</h4>
+                            <p id="out-edu-deg" class="text-[10px] text-zinc-600">Diploma</p>
+                        </section>
+                        <section>
+                            <h3 id="h-ski" class="text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest">Aftësitë</h3>
+                            <div id="out-skills" class="flex flex-wrap gap-2 pt-2"></div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+<script>
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        sb.classList.toggle('active');
+        if(window.innerWidth > 1024) {
+            document.getElementById('content-area').style.paddingLeft = sb.classList.contains('active') ? '280px' : '0px';
+        }
+    }
+
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById('tab-' + tab).classList.remove('hidden');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function liveUpdate() {
+        const fields = ['name', 'title', 'email', 'phone', 'bio', 'exp-comp', 'exp-pos', 'exp-desc', 'edu-sch', 'edu-deg'];
+        fields.forEach(f => {
+            const val = document.getElementById('in-' + f).value;
+            const out = document.getElementById('out-' + f);
+            if(out) out.innerText = val || (f.includes('in-') ? "" : out.innerText);
+        });
+
+        const skills = document.getElementById('in-skills').value.split(',');
+        const container = document.getElementById('out-skills');
+        container.innerHTML = '';
+        skills.forEach(s => {
+            if(s.trim()) {
+                const span = document.createElement('span');
+                span.className = "px-2 py-1 bg-zinc-100 text-[9px] font-bold rounded uppercase border border-zinc-200";
+                span.innerText = s.trim();
+                container.appendChild(span);
+            }
+        });
+    }
+
+    function setStyle(style, el) {
+        const canvas = document.getElementById('cv-canvas');
+        const header = document.getElementById('cv-header');
+        const title = document.getElementById('out-title');
+        const headers = ['h-sum', 'h-exp', 'h-edu', 'h-ski'];
+        
+        document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+
+        // Reset default
+        canvas.className = "";
+        canvas.style = "";
+        header.style = "";
+        header.className = "pb-6 mb-8 flex justify-between items-end border-b-2 border-black";
+        title.className = "text-lg font-medium text-blue-600 mt-1";
+        headers.forEach(h => document.getElementById(h).className = "text-xs font-black border-l-4 border-blue-600 pl-3 mb-3 uppercase tracking-widest");
+
+        if(style === 'modern') {
+            canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+        } else if(style === 'minimal') {
+            canvas.style.fontFamily = "'Inter', sans-serif";
+            header.className = "pb-6 mb-8 border-b border-zinc-100 flex flex-col items-start";
+            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold text-zinc-400 mb-3 uppercase tracking-tighter");
+        } else if(style === 'luxury') {
+            canvas.style.fontFamily = "'Playfair Display', serif";
+            header.className = "border-double border-b-4 border-zinc-800 pb-10 mb-10 text-center flex-col items-center justify-center";
+            headers.forEach(h => document.getElementById(h).className = "text-xs font-serif italic border-b border-zinc-200 pb-2 mb-4 text-center");
+        } else if(style === 'tech') {
+            canvas.style.fontFamily = "'JetBrains Mono', monospace";
+            header.className = "border-l-8 border-black pl-6 pb-6 mb-8 flex flex-col";
+            headers.forEach(h => document.getElementById(h).className = "text-xs font-bold bg-black text-white px-2 py-1 mb-4 inline-block");
+        } else if(style === 'midnight') {
+            canvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            header.className = "bg-zinc-900 text-white p-10 -mx-[60px] -mt-[40px] mb-10 flex justify-between items-center";
+            title.className = "text-lg font-light text-zinc-400";
+        } else if(style === 'royal') {
+            canvas.style.fontFamily = "'Crimson Pro', serif";
+            header.className = "border-b border-yellow-600 pb-6 mb-8 flex justify-between items-end";
+            title.className = "text-lg italic text-yellow-700 mt-1";
+            headers.forEach(h => document.getElementById(h).className = "text-sm font-bold text-yellow-800 border-b border-yellow-200 mb-3 uppercase");
+        } else if(style === 'creative') {
+            canvas.style.fontFamily = "'Montserrat', sans-serif";
+            header.className = "flex flex-col mb-12";
+            document.getElementById('out-name').className = "text-6xl font-black tracking-tighter uppercase leading-[0.8]";
+            headers.forEach(h => document.getElementById(h).className = "text-2xl font-black mb-4 tracking-tighter bg-yellow-300 inline-block px-1");
+        } else if(style === 'emerald') {
+            canvas.style.fontFamily = "'Inter', sans-serif";
+            header.className = "border-r-[20px] border-emerald-900 pr-6 pb-6 mb-8 flex flex-col items-end text-right";
+            headers.forEach(h => document.getElementById(h).className = "text-xs font-black text-emerald-900 border-r-4 border-emerald-900 pr-3 mb-3 uppercase text-right w-full");
+        }
+    }
+
+    function saveAndPrint() {
+        const emri = document.getElementById('in-name').value || "CV_HD";
+        if(window.saveToArchive) window.saveToArchive("CV", emri);
+        window.print();
+    }
+
+    window.onload = () => {
+        setTimeout(toggleSidebar, 500);
+        if(typeof applySettings === "function") applySettings();
+    };
+</script>
+
+</body>
+</html>

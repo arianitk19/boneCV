@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>boneCV | Kontrata Master Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="master.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400&display=swap');
+        
+        :root { --accent: #2563eb; --bg: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
+
+        /* --- UI STRUCTURE --- */
+        #sidebar {
+            width: 280px; background: rgba(5,5,5,0.95); backdrop-filter: blur(50px);
+            border-right: 1px solid rgba(255,255,255,0.06); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-100%); z-index: 3000;
+        }
+        #sidebar.active { transform: translateX(0); }
+
+        #main-wrapper { transition: padding-left 0.5s; display: grid; grid-template-columns: 450px 1fr; height: 100vh; }
+
+        .editor-panel { background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.05); overflow-y: auto; scrollbar-width: none; }
+        .editor-panel::-webkit-scrollbar { display: none; }
+        
+        .preview-area { 
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            overflow-y: auto; display: flex; justify-content: center; padding: 60px 0;
+        }
+
+        /* --- PAPER DESIGN --- */
+        #contract-paper {
+            width: 210mm; min-height: 297mm; background: #fff; color: #111;
+            padding: 20mm 25mm; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            transform: scale(0.75); transform-origin: top center;
+            transition: 0.4s all ease; position: relative;
+        }
+
+        /* --- INPUT STYLES --- */
+        .glass-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .input-elite { width: 100%; background: #151515; border: 1px solid #222; border-radius: 12px; padding: 14px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none; transition: 0.3s; }
+        .input-elite:focus { border-color: var(--accent); background: #1a1a1a; }
+        
+        .tmpl-card { cursor: pointer; border: 2px solid transparent; transition: 0.3s; border-radius: 12px; opacity: 0.5; overflow: hidden; }
+        .tmpl-card.active { border-color: var(--accent); opacity: 1; transform: translateY(-3px); }
+
+        .swatch { width: 28px; height: 28px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .swatch.active { border-color: #fff; transform: scale(1.1); }
+
+        /* ============================================================
+           PROFESSIONAL PRINT ENGINE (NO AMATEUR STUFF)
+           ============================================================ */
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { background: white !important; overflow: visible !important; }
+            .no-print, #sidebar, .editor-panel, header { display: none !important; }
+            #main-wrapper { display: block !important; padding: 0 !important; }
+            .preview-area { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; }
+            #contract-paper { 
+                transform: scale(1) !important; 
+                box-shadow: none !important; 
+                margin: 0 !important; 
+                width: 210mm !important; 
+                height: 297mm !important; 
+                padding: 20mm !important;
+                position: absolute; top: 0; left: 0;
+            }
+            #contract-paper * { color: black !important; }
+            .text-accent { color: var(--accent) !important; }
+            .border-accent { border-color: var(--accent) !important; }
+        }
+
+        @media (max-width: 1024px) {
+            #main-wrapper { grid-template-columns: 1fr; }
+            .preview-area { display: none; }
+            #contract-paper { width: 100%; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="flex">
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8 no-print">
+        <div class="flex items-center justify-between mb-12">
+            <h2 class="text-2xl font-black italic tracking-tighter text-white">boneCV</h2>
+            <button onclick="toggleSidebar()" class="text-slate-500"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <nav class="flex-1 space-y-1 text-sm font-bold">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-xl bg-blue-600 text-white"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
+            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Kerkesa</a>
+            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
+        </nav>
+    </aside>
+
+    <main id="main-wrapper" class="flex-1 w-full">
+        <section class="editor-panel no-print">
+            <header class="p-6 sticky top-0 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 flex justify-between items-center z-50">
+                <button onclick="toggleSidebar()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 text-white">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <button onclick="superGenerate()" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black text-[11px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20">
+                    Gjenero PDF Pro
+                </button>
+            </header>
+
+            <div class="p-6 md:p-10">
+                <h1 class="text-3xl font-black tracking-tighter mb-2">Studio <span class="text-blue-600 italic">Ligjore</span></h1>
+                <p class="text-zinc-500 text-xs mb-8 uppercase tracking-widest font-bold">Kontrata Pune & Marrëveshje</p>
+
+                <div class="glass-card">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-4">Personalizimi i Dokumentit</p>
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="tmpl-card active" onclick="setTmpl('modern', this)">
+                            <div class="h-14 bg-zinc-800 flex flex-col items-center justify-center">
+                                <span class="text-[9px] font-bold">MODERN</span>
+                                <div class="w-4 h-0.5 bg-blue-600 mt-1"></div>
+                            </div>
+                        </div>
+                        <div class="tmpl-card" onclick="setTmpl('classic', this)">
+                            <div class="h-14 bg-zinc-800 flex flex-col items-center justify-center">
+                                <span class="text-[9px] font-serif font-bold">CLASSIC</span>
+                            </div>
+                        </div>
+                        <div class="tmpl-card" onclick="setTmpl('tech', this)">
+                            <div class="h-14 bg-zinc-800 flex flex-col items-center justify-center">
+                                <span class="text-[9px] font-mono">TECH.js</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="swatch bg-blue-600 active" onclick="changeColor('#2563eb', this)"></div>
+                        <div class="swatch bg-emerald-600" onclick="changeColor('#059669', this)"></div>
+                        <div class="swatch bg-amber-600" onclick="changeColor('#d97706', this)"></div>
+                        <div class="swatch bg-zinc-900" onclick="changeColor('#18181b', this)"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass-card">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Palët Kontraktuese</p>
+                        <input type="text" id="in-comp" class="input-elite" placeholder="Kompania (Punëdhënësi)" oninput="sync()">
+                        <input type="text" id="in-comp-addr" class="input-elite" placeholder="Adresa e Kompanisë" oninput="sync()">
+                        <input type="text" id="in-name" class="input-elite" placeholder="Emri i Punëmarrësit" oninput="sync()">
+                        <input type="text" id="in-id" class="input-elite" placeholder="ID / Numri Personal" oninput="sync()">
+                    </div>
+
+                    <div class="glass-card">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Kushtet e Punës</p>
+                        <input type="text" id="in-pos" class="input-elite" placeholder="Pozita (p.sh. Menaxher)" oninput="sync()">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="in-salary" class="input-elite" placeholder="Paga Bruto (€)" oninput="sync()">
+                            <input type="text" id="in-hours" class="input-elite" placeholder="Orari (p.sh. 40h)" oninput="sync()">
+                        </div>
+                        <select id="in-type" class="input-elite" onchange="sync()">
+                            <option value="Kohë të pacaktuar">Kohë të pacaktuar</option>
+                            <option value="Kohë të caktuar (1 vit)">Kohë të caktuar (1 vit)</option>
+                            <option value="Punë provuese (3 muaj)">Punë provuese (3 muaj)</option>
+                        </select>
+                        <input type="date" id="in-date" class="input-elite" oninput="sync()">
+                    </div>
+
+                    <div class="glass-card">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Klauzola Shtesë</p>
+                        <textarea id="in-extra" class="input-elite h-32" placeholder="Shënoni pushimet vjetore, bonuset ose detyrat specifike..." oninput="sync()"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="preview-area">
+            <div id="contract-paper">
+                <div class="border-b-4 border-blue-600 pb-8 mb-10 flex justify-between items-end border-accent" id="header-line">
+                    <div>
+                        <h2 class="text-4xl font-black uppercase tracking-tighter" id="out-style-title">Kontratë Pune</h2>
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-[3px] mt-2 text-accent">Marrëveshje Ligjore</p>
+                    </div>
+                    <div class="text-right text-[11px] font-bold opacity-40">
+                        DATA: <span id="out-date">11.02.2026</span><br>
+                        REF: BCV-PRQ-2026
+                    </div>
+                </div>
+
+                <div class="space-y-8 text-[14px] leading-relaxed text-justify">
+                    <p>Kjo kontratë pune lidhet midis <b>Punëdhënësit:</b> <span id="out-comp" class="font-bold uppercase">[KOMPANIA]</span>, me seli në <span id="out-comp-addr">[ADRESA]</span>, dhe <b>Punëmarrësit:</b> <span id="out-name" class="font-bold uppercase">[EMRI]</span>, me nr. personal <span id="out-id">XXXXXXXXX</span>.</p>
+                    
+                    <div>
+                        <h4 class="font-bold text-sm border-l-4 border-blue-600 pl-3 mb-3 border-accent">Neni 1: Pozita dhe Kohëzgjatja</h4>
+                        <p>Punëmarrësi pranohet në pozitën: <b id="out-pos" class="text-blue-600 text-accent">[POZITA]</b>. Kontrata lidhet për <b id="out-type">Kohë të pacaktuar</b>.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-sm border-l-4 border-blue-600 pl-3 mb-3 border-accent">Neni 2: Paga dhe Orari</h4>
+                        <p>Punëdhënësi obligohet të paguajë Punëmarrësin me një pagë mujore bruto prej <b id="out-salary">0.00</b> EUR. Orari i punës do të jetë <b id="out-hours">40 orë</b> në javë.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-sm border-l-4 border-blue-600 pl-3 mb-3 border-accent">Neni 3: Obligimet</h4>
+                        <p>Punëmarrësi do të kryejë detyrat me profesionalizëm dhe do të ruajë konfidencialitetin e të dhënave të kompanisë.</p>
+                    </div>
+
+                    <div id="extra-box" class="bg-zinc-50 p-6 border border-zinc-100 italic text-zinc-600 min-h-[120px]">
+                        <p id="out-extra">Detaje shtesë mbi pushimet, bonuset dhe kushtet specifike do të shfaqen këtu...</p>
+                    </div>
+                </div>
+
+                <div class="mt-40 grid grid-cols-2 gap-24">
+                    <div class="text-center">
+                        <div class="border-t-2 border-black pt-4 font-black text-[11px] uppercase">Vula & Punëdhënësi</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="border-t-2 border-black pt-4 font-black text-[11px] uppercase">Punëmarrësi</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const wr = document.getElementById('main-wrapper');
+        sb.classList.toggle('active');
+        if(window.innerWidth > 1024) {
+            wr.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0';
+        }
+    }
+
+    function sync() {
+        const map = {
+            'in-comp': 'out-comp',
+            'in-comp-addr': 'out-comp-addr',
+            'in-name': 'out-name',
+            'in-id': 'out-id',
+            'in-pos': 'out-pos',
+            'in-salary': 'out-salary',
+            'in-hours': 'out-hours',
+            'in-date': 'out-date',
+            'in-type': 'out-type'
+        };
+        for(let id in map) {
+            let val = document.getElementById(id).value;
+            if(val) document.getElementById(map[id]).innerText = val;
+        }
+        document.getElementById('out-extra').innerText = document.getElementById('in-extra').value || "Pa klauzola shtesë.";
+    }
+
+    function changeColor(color, el) {
+        document.documentElement.style.setProperty('--accent', color);
+        document.querySelectorAll('.text-accent').forEach(t => t.style.color = color);
+        document.querySelectorAll('.border-accent').forEach(b => b.style.borderColor = color);
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function setTmpl(style, el) {
+        const paper = document.getElementById('contract-paper');
+        const title = document.getElementById('out-style-title');
+        document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+
+        if(style === 'modern') {
+            paper.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            title.className = "text-4xl font-black uppercase tracking-tighter";
+        } else if(style === 'classic') {
+            paper.style.fontFamily = "'Playfair Display', serif";
+            title.className = "text-3xl font-bold italic";
+        } else {
+            paper.style.fontFamily = "'JetBrains Mono', monospace";
+            title.className = "text-2xl font-bold border-l-8 border-accent pl-4 border-accent";
+        }
+    }
+
+    function superGenerate() {
+        const emri = document.getElementById('in-name').value || "Dokument";
+        const komp = document.getElementById('in-comp').value || "Biznes";
+        if(window.saveToArchive) window.saveToArchive("Kontratë", `${komp} - ${emri}`);
+        window.print();
+    }
+
+    window.onload = () => { if(window.innerWidth > 1024) setTimeout(toggleSidebar, 600); };
+    </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>boneCV | Cilësimet</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="master.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
+        
+        :root { --accent: #2563eb; --bg: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; margin: 0; }
+
+        /* --- SIDEBAR --- */
+        #sidebar {
+            width: 280px; background: rgba(5,5,5,0.95); backdrop-filter: blur(50px);
+            border-right: 1px solid rgba(255,255,255,0.06); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-100%); z-index: 3000;
+        }
+        #sidebar.active { transform: translateX(0); }
+
+        /* --- LAYOUT --- */
+        #main-content { transition: padding-left 0.5s; width: 100%; min-height: 100vh; }
+
+        .settings-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px; overflow: hidden; margin-bottom: 24px;
+        }
+
+        .settings-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: 0.2s;
+        }
+        .settings-row:last-child { border-bottom: none; }
+        .settings-row:active { background: rgba(255,255,255,0.05); }
+
+        /* --- TOGGLE SWITCH --- */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        @media (max-width: 1024px) {
+            #main-content { padding-left: 0 !important; }
+        }
+    </style>
+</head>
+<body class="flex">
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8">
+        <div class="flex items-center justify-between mb-16">
+            <h2 class="text-2xl font-black italic text-white">boneCV</h2>
+            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <nav class="flex-1 space-y-2 text-sm font-bold">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
+            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-paper-plane"></i> Kërkesat</a>
+            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
+            <a href="cilesimet.html" class="flex items-center gap-4 p-4 rounded-2xl bg-white text-black"><i class="fa-solid fa-gear"></i> Cilësimet</a>
+        </nav>
+    </aside>
+
+    <main id="main-content" class="flex-1 p-6 md:p-16 max-w-4xl mx-auto">
+        <header class="flex items-center gap-6 mb-12">
+            <button onclick="toggleSidebar()" class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+            <h1 class="text-3xl font-black tracking-tighter uppercase">Cilësimet</h1>
+        </header>
+
+        <div class="flex items-center gap-6 mb-10 p-2 cursor-pointer group" id="profile-trigger">
+            <div id="user-avatar" class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-3xl font-black border-4 border-white/10 group-hover:scale-105 transition">
+                U
+            </div>
+            <div>
+                <h2 id="user-name-display" class="text-xl font-bold">User Pro</h2>
+                <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest">Abonimi: Premium Cloud</p>
+            </div>
+        </div>
+
+        <p class="text-[10px] font-black uppercase tracking-[3px] text-blue-600 mb-4 ml-2">Personalizimi</p>
+        <div class="settings-card">
+            <div class="settings-row">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-moon text-blue-500 w-5 text-center"></i>
+                    <span class="text-sm font-semibold">Dark Mode</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-bell text-blue-500 w-5 text-center"></i>
+                    <span class="text-sm font-semibold">Njoftimet Live</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <p class="text-[10px] font-black uppercase tracking-[3px] text-blue-600 mb-4 ml-2">Siguria & Të Dhënat</p>
+        <div class="settings-card">
+            <div class="settings-row cursor-pointer hover:bg-white/5 transition" onclick="alert('Sinkronizimi u krye!')">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-cloud-arrow-up text-zinc-400 w-5 text-center"></i>
+                    <span class="text-sm font-semibold">Sinkronizo me Cloud</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+            </div>
+            <div class="settings-row cursor-pointer hover:bg-white/5 transition" onclick="exportData()">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-download text-zinc-400 w-5 text-center"></i>
+                    <span class="text-sm font-semibold">Eksporto Arkivën (.JSON)</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+            </div>
+            <div class="settings-row cursor-pointer hover:bg-red-500/5 transition" onclick="deleteEverything()">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-trash-can text-red-500 w-5 text-center"></i>
+                    <span class="text-sm font-semibold text-red-500">Fshi të gjitha të dhënat</span>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-20 opacity-20">
+            <p class="text-[10px] font-bold uppercase tracking-widest">boneCV v2.0.4 | 2026 Build</p>
+        </footer>
+    </main>
+
+    <script>
+        // --- 1. UI CONTROL (Sidebar) ---
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const mc = document.getElementById('main-content');
+            if (!sb) return;
+            sb.classList.toggle('active');
+            if (window.innerWidth > 1024 && mc) {
+                mc.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0';
+            }
+        }
+
+        // --- 2. THEME ENGINE ---
+        const themeSwitch = document.getElementById('dark-mode-toggle');
+        
+        function initTheme() {
+            const currentTheme = localStorage.getItem('theme');
+            // Default: Dark Mode (Checked)
+            themeSwitch.checked = (currentTheme !== 'light');
+            
+            themeSwitch.addEventListener('change', function() {
+                localStorage.setItem('theme', this.checked ? 'dark' : 'light');
+                if (typeof applySettings === "function") {
+                    applySettings();
+                } else {
+                    location.reload(); 
+                }
+            });
+        }
+
+        // --- 3. PROFILE MANAGEMENT ---
+        const profileTrigger = document.getElementById('profile-trigger');
+        
+        if (profileTrigger) {
+            profileTrigger.onclick = function() {
+                const currentName = localStorage.getItem('perdoruesi') || "User Pro";
+                const newName = prompt("Shkruaj emrin tënd të ri:", currentName);
+                if (newName && newName.trim() !== "") {
+                    localStorage.setItem('perdoruesi', newName.trim());
+                    updateProfileUI();
+                }
+            };
+        }
+
+        function updateProfileUI() {
+            const emri = localStorage.getItem('perdoruesi') || "User Pro";
+            const emriDisplay = document.getElementById('user-name-display');
+            const avatar = document.getElementById('user-avatar');
+            
+            if (emriDisplay) emriDisplay.innerText = emri;
+            if (avatar) avatar.innerText = emri.charAt(0).toUpperCase();
+        }
+
+        // --- 4. DATA MANAGEMENT ---
+        function exportData() {
+            const data = localStorage.getItem('boneCV_Archive');
+            if (!data || data === "[]") {
+                alert("Arkiva është boshe. Nuk ka asgjë për të eksportuar.");
+                return;
+            }
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const date = new Date().toISOString().slice(0, 10);
+            a.href = url;
+            a.download = `boneCV_Backup_${date}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function deleteEverything() {
+            const msg = "⚠️ KUJDES: Ky veprim do të fshijë të gjitha CV-të, Kontratat dhe Cilësimet tuaja përgjithmonë. A jeni i sigurt?";
+            if (confirm(msg)) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            updateProfileUI();
+        });
+    </script>
+</body>
+</html>
