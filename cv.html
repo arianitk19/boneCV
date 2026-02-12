@@ -3,66 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>boneCV | Studio CV Pro</title>
+    <title>boneCV | Elite Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="master.js"></script>
-
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;700&display=swap');
         
-        :root { --accent: #2563eb; --bg: #050505; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
+        :root { 
+            --accent: #3b82f6; 
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --bg: #030303; 
+            --card-bg: #0a0a0a;
+            --border: rgba(255,255,255,0.08);
+        }
 
-        /* --- UI STRUCTURE (Identik me kontrata.html) --- */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            overflow: hidden; 
+            height: 100vh;
+        }
+
+        /* --- SIDEBAR ELEGANT --- */
         #sidebar {
-            width: 280px; background: rgba(5,5,5,0.95); backdrop-filter: blur(50px);
-            border-right: 1px solid rgba(255,255,255,0.06); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateX(-100%); z-index: 3000;
+            width: 280px; 
+            background: rgba(3, 3, 3, 0.8); 
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border); 
+            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-100%); 
+            z-index: 5000;
         }
         #sidebar.active { transform: translateX(0); }
 
-        #main-wrapper { transition: padding-left 0.5s; display: grid; grid-template-columns: 450px 1fr; height: 100vh; }
+        /* --- LAYOUT STRUCTURE --- */
+        #main-wrapper { 
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+            display: grid; 
+            grid-template-columns: 480px 1fr; 
+            height: 100vh; 
+        }
 
-        .editor-panel { background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.05); overflow-y: auto; scrollbar-width: none; }
+        /* --- EDITOR PANEL (DARK MODE LUXURY) --- */
+        .editor-panel { 
+            background: var(--card-bg); 
+            border-right: 1px solid var(--border); 
+            overflow-y: auto; 
+            scrollbar-width: none;
+            position: relative;
+        }
         .editor-panel::-webkit-scrollbar { display: none; }
-        
+
+        /* --- PREVIEW AREA (STIL MUZEAL) --- */
         .preview-area { 
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            overflow-y: auto; display: flex; justify-content: center; padding: 60px 0;
+            background: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+            overflow-y: auto; 
+            display: flex; 
+            justify-content: center; 
+            padding: 80px 0;
+            perspective: 1000px;
         }
 
-        /* --- PAPER DESIGN --- */
+        /* --- CV PAPER (PREMIUM LOOK) --- */
         #cv-paper {
-            width: 210mm; min-height: 297mm; background: #fff; color: #111;
-            padding: 20mm 20mm; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            transform: scale(0.75); transform-origin: top center;
-            transition: 0.4s all ease; position: relative;
+            width: 210mm; 
+            min-height: 297mm; 
+            background: #fff; 
+            color: #111;
+            padding: 25mm; 
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            transform: scale(0.85); 
+            transform-origin: top center;
+            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 2px;
         }
 
-        /* --- INPUT STYLES --- */
-        .glass-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
-        .input-elite { width: 100%; background: #151515; border: 1px solid #222; border-radius: 12px; padding: 14px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none; transition: 0.3s; }
-        .input-elite:focus { border-color: var(--accent); background: #1a1a1a; }
-        
-        .tmpl-card { cursor: pointer; border: 2px solid transparent; transition: 0.3s; border-radius: 12px; opacity: 0.5; overflow: hidden; }
-        .tmpl-card.active { border-color: var(--accent); opacity: 1; transform: translateY(-3px); }
+        /* --- MODERN INPUTS --- */
+        .glass-card { 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            padding: 24px; 
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .glass-card:hover { border-color: rgba(59, 130, 246, 0.3); background: rgba(255,255,255,0.03); }
 
-        #photo-preview { width: 120px; height: 120px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; display: none; }
+        .input-elite { 
+            width: 100%; 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid transparent; 
+            border-radius: 14px; 
+            padding: 16px; 
+            color: #fff; 
+            margin-bottom: 12px; 
+            font-size: 14px; 
+            outline: none; 
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .input-elite:focus { 
+            background: #000; 
+            border-color: var(--accent); 
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* --- TEMPLATE SELECTOR --- */
+        .tmpl-card { 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            transition: 0.4s; 
+            border-radius: 16px; 
+            background: #151515;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #555;
+        }
+        .tmpl-card.active { 
+            border-color: var(--accent); 
+            color: #fff; 
+            background: var(--accent);
+            box-shadow: 0 10px 20px var(--accent-glow);
+        }
+
+        /* --- PHOTO DESIGN --- */
+        #photo-preview { 
+            width: 140px; 
+            height: 140px; 
+            object-fit: cover; 
+            border-radius: 0; /* Modern square look */
+            border: 8px solid #f8f8f8;
+            box-shadow: 15px 15px 0px rgba(59, 130, 246, 0.1);
+            margin-bottom: 30px; 
+            display: none; 
+            transition: 0.5s;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+            transition: 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.5);
+        }
 
         @media print {
             @page { size: A4; margin: 0; }
             body { background: white !important; overflow: visible !important; }
-            .no-print, #sidebar, .editor-panel, header { display: none !important; }
+            .no-print { display: none !important; }
             #main-wrapper { display: block !important; padding: 0 !important; }
             .preview-area { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; }
-            #cv-paper { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 210mm !important; height: 297mm !important; position: absolute; top: 0; left: 0; }
+            #cv-paper { transform: scale(1) !important; box-shadow: none !important; margin: 0 !important; width: 210mm !important; }
         }
 
         @media (max-width: 1024px) {
             #main-wrapper { grid-template-columns: 1fr; }
             .preview-area { display: none; }
-            #cv-paper { width: 100%; transform: scale(1); }
         }
     </style>
 </head>
@@ -70,62 +176,74 @@
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8 no-print">
         <div class="flex items-center justify-between mb-12">
-            <h2 class="text-2xl font-black italic tracking-tighter text-white">boneCV</h2>
-            <button onclick="toggleSidebar()" class="text-slate-500"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-2xl font-black italic tracking-tighter text-white">bone<span class="text-blue-600">CV</span></h2>
+            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <nav class="flex-1 space-y-1 text-sm font-bold">
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-house"></i> Dashboard</a>
-            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-xl bg-blue-600 text-white"><i class="fa-solid fa-id-card"></i> Studio CV</a>
-            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
-            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Kerkesa</a>
-            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
+        <nav class="flex-1 space-y-2 text-sm font-bold">
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 transition-all"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-600/20"><i class="fa-solid fa-id-card"></i> Studio CV</a>
+            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
+            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-paper-plane"></i> Kërkesa</a>
+            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
         </nav>
     </aside>
 
     <main id="main-wrapper" class="flex-1 w-full">
         <section class="editor-panel no-print">
-            <header class="p-6 sticky top-0 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 flex justify-between items-center z-50">
-                <button onclick="toggleSidebar()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 text-white">
+            <header class="p-6 sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-2xl border-b border-white/5 flex justify-between items-center z-50">
+                <button onclick="toggleSidebar()" class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 text-white hover:bg-white/10 transition-all">
                     <i class="fa-solid fa-bars-staggered"></i>
                 </button>
-                <button onclick="superGenerate()" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-black text-[11px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20">
-                    Eksporto PDF
-                </button>
+                <div class="flex gap-3">
+                    <button onclick="superGenerate()" class="btn-primary px-8 py-3 text-white rounded-2xl font-black text-[11px] uppercase tracking-[2px]">
+                        Eksporto <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
             </header>
 
-            <div class="p-6 md:p-10">
-                <h1 class="text-3xl font-black tracking-tighter mb-2">Studio <span class="text-blue-600 italic">CV</span></h1>
-                <p class="text-zinc-500 text-xs mb-8 uppercase tracking-widest font-bold">Krijo Profilin Tënd Profesional</p>
+            <div class="p-8 md:p-12">
+                <div class="mb-12">
+                    <h1 class="text-4xl font-black tracking-tighter mb-2">Studio <span class="text-blue-600 italic">CV</span></h1>
+                    <div class="h-1 w-12 bg-blue-600 rounded-full"></div>
+                </div>
 
                 <div class="glass-card">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Informacioni Personal</p>
+                    <label class="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-4 block">Identiteti</label>
                     <input type="text" id="in-name" class="input-elite" placeholder="Emri i Plotë" oninput="sync()">
-                    <input type="text" id="in-pos" class="input-elite" placeholder="Pozita Profesionale" oninput="sync()">
-                    <input type="text" id="in-email" class="input-elite" placeholder="Email Adresa" oninput="sync()">
-                    <input type="text" id="in-phone" class="input-elite" placeholder="Numri i Telefonit" oninput="sync()">
+                    <input type="text" id="in-pos" class="input-elite" placeholder="Pozita Profesionale (p.sh. Senior Architect)" oninput="sync()">
                 </div>
 
                 <div class="glass-card">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Foto / Profil</p>
-                    <input type="file" id="in-photo" class="input-elite" accept="image/*" onchange="handlePhoto(this)">
-                </div>
-
-                <div class="glass-card">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4">Përshkrimi & Përvoja</p>
-                    <textarea id="in-bio" class="input-elite h-24" placeholder="Përmbledhje e shkurtër..." oninput="sync()"></textarea>
-                    <input type="text" id="in-exp-title" class="input-elite" placeholder="Kompania & Titulli" oninput="sync()">
-                    <textarea id="in-exp-desc" class="input-elite h-32" placeholder="Detyrat dhe arritjet..." oninput="sync()"></textarea>
-                </div>
-
-                <div class="glass-card">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-4">Zgjidh Stilimin</p>
+                    <label class="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-4 block">Kontakti</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="tmpl-card active" onclick="setTmpl('modern', this)">
-                            <div class="h-12 bg-zinc-800 flex items-center justify-center text-[9px] font-bold">MODERN</div>
+                        <input type="text" id="in-email" class="input-elite" placeholder="Email" oninput="sync()">
+                        <input type="text" id="in-phone" class="input-elite" placeholder="Telefon" oninput="sync()">
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-4 block">Media</label>
+                    <div class="relative group cursor-pointer">
+                        <input type="file" id="in-photo" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="handlePhoto(this)">
+                        <div class="p-8 border-2 border-dashed border-white/10 rounded-2xl text-center group-hover:border-blue-500/50 transition-all">
+                            <i class="fa-solid fa-cloud-arrow-up text-2xl text-zinc-600 group-hover:text-blue-500"></i>
+                            <p class="text-xs text-zinc-500 mt-2">Ngarko Portretin Tënd</p>
                         </div>
-                        <div class="tmpl-card" onclick="setTmpl('classic', this)">
-                            <div class="h-12 bg-zinc-800 flex items-center justify-center text-[9px] font-serif font-bold">CLASSIC</div>
-                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-4 block">Përvoja & Historia</label>
+                    <textarea id="in-bio" class="input-elite h-32 resize-none" placeholder="Përmbledhje ekzekutive..." oninput="sync()"></textarea>
+                    <input type="text" id="in-exp-title" class="input-elite" placeholder="Kompania & Viti" oninput="sync()">
+                    <textarea id="in-exp-desc" class="input-elite h-40 resize-none" placeholder="Detyrat kyçe dhe sukseset..." oninput="sync()"></textarea>
+                </div>
+
+                <div class="glass-card">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-4 block">Zgjidh Estetikën</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="tmpl-card active" onclick="setTmpl('modern', this)">Modern</div>
+                        <div class="tmpl-card" style="font-family: serif;" onclick="setTmpl('classic', this)">Classic</div>
                     </div>
                 </div>
             </div>
@@ -133,32 +251,46 @@
 
         <section class="preview-area">
             <div id="cv-paper">
-                <div class="flex justify-between items-start mb-12">
-                    <div>
+                <div class="flex flex-col md:flex-row justify-between items-start mb-16 gap-8">
+                    <div class="flex-1">
                         <img id="photo-preview" src="" alt="Profile">
-                        <h1 id="out-name" class="text-5xl font-black uppercase tracking-tighter leading-none mb-2">Emri Juaj</h1>
-                        <p id="out-pos" class="text-xl font-bold text-blue-600 uppercase tracking-widest">Profesioni Juaj</p>
+                        <h1 id="out-name" class="text-6xl font-black uppercase tracking-tighter leading-[0.9] mb-4">Emri Juaj</h1>
+                        <div class="flex items-center gap-4">
+                            <div class="h-[2px] w-12 bg-blue-600"></div>
+                            <p id="out-pos" class="text-sm font-bold text-zinc-500 uppercase tracking-[4px]">Profesioni Juaj</p>
+                        </div>
                     </div>
-                    <div class="text-right text-[11px] font-bold space-y-1 opacity-60">
-                        <p id="out-email">email@shembull.com</p>
-                        <p id="out-phone">+383 44 000 000</p>
+                    <div class="text-left md:text-right text-[10px] font-bold space-y-2 pt-2 border-l-2 md:border-l-0 md:border-r-2 border-blue-600 pl-4 md:pl-0 md:pr-4">
+                        <p class="text-zinc-400">CONTACT</p>
+                        <p id="out-email" class="text-black">email@shembull.com</p>
+                        <p id="out-phone" class="text-black">+383 44 000 000</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-10">
+                <div class="grid grid-cols-1 gap-16">
                     <section>
-                        <h3 class="text-[10px] font-black uppercase tracking-[4px] border-b-2 border-black pb-2 mb-4">Profili</h3>
-                        <p id="out-bio" class="text-[14px] leading-relaxed text-zinc-700">Shënoni një përmbledhje të shkurtër të karrierës suaj këtu...</p>
+                        <h3 class="text-[11px] font-black uppercase tracking-[5px] text-blue-600 mb-6 flex items-center gap-4">
+                            01. Profili <span class="h-[1px] flex-1 bg-zinc-100"></span>
+                        </h3>
+                        <p id="out-bio" class="text-[15px] leading-relaxed text-zinc-800 font-medium">Shënoni një përmbledhje të shkurtër të karrierës suaj këtu. Trego cilat janë pikat e tua më të forta.</p>
                     </section>
 
                     <section>
-                        <h3 class="text-[10px] font-black uppercase tracking-[4px] border-b-2 border-black pb-2 mb-4">Përvoja Profesionale</h3>
-                        <div class="mb-6">
-                            <h4 id="out-exp-title" class="text-lg font-bold uppercase">Emri i Kompanisë</h4>
-                            <p id="out-exp-desc" class="text-[14px] leading-relaxed text-zinc-700 mt-2">Detajet mbi eksperiencën tuaj do të shfaqen këtu pasi t'i shënoni në editor.</p>
+                        <h3 class="text-[11px] font-black uppercase tracking-[5px] text-blue-600 mb-6 flex items-center gap-4">
+                            02. Përvoja <span class="h-[1px] flex-1 bg-zinc-100"></span>
+                        </h3>
+                        <div class="relative pl-8 border-l border-zinc-100">
+                            <div class="absolute w-2 h-2 bg-blue-600 rounded-full -left-[4.5px] top-2"></div>
+                            <h4 id="out-exp-title" class="text-xl font-black uppercase tracking-tighter">Emri i Kompanisë</h4>
+                            <p id="out-exp-desc" class="text-[15px] leading-relaxed text-zinc-600 mt-4 italic">Detajet mbi eksperiencën tuaj do të shfaqen këtu pasi t'i shënoni në editor.</p>
                         </div>
                     </section>
                 </div>
+                
+                <footer class="mt-20 pt-8 border-t border-zinc-50 text-[9px] text-zinc-400 uppercase tracking-widest flex justify-between">
+                    <span>Gjeneruar nga boneCV Studio</span>
+                    <span id="current-date">2026</span>
+                </footer>
             </div>
         </section>
     </main>
@@ -185,7 +317,9 @@
         };
         for(let id in map) {
             let val = document.getElementById(id).value;
-            if(val) document.getElementById(map[id]).innerText = val;
+            if(val) {
+                document.getElementById(map[id]).innerText = val;
+            }
         }
     }
 
@@ -205,16 +339,28 @@
         const paper = document.getElementById('cv-paper');
         document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
-        paper.style.fontFamily = (style === 'classic') ? "'Playfair Display', serif" : "'Plus Jakarta Sans', sans-serif";
+        
+        if(style === 'classic') {
+            paper.style.fontFamily = "'Playfair Display', serif";
+            paper.style.color = "#222";
+        } else {
+            paper.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            paper.style.color = "#111";
+        }
     }
 
     function superGenerate() {
-        const emri = document.getElementById('in-name').value || "CV-Dokument";
-        if(window.saveToArchive) window.saveToArchive("CV", emri);
+        const name = document.getElementById('in-name').value || "CV-Dokument";
+        // Këtu thirret funksioni yt i arkivimit nëse ekziston
+        if(window.saveToArchive) window.saveToArchive("CV", name);
         window.print();
     }
 
-    window.onload = () => { if(window.innerWidth > 1024) setTimeout(toggleSidebar, 600); };
+    // Auto-open sidebar on load for desktop
+    window.onload = () => { 
+        document.getElementById('current-date').innerText = new Date().getFullYear();
+        if(window.innerWidth > 1024) setTimeout(toggleSidebar, 600); 
+    };
     </script>
 </body>
 </html>
