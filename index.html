@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>boneCV | Ultimate Elite Studio</title>
+    <title>boneCV | Elite Studio v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
     <script src="master.js"></script>        
 
     <style>
@@ -16,7 +15,7 @@
             --accent: #2563eb;
             --accent-glow: rgba(37, 99, 235, 0.4);
             --bg-dark: #020202;
-            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         body { 
@@ -27,129 +26,108 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SUPER KINETIC INTRO 10/10 --- */
+        /* --- THE MASTER INTRO (10/10 VISION) --- */
         #intro-layer {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; align-items: center; justify-content: center;
-            perspective: 2000px; overflow: hidden;
+            perspective: 1200px; overflow: hidden;
         }
 
-        .doc-particle {
-            position: absolute; width: 60px; height: 80px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
-            display: flex; flex-direction: column; gap: 4px; padding: 8px;
-            animation: assemble 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        .space-document {
+            position: absolute; width: 80px; height: 110px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+            animation: cosmicTravel 2.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            opacity: 0;
         }
 
-        /* Vizatimet brenda dokumenteve fluturuese */
-        .doc-line { height: 2px; background: rgba(255,255,255,0.1); width: 100%; }
-        .doc-line.short { width: 60%; }
-
-        @keyframes assemble {
-            0% { transform: translate3d(var(--tx), var(--ty), var(--tz)) rotateX(var(--rx)) rotateY(var(--ry)); opacity: 0; filter: blur(10px); }
-            50% { opacity: 1; filter: blur(0); }
-            100% { transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); opacity: 0; scale: 0.5; }
+        @keyframes cosmicTravel {
+            0% { transform: translate3d(var(--tx), var(--ty), -1500px) rotateX(var(--rx)) rotateY(var(--ry)); opacity: 0; }
+            30% { opacity: 0.8; }
+            70% { opacity: 1; }
+            100% { transform: translate3d(0, 0, 500px) rotateX(0deg) rotateY(0deg); opacity: 0; filter: blur(20px); }
         }
 
-        .master-logo-container {
-            position: relative; scale: 0.8; opacity: 0;
-            animation: logoReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 1.4s;
+        .master-brand {
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column; align-items: center;
+            opacity: 0; transform: scale(0.8);
+            animation: brandEmergence 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards 1.8s;
         }
 
-        .master-logo-text {
-            font-size: clamp(4rem, 15vw, 10rem); font-weight: 900; letter-spacing: -10px;
-            background: linear-gradient(to bottom, #fff 30%, #444 100%);
+        .master-brand h1 {
+            font-size: clamp(4.5rem, 15vw, 11rem);
+            font-weight: 800; font-style: italic; letter-spacing: -8px;
+            background: linear-gradient(to bottom, #fff 40%, #555 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px rgba(37, 99, 235, 0.4));
-            position: relative; z-index: 2;
+            filter: drop-shadow(0 0 50px rgba(37, 99, 235, 0.5));
+            line-height: 1;
         }
 
-        .logo-flash {
-            position: absolute; inset: 0; background: white; filter: blur(50px);
-            opacity: 0; animation: flash 0.8s ease-out forwards 1.3s;
+        .flare {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 200%; height: 2px; background: linear-gradient(90deg, transparent, #fff, var(--accent), #fff, transparent);
+            opacity: 0; animation: flareBurst 1.5s ease-out forwards 1.7s;
         }
 
-        @keyframes logoReveal {
-            0% { opacity: 0; transform: scale(0.5) translateZ(-500px); letter-spacing: 20px; }
-            100% { opacity: 1; transform: scale(1) translateZ(0); letter-spacing: -10px; }
+        @keyframes brandEmergence {
+            0% { opacity: 0; transform: scale(0.7) translateZ(-200px); filter: blur(20px); }
+            100% { opacity: 1; transform: scale(1) translateZ(0); filter: blur(0); }
         }
 
-        @keyframes flash {
-            0% { opacity: 0; scale: 0.1; }
-            50% { opacity: 0.8; scale: 1.5; }
-            100% { opacity: 0; scale: 2; }
+        @keyframes flareBurst {
+            0% { width: 0%; opacity: 0; }
+            50% { width: 200%; opacity: 1; }
+            100% { width: 250%; opacity: 0; }
         }
 
-        .intro-exit {
-            animation: exitLayer 1.2s cubic-bezier(0.9, 0, 0.1, 1) forwards;
-        }
+        .exit-sequence { animation: introFadeOut 1s cubic-bezier(1, 0, 0, 1) forwards; }
+        @keyframes introFadeOut { to { transform: translateY(-100%); } }
 
-        @keyframes exitLayer {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100%); visibility: hidden; }
-        }
-
-        /* --- UI COMPONENTS --- */
-        .bg-glow {
-            position: fixed; width: 800px; height: 800px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            top: -300px; right: -300px; z-index: -1; pointer-events: none;
-            filter: blur(100px); opacity: 0.4;
-        }
-
+        /* --- DASHBOARD STYLES --- */
         #sidebar {
-            width: 280px; background: rgba(2, 2, 2, 0.9); backdrop-filter: blur(60px);
+            width: 280px; background: rgba(5,5,5,0.9); backdrop-filter: blur(60px);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateX(-100%); z-index: 100;
+            transition: 0.7s cubic-bezier(0.16, 1, 0.3, 1); transform: translateX(-100%); z-index: 100;
         }
         #sidebar.active { transform: translateX(0); }
 
         .bento-card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.05);
             border-radius: 40px; transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow: hidden; position: relative; cursor: pointer;
+            position: relative; overflow: hidden; cursor: pointer;
         }
-        .bento-card:hover { 
-            transform: translateY(-10px); border-color: var(--accent);
-            background: rgba(37, 99, 235, 0.05);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-        }
+        .bento-card:hover { transform: translateY(-12px); border-color: var(--accent); background: rgba(37, 99, 235, 0.05); box-shadow: 0 40px 80px rgba(0,0,0,0.7); }
 
-        .lang-btn {
-            font-size: 10px; font-weight: 800; padding: 6px 14px; border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
-        }
+        .lang-btn { font-size: 10px; font-weight: 800; padding: 6px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
         .lang-btn.active { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        .fade-in { opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 2.4s; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 2.8s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <div class="bg-glow"></div>
-
     <div id="intro-layer">
-        <div id="doc-container" class="absolute inset-0"></div>
-        <div class="logo-flash"></div>
-        <div class="master-logo-container">
-            <h1 class="master-logo-text italic">boneCV</h1>
+        <div id="cosmic-docs" class="absolute inset-0"></div>
+        <div class="flare"></div>
+        <div class="master-brand">
+            <h1 class="italic">boneCV</h1>
+            <p id="intro-slogan" class="text-blue-500 font-black tracking-[8px] uppercase text-[10px] mt-4 opacity-70">Elite Digital Architecture</p>
         </div>
     </div>
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8">
         <div class="flex items-center justify-between mb-16">
-            <h2 class="text-2xl font-black italic tracking-tighter text-white">boneCV</h2>
+            <h2 class="text-2xl font-black italic tracking-tighter">boneCV</h2>
             <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <nav class="flex-1 space-y-2">
-            <p data-key="nav-cat-main" class="text-[10px] text-slate-500 uppercase tracking-[4px] mb-6 ml-2 opacity-40">Main Portal</p>
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white font-bold">
+            <p data-key="nav-cat-main" class="text-[10px] text-slate-500 uppercase tracking-[4px] mb-6 ml-2 opacity-40">Portal Kryesor</p>
+            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white font-bold transition-all hover:scale-105">
                 <i class="fa-solid fa-house w-6 text-center"></i> <span data-key="nav-dash">Dashboard</span>
             </a>
             <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white font-bold transition-all">
@@ -168,8 +146,8 @@
 
         <div class="flex items-center justify-between pt-8 border-t border-white/5">
             <div class="flex flex-col">
-                <span class="text-[8px] text-slate-600 font-black uppercase">Core Engine</span>
-                <span class="text-[10px] text-blue-500 font-bold">v2.0 Premium</span>
+                <span class="text-[8px] text-slate-600 font-black uppercase">Core v3.0</span>
+                <span class="text-[10px] text-blue-500 font-bold">PREMIUM ACCESS</span>
             </div>
             <div class="flex gap-2">
                 <button onclick="setLanguage('AL')" id="btn-al" class="lang-btn">AL</button>
@@ -179,201 +157,167 @@
     </aside>
 
     <main class="flex-1 overflow-y-auto" id="content-area" style="transition: padding-left 0.7s cubic-bezier(0.16, 1, 0.3, 1);">
-        <header class="h-28 flex items-center justify-between px-6 md:px-12 sticky top-0 z-40 bg-black/20 backdrop-blur-2xl">
-            <button onclick="toggleSidebar()" class="w-14 h-14 bg-white/5 rounded-2xl flex flex-col items-center justify-center gap-1.5 border border-white/10">
+        <header class="h-28 flex items-center justify-between px-6 md:px-12 sticky top-0 z-40 bg-black/20 backdrop-blur-2xl border-b border-white/5">
+            <button onclick="toggleSidebar()" class="w-14 h-14 bg-white/5 rounded-2xl flex flex-col items-center justify-center gap-1.5 border border-white/10 hover:border-blue-500 transition-all">
                 <span class="w-6 h-0.5 bg-white"></span>
                 <span class="w-4 h-0.5 bg-white"></span>
                 <span class="w-6 h-0.5 bg-white"></span>
             </button>
             <div class="flex items-center gap-6">
                 <div class="text-right hidden md:block">
-                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-[3px]">Status: Online</p>
+                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-[3px]">Systems: Active</p>
                     <p data-key="user-tier" class="text-sm font-bold">User Premium Elite</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center font-black">B</div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-900 flex items-center justify-center font-black shadow-lg shadow-blue-500/20">B</div>
             </div>
         </header>
 
         <div class="p-6 md:p-12 max-w-7xl mx-auto">
-            <div class="fade-in mb-20">
-                <div class="flex items-center gap-3 mb-6">
+            <div class="fade-in mb-24">
+                <div class="flex items-center gap-4 mb-8">
                     <span class="h-[1px] w-12 bg-blue-600"></span>
-                    <span data-key="hero-tag" class="text-[10px] font-black uppercase tracking-[5px] text-blue-500">THE FUTURE OF CV</span>
+                    <span data-key="hero-tag" class="text-[10px] font-black uppercase tracking-[6px] text-blue-500">Mastering Presence</span>
                 </div>
-                <h1 id="hero-title" class="text-6xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.85] bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
-                    Studioja e <br>Gjeneratës.
+                <h1 id="hero-title" class="text-7xl md:text-[10rem] font-black tracking-tighter mb-10 leading-[0.8] bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
+                    Arkitektura <br>Profesionale.
                 </h1>
-                <p id="hero-desc" class="text-slate-400 text-xl max-w-2xl font-light leading-relaxed">
-                    Mirësevini në standardin e ri të karrierës. Një ekosistem i projektuar për të transformuar prezantimin tuaj profesional.
+                <p id="hero-desc" class="text-slate-400 text-xl md:text-2xl max-w-3xl font-light leading-relaxed">
+                    Mirësevini në nivelin më të lartë të prezantimit digjital. Një mjedis i ndërtuar për ata që kërkojnë ekselencën në çdo detaj.
                 </p>
             </div>
 
-            <div class="grid grid-cols-12 gap-6 fade-in" style="animation-delay: 2.6s;">
-                <div onclick="window.location.href='cv.html'" class="col-span-12 lg:col-span-8 bento-card p-12 h-[500px] flex flex-col justify-end group">
-                    <div class="absolute top-10 left-10">
-                        <span class="px-5 py-2 rounded-full bg-blue-600 text-[9px] font-black uppercase tracking-widest">Metropolis Engine</span>
+            <div class="grid grid-cols-12 gap-8 fade-in" style="animation-delay: 3s;">
+                <div onclick="window.location.href='cv.html'" class="col-span-12 lg:col-span-8 bento-card p-12 h-[600px] flex flex-col justify-end group">
+                    <div class="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <span class="px-6 py-2 rounded-full bg-blue-600/10 border border-blue-500/30 text-blue-500 text-[9px] font-black uppercase tracking-widest mb-6 inline-block">Studio Edition</span>
+                        <h2 data-key="card-cv-title" class="text-6xl md:text-8xl font-black mb-6 tracking-tighter">Elite CV</h2>
+                        <p data-key="card-cv-desc" class="text-slate-400 max-w-md text-lg font-light">Sistemi Master për gjenerimin e CV-ve që dominojnë tregun e punës.</p>
+                        <button data-key="btn-start" class="mt-8 px-10 py-5 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-110 transition-transform">Fillo Tash</button>
                     </div>
-                    <h2 data-key="card-cv-title" class="text-5xl md:text-7xl font-black mb-4 tracking-tighter">Template Elitë</h2>
-                    <p data-key="card-cv-desc" class="text-slate-400 max-w-sm mb-8">Sistemi më i avancuar për gjenerimin e CV-ve profesionale.</p>
-                    <button data-key="btn-start" class="w-max px-8 py-4 bg-white text-black rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Fillo Krijimin</button>
                 </div>
 
-                <div onclick="window.location.href='kerkesa.html'" class="col-span-12 lg:col-span-4 bento-card p-10 bg-gradient-to-br from-blue-600 to-blue-800 border-none flex flex-col justify-between">
-                    <i class="fa-solid fa-wand-magic-sparkles text-4xl"></i>
+                <div onclick="window.location.href='kerkesa.html'" class="col-span-12 lg:col-span-4 bento-card p-12 bg-white/[0.02] flex flex-col justify-between group">
+                    <div class="w-20 h-20 rounded-3xl bg-blue-600 flex items-center justify-center text-3xl shadow-2xl shadow-blue-600/40 group-hover:rotate-[360deg] transition-all duration-1000">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
                     <div>
-                        <h3 data-key="card-req-title" class="text-3xl font-black mb-2 tracking-tighter">Smart Requests</h3>
-                        <p data-key="card-req-desc" class="text-blue-100/60 text-sm">Gjenerim dokumentesh me inteligjencë vizuale.</p>
+                        <h3 data-key="card-req-title" class="text-4xl font-black mb-4 tracking-tighter">AI Requests</h3>
+                        <p data-key="card-req-desc" class="text-slate-400 text-sm leading-relaxed">Gjenerim automatik i kërkesave master me saktësi absolute.</p>
                     </div>
                 </div>
 
-                <div onclick="window.location.href='arkiva.html'" class="col-span-12 md:col-span-6 bento-card p-10 flex items-center justify-between">
-                    <div class="flex items-center gap-6">
-                        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-2xl"><i class="fa-solid fa-box-archive"></i></div>
+                <div onclick="window.location.href='arkiva.html'" class="col-span-12 md:col-span-6 bento-card p-10 flex items-center justify-between group">
+                    <div class="flex items-center gap-8">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-2xl group-hover:bg-blue-600 transition-colors"><i class="fa-solid fa-box-archive"></i></div>
                         <div>
-                            <h4 data-key="card-arc-title" class="text-xl font-bold">Arkiva Digjitale</h4>
-                            <p data-key="card-arc-desc" class="text-[9px] text-blue-500 font-black uppercase tracking-widest">Menaxho Dokumentet</p>
+                            <h4 data-key="card-arc-title" class="text-2xl font-bold">Arkiva Qendrore</h4>
+                            <p data-key="card-arc-desc" class="text-[9px] text-blue-500 font-black uppercase tracking-[3px]">Digital Vault</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right opacity-30"></i>
+                    <i class="fa-solid fa-arrow-right-long opacity-20 group-hover:translate-x-2 group-hover:opacity-100 transition-all"></i>
                 </div>
 
-                <div onclick="window.location.href='kontrata.html'" class="col-span-12 md:col-span-6 bento-card p-10 flex items-center justify-between">
-                    <div class="flex items-center gap-6">
-                        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-2xl"><i class="fa-solid fa-file-signature"></i></div>
+                <div onclick="window.location.href='kontrata.html'" class="col-span-12 md:col-span-6 bento-card p-10 flex items-center justify-between group">
+                    <div class="flex items-center gap-8">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-2xl group-hover:bg-blue-600 transition-colors"><i class="fa-solid fa-file-signature"></i></div>
                         <div>
-                            <h4 data-key="card-con-title" class="text-xl font-bold">Kontrata Master</h4>
-                            <p data-key="card-con-desc" class="text-[9px] text-slate-500 font-black uppercase tracking-widest">Saktësi Ligjore</p>
+                            <h4 data-key="card-con-title" class="text-2xl font-bold">Kontratat Pro</h4>
+                            <p data-key="card-con-desc" class="text-[9px] text-slate-500 font-black uppercase tracking-[3px]">Legal Intel</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-pen-nib opacity-30"></i>
+                    <i class="fa-solid fa-pen-nib opacity-20 group-hover:rotate-45 group-hover:opacity-100 transition-all"></i>
                 </div>
             </div>
         </div>
+
+        <footer class="p-20 text-center opacity-30">
+            <p class="text-[9px] font-black tracking-[10px]">BONE CV • ARCHITECTING SUCCESS • 2026</p>
+        </footer>
     </main>
 
     <script>
-        // --- DATA E GJUHËVE (DICTIONARY) ---
-        const translations = {
-            'AL': {
-                'nav-dash': 'Dashboard',
-                'nav-cv': 'Studio CV',
-                'nav-contracts': 'Kontratat',
-                'nav-requests': 'Kërkesat',
-                'nav-archive': 'Arkiva',
-                'nav-cat-main': 'Portal Kryesor',
-                'user-tier': 'Përdorues Premium Elite',
-                'hero-tag': 'E ARDHMJA E CV',
-                'hero-title': 'Studioja e <br>Gjeneratës.',
-                'hero-desc': 'Mirësevini në standardin e ri të karrierës. Një ekosistem i projektuar për të transformuar prezantimin tuaj profesional.',
-                'card-cv-title': 'Template Elitë',
-                'card-cv-desc': 'Sistemi më i avancuar për gjenerimin e CV-ve profesionale.',
-                'card-req-title': 'Kërkesa Smart',
-                'card-req-desc': 'Gjenerim dokumentesh me inteligjencë vizuale.',
-                'card-arc-title': 'Arkiva Digjitale',
-                'card-arc-desc': 'MENAXHO DOKUMENTET',
-                'card-con-title': 'Kontrata Master',
-                'card-con-desc': 'SAKTËSI LIGJORE',
-                'btn-start': 'FILLO KRIJIMIN'
-            },
-            'EN': {
-                'nav-dash': 'Dashboard',
-                'nav-cv': 'CV Studio',
-                'nav-contracts': 'Contracts',
-                'nav-requests': 'Requests',
-                'nav-archive': 'Archive',
-                'nav-cat-main': 'Main Portal',
-                'user-tier': 'Elite Premium User',
-                'hero-tag': 'THE FUTURE OF CV',
-                'hero-title': 'The Next Gen <br>Studio.',
-                'hero-desc': 'Welcome to the new standard of career building. An ecosystem designed to transform your professional presentation.',
-                'card-cv-title': 'Elite Templates',
-                'card-cv-desc': 'The most advanced system for generating professional CVs.',
-                'card-req-title': 'Smart Requests',
-                'card-req-desc': 'Generate documents with visual intelligence.',
-                'card-arc-title': 'Digital Archive',
-                'card-arc-desc': 'MANAGE DOCUMENTS',
-                'card-con-title': 'Master Contracts',
-                'card-con-desc': 'LEGAL PRECISION',
-                'btn-start': 'START CREATING'
-            }
-        };
-
-        // --- INTRO DYNAMICS ---
-        const docContainer = document.getElementById('doc-container');
-        for (let i = 0; i < 60; i++) {
+        // --- CINEMATIC INTRO DYNAMICS ---
+        const cosmicContainer = document.getElementById('cosmic-docs');
+        for (let i = 0; i < 70; i++) {
             const doc = document.createElement('div');
-            doc.className = 'doc-particle';
-            doc.innerHTML = '<div class="doc-line"></div><div class="doc-line"></div><div class="doc-line short"></div>';
+            doc.className = 'space-document';
             
-            // Pozicionimi random në hapësirë 3D
-            const tx = (Math.random() - 0.5) * 4000;
-            const ty = (Math.random() - 0.5) * 4000;
-            const tz = (Math.random() - 0.5) * 2000;
-            const rx = Math.random() * 360;
-            const ry = Math.random() * 360;
+            const tx = (Math.random() - 0.5) * 4500;
+            const ty = (Math.random() - 0.5) * 4500;
+            const rx = Math.random() * 720;
+            const ry = Math.random() * 720;
 
             doc.style.setProperty('--tx', `${tx}px`);
             doc.style.setProperty('--ty', `${ty}px`);
-            doc.style.setProperty('--tz', `${tz}px`);
             doc.style.setProperty('--rx', `${rx}deg`);
             doc.style.setProperty('--ry', `${ry}deg`);
-            doc.style.animationDelay = `${Math.random() * 0.5}s`;
+            doc.style.animationDelay = `${Math.random() * 0.8}s`;
             
-            docContainer.appendChild(doc);
+            cosmicContainer.appendChild(doc);
         }
 
         setTimeout(() => {
-            document.getElementById('intro-layer').classList.add('intro-exit');
+            document.getElementById('intro-layer').classList.add('exit-sequence');
             if(window.innerWidth > 1024) toggleSidebar();
-        }, 3000);
+        }, 4000);
 
-        // --- SIDEBAR LOGIC ---
-        const sb = document.getElementById('sidebar');
-        const main = document.getElementById('content-area');
-        function toggleSidebar() {
-            sb.classList.toggle('active');
-            if(window.innerWidth > 1024) {
-                main.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0';
+        // --- TRANSLATION ENGINE ---
+        const translations = {
+            'AL': {
+                'nav-dash': 'Dashboard', 'nav-cv': 'Studio CV', 'nav-contracts': 'Kontratat',
+                'nav-requests': 'Kërkesat', 'nav-archive': 'Arkiva', 'nav-cat-main': 'Portal Kryesor',
+                'user-tier': 'Përdorues Premium Elite', 'hero-tag': 'MASTERING PRESENCE',
+                'hero-title': 'Arkitektura <br>Profesionale.',
+                'hero-desc': 'Mirësevini në nivelin më të lartë të prezantimit digjital. Një mjedis i ndërtuar për ata që kërkojnë ekselencën në çdo detaj.',
+                'card-cv-title': 'Elite CV', 'card-cv-desc': 'Sistemi Master për gjenerimin e CV-ve që dominojnë tregun e punës.',
+                'card-req-title': 'AI Requests', 'card-req-desc': 'Gjenerim automatik i kërkesave master me saktësi absolute.',
+                'card-arc-title': 'Arkiva Qendrore', 'card-arc-desc': 'DIGITAL VAULT',
+                'card-con-title': 'Kontratat Pro', 'card-con-desc': 'LEGAL INTEL', 'btn-start': 'FILLO TASH'
+            },
+            'EN': {
+                'nav-dash': 'Dashboard', 'nav-cv': 'CV Studio', 'nav-contracts': 'Contracts',
+                'nav-requests': 'Requests', 'nav-archive': 'Archive', 'nav-cat-main': 'Main Portal',
+                'user-tier': 'Elite Premium User', 'hero-tag': 'MASTERING PRESENCE',
+                'hero-title': 'Professional <br>Architecture.',
+                'hero-desc': 'Welcome to the highest level of digital presentation. An environment built for those who seek excellence in every detail.',
+                'card-cv-title': 'Elite CV', 'card-cv-desc': 'The Master system for generating CVs that dominate the job market.',
+                'card-req-title': 'AI Requests', 'card-req-desc': 'Automatic generation of master requests with absolute precision.',
+                'card-arc-title': 'Central Archive', 'card-arc-desc': 'DIGITAL VAULT',
+                'card-con-title': 'Contracts Pro', 'card-con-desc': 'LEGAL INTEL', 'btn-start': 'START NOW'
             }
-        }
+        };
 
-        // --- LANGUAGE SYSTEM ---
         function setLanguage(lang) {
             localStorage.setItem('boneCV_lang', lang);
             const data = translations[lang];
-            
-            // Update all elements with [data-key]
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
-                if(data[key]) {
-                    if(el.tagName === 'INPUT') el.placeholder = data[key];
-                    else el.innerHTML = data[key];
-                }
+                if(data[key]) el.innerHTML = data[key];
             });
-
-            // Special handling for hero title (br tag support)
             document.getElementById('hero-title').innerHTML = data['hero-title'];
-
-            // Update Buttons UI
             document.getElementById('btn-al').classList.toggle('active', lang === 'AL');
             document.getElementById('btn-en').classList.toggle('active', lang === 'EN');
         }
 
-        // Initialize Language
-        const savedLang = localStorage.getItem('boneCV_lang') || 'AL';
-        setLanguage(savedLang);
+        // Init Language
+        setLanguage(localStorage.getItem('boneCV_lang') || 'AL');
 
-        // Bento Card Glow Effect
+        // Sidebar Logic
+        const sb = document.getElementById('sidebar');
+        const main = document.getElementById('content-area');
+        function toggleSidebar() {
+            sb.classList.toggle('active');
+            if(window.innerWidth > 1024) main.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0';
+        }
+
+        // Bento Glow Effect
         document.querySelectorAll('.bento-card').forEach(card => {
             card.onmousemove = e => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.1), transparent 40%)`;
+                card.style.background = `radial-gradient(800px circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, rgba(37, 99, 235, 0.15), transparent 40%)`;
             };
-            card.onmouseleave = () => {
-                card.style.background = 'var(--card-bg)';
-            };
+            card.onmouseleave = () => card.style.background = 'var(--glass)';
         });
     </script>
 </body>
