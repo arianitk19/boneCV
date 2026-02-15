@@ -29,6 +29,7 @@
             touch-action: manipulation;
         }
 
+        /* --- BACKGROUND ORBS --- */
         .bg-glow {
             position: fixed; width: 600px; height: 600px;
             background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
@@ -36,11 +37,13 @@
             filter: blur(80px); opacity: 0.5;
         }
 
+        /* --- CUSTOM SCROLLBAR --- */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
+        /* --- THE ULTIMATE KINETIC INTRO --- */
         #intro-layer {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; align-items: center; justify-content: center;
@@ -86,6 +89,7 @@
             to { transform: scale(1.2); opacity: 0; visibility: hidden; filter: blur(20px); }
         }
 
+        /* --- APP ICON DESIGN --- */
         .app-icon-main {
             width: 52px; height: 52px; background: linear-gradient(145deg, #111, #000); 
             border-radius: 16px; display: flex; align-items: center; justify-content: center;
@@ -98,6 +102,7 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
+        /* --- FLOATING SIDEBAR --- */
         #sidebar {
             width: 280px; background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(50px);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
@@ -106,11 +111,12 @@
         }
         #sidebar.active { transform: translateX(0); box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
 
+        /* --- BENTO GRID CARDS --- */
         .bento-card {
             background: var(--card-bg); border: 1px solid rgba(255,255,255,0.04);
             border-radius: 38px; transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             overflow: hidden; position: relative; backdrop-filter: blur(10px);
-            display: block; /* Siguron që a tag sillet si card */
+            cursor: pointer; display: flex; flex-direction: column;
         }
         .bento-card::before {
             content: ""; position: absolute; inset: 0;
@@ -125,13 +131,17 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
+        /* --- LANGUAGE SWITCHER --- */
         .lang-btn {
             font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
             padding: 6px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .lang-btn:hover { background: #fff; color: #000; transform: scale(1.1); }
+        .lang-btn.active { background: #fff; color: #000; border-color: #fff; }
+        .lang-btn:not(.active) { opacity: 0.3; }
+        .lang-btn:hover { opacity: 1; transform: scale(1.1); }
 
+        /* --- ANIMATIONS --- */
         .fade-in { opacity: 0; transform: translateY(40px) scale(0.95); animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 3.2s; }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0) scale(1); } }
 
@@ -163,25 +173,25 @@
 
         <nav class="flex-1 space-y-3 text-sm font-bold tracking-tight">
             <p class="text-[10px] text-slate-500 uppercase tracking-[4px] mb-6 ml-2 opacity-40">Main Portal</p>
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-2xl shadow-blue-600/20 hover:scale-[1.05] transition-all duration-300">
+            <a href="index.html" class="nav-item flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-2xl shadow-blue-600/20 hover:scale-[1.05] transition-all duration-300">
                 <div class="w-6 text-center"><i class="fa-solid fa-house"></i></div> Dashboard
             </a>
-            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
+            <a href="cv.html" class="nav-item flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                 <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-id-card"></i></div> Studio CV
             </a>
-            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
+            <a href="kontrata.html" class="nav-item flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                 <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-file-signature"></i></div> Kontratat
             </a>
-            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
+            <a href="kerkesa.html" class="nav-item flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                 <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-paper-plane"></i></div> Kërkesat
             </a>
-            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
+            <a href="arkiva.html" class="nav-item flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                 <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-box-archive"></i></div> Arkiva
             </a>
             
             <div class="pt-10">
                 <p class="text-[10px] text-slate-500 uppercase tracking-[4px] mb-6 ml-2 opacity-40">Advanced</p>
-                <a href="cilesimet.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
+                <a href="cilesimet.html" class="nav-item flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                     <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-gear"></i></div> Cilësimet
                 </a>
             </div>
@@ -193,8 +203,8 @@
                 <span class="text-[10px] text-blue-500 font-bold">v2.0.26 Premium</span>
             </div>
             <div class="flex gap-2">
-                <button class="lang-btn">AL</button>
-                <button class="lang-btn opacity-30 hover:opacity-100">EN</button>
+                <button onclick="setLanguage('AL')" id="btn-al" class="lang-btn">AL</button>
+                <button onclick="setLanguage('EN')" id="btn-en" class="lang-btn">EN</button>
             </div>
         </div>
     </aside>
@@ -213,8 +223,8 @@
                 </div>
                 <div class="h-10 w-[1px] bg-white/10 hidden md:block"></div>
                 <div class="text-right hidden md:block">
-                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-[3px] mb-1">Status: Online</p>
-                    <p class="text-sm font-bold">User Premium Elite</p>
+                    <p id="status-text" class="text-[9px] font-black text-blue-500 uppercase tracking-[3px] mb-1">Status: Online</p>
+                    <p id="user-tier" class="text-sm font-bold">User Premium Elite</p>
                 </div>
                 <div class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
@@ -227,19 +237,19 @@
             <div class="fade-in mb-20">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="h-[1px] w-12 bg-blue-600"></span>
-                    <span class="text-[10px] font-black uppercase tracking-[5px] text-blue-500">The Future of CV</span>
+                    <span id="hero-tag" class="text-[10px] font-black uppercase tracking-[5px] text-blue-500">The Future of CV</span>
                 </div>
-                <h1 class="text-6xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.85] bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
+                <h1 id="hero-title" class="text-6xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.85] bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
                     Studioja e <br>Gjeneratës.
                 </h1>
-                <p class="text-slate-400 text-xl max-w-2xl font-light leading-relaxed">
+                <p id="hero-desc" class="text-slate-400 text-xl max-w-2xl font-light leading-relaxed">
                     Mirësevini në standardin e ri të karrierës. Një ekosistem i projektuar për të transformuar prezantimin tuaj profesional përmes inteligjencës vizuale.
                 </p>
             </div>
 
             <div class="grid grid-cols-12 gap-8 fade-in" style="animation-delay: 3.4s;">
                 
-                <a href="cv.html" class="col-span-12 lg:col-span-8 bento-card p-10 md:p-16 h-[500px] md:h-[600px] flex flex-col justify-end group cursor-pointer">
+                <div onclick="window.location.href='cv.html'" class="col-span-12 lg:col-span-8 bento-card p-10 md:p-16 h-[500px] md:h-[600px] justify-end group">
                     <div class="absolute top-12 left-12 flex items-center gap-4">
                         <span class="px-6 py-2 rounded-full bg-blue-600 text-[10px] font-black uppercase tracking-[4px] shadow-2xl shadow-blue-600/40">New Metropolis v4</span>
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -249,58 +259,58 @@
                         <p class="text-slate-400 max-w-md mb-10 text-lg font-light leading-relaxed">
                             Algoritmet tona 2026 sigurojnë që CV-ja juaj të kalojë çdo sistem skanimi premium në tregun botëror.
                         </p>
-                        <div class="inline-block group/btn relative px-10 py-5 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest overflow-hidden transition-all">
+                        <button class="group/btn relative px-10 py-5 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest overflow-hidden transition-all">
                             <span class="relative z-10 group-hover/btn:text-white transition-colors">Start Creation <i class="fa-solid fa-arrow-right ml-3"></i></span>
                             <div class="absolute inset-0 bg-blue-600 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500"></div>
-                        </div>
+                        </button>
                     </div>
                     <div class="absolute right-[-60px] bottom-[-60px] opacity-5 group-hover:opacity-20 group-hover:rotate-0 transition-all duration-1000 rotate-12 hidden md:block">
                         <i class="fa-solid fa-briefcase text-[450px] text-blue-600"></i>
                     </div>
-                </a>
+                </div>
 
-                <a href="cv.html" class="col-span-12 lg:col-span-4 bento-card p-12 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 flex flex-col justify-between group cursor-pointer border-none h-[400px] lg:h-auto">
+                <div onclick="window.location.href='kerkesa.html'" class="col-span-12 lg:col-span-4 bento-card p-12 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 justify-between group border-none h-[400px] lg:h-auto">
                     <div class="w-20 h-20 bg-white/15 rounded-[30px] flex items-center justify-center backdrop-blur-xl group-hover:rotate-[360deg] transition-all duration-1000 border border-white/20">
                         <i class="fa-solid fa-wand-magic-sparkles text-4xl text-white"></i>
                     </div>
                     <div>
                         <h3 class="text-4xl font-black mb-4 text-white tracking-tighter leading-tight">Smart<br>Engine</h3>
-                        <p class="text-blue-100/60 text-base font-medium mb-6">Gjenerim automatik me saktësi kirurgjike.</p>
+                        <p class="text-blue-100/60 text-base font-medium mb-6">Gjenerim kërkesash dhe dokumentesh me saktësi AI.</p>
                         <div class="flex -space-x-3">
                             <div class="w-10 h-10 rounded-full border-2 border-blue-700 bg-slate-800 flex items-center justify-center text-[10px]">AI</div>
                             <div class="w-10 h-10 rounded-full border-2 border-blue-700 bg-slate-800 flex items-center justify-center text-[10px]">PDF</div>
                             <div class="w-10 h-10 rounded-full border-2 border-blue-700 bg-slate-800 flex items-center justify-center text-[10px]">DOC</div>
                         </div>
                     </div>
-                </a>
+                </div>
 
-                <a href="arkiva.html" class="col-span-12 md:col-span-6 bento-card p-12 flex items-center justify-between group cursor-pointer">
+                <div onclick="window.location.href='arkiva.html'" class="col-span-12 md:col-span-6 bento-card p-12 flex-row items-center justify-between group">
                     <div class="flex items-center gap-10">
                         <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-4xl group-hover:text-blue-500 group-hover:bg-blue-500/10 transition-all duration-500">
-                            <i class="fa-solid fa-chart-pie"></i>
+                            <i class="fa-solid fa-box-archive"></i>
                         </div>
                         <div>
-                            <h4 class="text-2xl font-bold mb-1">Impact Analytics</h4>
-                            <p class="text-[10px] text-blue-500 font-black uppercase tracking-[3px]">Real-time Tracking</p>
+                            <h4 class="text-2xl font-bold mb-1">Digital Archive</h4>
+                            <p class="text-[10px] text-blue-500 font-black uppercase tracking-[3px]">Manage Documents</p>
                         </div>
                     </div>
                     <div class="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
                         <i class="fa-solid fa-chevron-right"></i>
                     </div>
-                </a>
+                </div>
 
-                <a href="cilesimet.html" class="col-span-12 md:col-span-6 bento-card p-12 flex items-center justify-between group cursor-pointer">
+                <div onclick="window.location.href='kontrata.html'" class="col-span-12 md:col-span-6 bento-card p-12 flex-row items-center justify-between group">
                     <div class="flex items-center gap-10">
                         <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-4xl group-hover:text-blue-500 group-hover:bg-blue-500/10 transition-all duration-500">
-                            <i class="fa-solid fa-vault"></i>
+                            <i class="fa-solid fa-file-signature"></i>
                         </div>
                         <div>
-                            <h4 class="text-2xl font-bold mb-1">Secure Vault</h4>
-                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[3px]">AES-256 Encrypted</p>
+                            <h4 class="text-2xl font-bold mb-1">Elite Contracts</h4>
+                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[3px]">Legal Precision</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-lock text-slate-800 text-2xl group-hover:text-blue-500 transition-all"></i>
-                </a>
+                    <i class="fa-solid fa-pen-nib text-slate-800 text-2xl group-hover:text-blue-500 transition-all"></i>
+                </div>
 
             </div>
         </div>
@@ -311,6 +321,7 @@
     </main>
 
     <script>
+        // --- KINETIC PARTICLES ---
         const pContainer = document.getElementById('particles');
         for (let i = 0; i < 40; i++) {
             const s = document.createElement('div');
@@ -323,6 +334,7 @@
             pContainer.appendChild(s);
         }
 
+        // --- SIDEBAR LOGIC ---
         const sb = document.getElementById('sidebar');
         const main = document.getElementById('content-area');
 
@@ -333,6 +345,7 @@
             }
         }
 
+        // --- BENTO CARD INTERACTION ---
         document.querySelectorAll('.bento-card').forEach(card => {
             card.onmousemove = e => {
                 const rect = card.getBoundingClientRect();
@@ -340,11 +353,38 @@
                 card.style.setProperty('--y', `${e.clientY - rect.top}px`);
             };
             
-            card.onclick = () => {
-                card.style.transform = "scale(0.98)";
-                setTimeout(() => card.style.transform = "", 100);
-            };
+            card.addEventListener('mousedown', () => card.style.transform = "scale(0.98)");
+            card.addEventListener('mouseup', () => card.style.transform = "");
         });
+
+        // --- LANGUAGE SYSTEM (AL/EN) ---
+        function setLanguage(lang) {
+            localStorage.setItem('boneCV_lang', lang);
+            updateUI(lang);
+        }
+
+        function updateUI(lang) {
+            const btnAl = document.getElementById('btn-al');
+            const btnEn = document.getElementById('btn-en');
+            
+            if(lang === 'AL') {
+                btnAl.classList.add('active');
+                btnEn.classList.remove('active');
+                // Mund të shtosh përkthime këtu
+                document.getElementById('hero-title').innerHTML = "Studioja e <br>Gjeneratës.";
+                document.getElementById('hero-tag').innerText = "E ARDHMJA E CV";
+            } else {
+                btnEn.classList.add('active');
+                btnAl.classList.remove('active');
+                document.getElementById('hero-title').innerHTML = "The Next Gen <br>Studio.";
+                document.getElementById('hero-tag').innerText = "THE FUTURE OF CV";
+                // Etj për elementet e tjera...
+            }
+        }
+
+        // Init Language
+        const savedLang = localStorage.getItem('boneCV_lang') || 'AL';
+        updateUI(savedLang);
 
         window.addEventListener('resize', () => {
             if(window.innerWidth < 1024) {
@@ -354,6 +394,7 @@
             }
         });
 
+        // Auto-action post intro
         setTimeout(() => {
             if(window.innerWidth > 1024) toggleSidebar();
         }, 3800);
