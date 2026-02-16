@@ -1,257 +1,529 @@
 <!DOCTYPE html>
+
 <html lang="sq">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>boneCV | Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <title>boneCV | Pro</title>
+
     
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="apple-mobile-web-app-title" content="boneCV">
+
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/020202/FFFFFF?text=B">
+
+    
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&display=swap');
+
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;700;800&display=swap');
+
         
+
         :root {
+
             --accent: #2563eb;
-            --bg-dark: #050505;
-            --card-bg: rgba(255, 255, 255, 0.03);
+
+            --sidebar-width: 280px;
+
         }
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg-dark); 
-            color: #fff; 
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
+
+
+        body {
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            background: #050505;
+
+            color: #fff;
+
+            overflow-x: hidden;
+
+            -webkit-tap-highlight-color: transparent;
+
         }
 
-        /* --- APP ICON STYLE --- */
-        .app-logo {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
 
-        /* --- CUSTOM SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* --- INTRO KINEMATOGRAFIKE --- */
-        #intro-layer {
-            position: fixed; inset: 0; background: #000; z-index: 1000;
-            display: flex; align-items: center; justify-content: center;
-            animation: fadeOut 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards 3s;
-        }
-        .intro-shimmer {
-            font-size: 4rem; font-weight: 800; letter-spacing: -4px;
-            background: linear-gradient(90deg, #111, #fff, #111);
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shimmer 2.5s linear infinite;
-        }
-        @keyframes shimmer { to { background-position: 200% center; } }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        /* --- GLASSMORPHISM SYSTEM --- */
 
-        /* --- SIDEBAR --- */
-        #sidebar {
-            width: 280px;
-            background: rgba(5, 5, 5, 0.9);
+        .glass-panel {
+
+            background: rgba(255, 255, 255, 0.03);
+
             backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+        }
+
+
+
+        /* --- MODERN SIDEBAR --- */
+
+        #sidebar {
+
             transform: translateX(-100%);
-            z-index: 100;
-        }
-        #sidebar.active { transform: translateX(0); }
 
-        /* --- BENTO CARDS --- */
-        .bento-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 32px;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative; overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
         }
-        .bento-card::before {
-            content: ""; position: absolute; inset: 0;
-            background: radial-gradient(600px circle at var(--x) var(--y), rgba(37, 99, 235, 0.1), transparent 40%);
-            opacity: 0; transition: opacity 0.5s;
+
+        #sidebar.open {
+
+            transform: translateX(0);
+
         }
-        .bento-card:hover::before { opacity: 1; }
-        .bento-card:hover {
-            border-color: rgba(37, 99, 235, 0.3);
+
+        .sidebar-overlay {
+
+            background: rgba(0,0,0,0.6);
+
+            backdrop-filter: blur(4px);
+
+            display: none;
+
+            z-index: 40;
+
+        }
+
+        .sidebar-overlay.active {
+
+            display: block;
+
+        }
+
+
+
+        /* --- DYNAMIC CARD STATES --- */
+
+        .interactive-card {
+
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        }
+
+        .interactive-card:hover {
+
+            background: rgba(255, 255, 255, 0.06);
+
+            border-color: rgba(37, 99, 235, 0.4);
+
             transform: translateY(-5px);
-            background: rgba(255,255,255,0.05);
+
         }
 
-        .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease forwards 3.3s; }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-        #content-area { transition: padding-left 0.6s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; }
-        
-        .lang-btn {
-            font-size: 10px; font-weight: 800; padding: 5px 12px; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
+
+        /* --- MOUSE GLOW --- */
+
+        #mouse-glow {
+
+            position: fixed;
+
+            width: 500px;
+
+            height: 500px;
+
+            background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%);
+
+            pointer-events: none;
+
+            z-index: 0;
+
+            transition: opacity 0.3s;
+
         }
-        .lang-btn:hover { background: white; color: black; }
+
+
+
+        /* --- APP STYLE BUTTONS --- */
+
+        .nav-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 14px 20px;
+
+            border-radius: 16px;
+
+            transition: all 0.3s;
+
+            color: #94a3b8;
+
+        }
+
+        .nav-link:hover, .nav-link.active {
+
+            background: rgba(255,255,255,0.08);
+
+            color: #fff;
+
+        }
+
+
+
+        /* --- STATUS PULSE --- */
+
+        .pulse {
+
+            width: 8px; height: 8px; background: #10b981; border-radius: 50%;
+
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+
+            animation: pulse-animation 2s infinite;
+
+        }
+
+        @keyframes pulse-animation { 0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); } 100% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } }
+
+
+
+        .app-shadow {
+
+            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+
+        }
+
     </style>
+
 </head>
-<body class="flex h-screen">
 
-    <div id="intro-layer">
-        <h1 class="intro-shimmer italic">boneCV</h1>
-    </div>
+<body class="min-h-screen">
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8">
-        <div class="flex items-center gap-4 mb-12">
-            <div class="app-logo">b</div>
-            <h2 class="text-2xl font-black italic tracking-tighter">boneCV</h2>
-            <button onclick="toggleSidebar()" class="ml-auto text-slate-500 hover:text-white lg:hidden"><i class="fa-solid fa-xmark"></i></button>
+
+
+    <div id="mouse-glow"></div>
+
+    <div id="overlay" class="fixed inset-0 sidebar-overlay" onclick="toggleMenu()"></div>
+
+
+
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-[280px] glass-panel z-50 flex flex-col p-6 app-shadow">
+
+        <div class="flex items-center justify-between mb-12">
+
+            <div class="flex items-center gap-3">
+
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black shadow-lg shadow-blue-600/20">B</div>
+
+                <span class="font-black text-xl italic tracking-tight">boneCV</span>
+
+            </div>
+
+            <button onclick="toggleMenu()" class="w-10 h-10 flex items-center justify-center hover:bg-white/10 rounded-full transition-colors">
+
+                <i class="fa-solid fa-xmark text-slate-400"></i>
+
+            </button>
+
         </div>
 
-        <nav class="flex-1 space-y-2 text-sm font-bold">
-            <p class="text-[10px] text-slate-500 uppercase tracking-[3px] mb-4 ml-2 opacity-50">Menu</p>
-            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-900/20"><i class="fa-solid fa-house"></i> Dashboard</a>
-            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all"><i class="fa-solid fa-id-card"></i> Studio CV</a>
-            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all"><i class="fa-solid fa-file-signature"></i> Kontratat</a>
-            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all"><i class="fa-solid fa-box-archive"></i> Arkiva</a>
-            
-            <div class="pt-8">
-                <p class="text-[10px] text-slate-500 uppercase tracking-[3px] mb-4 ml-2 opacity-50">Sistemi</p>
-                <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all"><i class="fa-solid fa-gear"></i> Cilësimet</a>
-            </div>
+
+
+        <nav class="flex-1 space-y-2">
+
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2 mb-4">Main Menu</p>
+
+            <a href="index.html" class="nav-link active">
+
+                <i class="fa-solid fa-house-chimney text-lg"></i>
+
+                <span class="font-semibold">Dashboard</span>
+
+            </a>
+
+            <a href="cv.html" class="nav-link">
+
+                <i class="fa-solid fa-id-card-clip text-lg"></i>
+
+                <span class="font-semibold">Studio e CV-së</span>
+
+            </a>
+
+            <a href="kontrata.html" class="nav-link">
+
+                <i class="fa-solid fa-file-contract text-lg"></i>
+
+                <span class="font-semibold">Kontratat</span>
+
+            </a>
+
+            <a href="kerkesa.html" class="nav-link">
+
+                <i class="fa-solid fa-paper-plane text-lg"></i>
+
+                <span class="font-semibold">Kërkesat</span>
+
+            </a>
+
         </nav>
 
-        <div class="flex items-center justify-between pt-6 border-t border-white/5">
-            <div class="flex gap-2">
-                <button class="lang-btn">AL</button>
-                <button class="lang-btn opacity-40">EN</button>
+
+
+        <div class="pt-6 border-t border-white/10 space-y-4">
+
+            <a href="cilesimet.html" class="nav-link hover:text-blue-400">
+
+                <i class="fa-solid fa-gear text-lg"></i>
+
+                <span class="font-semibold">Cilësimet</span>
+
+            </a>
+
+            
+
+            <div class="flex items-center justify-between px-2">
+
+                <div class="flex gap-3">
+
+                    <button onclick="setLang('al')" class="text-xs font-bold transition-opacity" id="lang-al">AL</button>
+
+                    <button onclick="setLang('en')" class="text-xs font-bold opacity-40 transition-opacity" id="lang-en">EN</button>
+
+                </div>
+
+                <span class="text-[9px] text-slate-600 font-bold uppercase tracking-tighter">v2.0 PRO</span>
+
             </div>
+
         </div>
+
     </aside>
 
-    <main class="flex-1 overflow-y-auto" id="content-area">
-        <header class="h-24 flex items-center justify-between px-8 md:px-12 sticky top-0 z-40 bg-black/60 backdrop-blur-xl border-b border-white/5">
-            <button onclick="toggleSidebar()" class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 border border-white/5 transition-all">
+
+
+    <main class="relative z-10 p-6 lg:p-12 transition-all duration-500">
+
+        
+
+        <header class="flex justify-between items-center mb-16">
+
+            <button onclick="toggleMenu()" class="w-12 h-12 glass-panel rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all active:scale-95">
+
                 <i class="fa-solid fa-bars-staggered"></i>
+
             </button>
+
             
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Përdoruesi</p>
-                    <p class="text-sm font-bold text-white">Premium User</p>
+
+            <div class="text-right flex items-center gap-6">
+
+                <div class="hidden sm:block">
+
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Local Time</p>
+
+                    <p class="text-xl font-light font-mono" id="clock">00:00:00</p>
+
                 </div>
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-black text-white shadow-lg">U</div>
+
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-400 border-2 border-white/20"></div>
+
             </div>
+
         </header>
 
-        <div class="p-8 md:p-12 max-w-7xl mx-auto">
-            <div class="fade-in mb-16">
-                <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-tight">
-                    Komoditet.<br><span class="text-blue-600">Strukturë. Sukses.</span>
+
+
+        <section class="max-w-7xl mx-auto">
+
+            <div class="mb-12">
+
+                <div class="flex items-center gap-3 mb-4">
+
+                    <div class="pulse"></div>
+
+                    <span class="text-[10px] font-bold uppercase tracking-[4px] text-emerald-500">Sistemi Aktiv</span>
+
+                </div>
+
+                <h1 class="text-5xl lg:text-7xl font-black tracking-tighter leading-tight">
+
+                    Eksperienca <br><span class="text-blue-600">Premium.</span>
+
                 </h1>
-                <p class="text-slate-400 text-lg max-w-xl font-medium">
-                    Krijoni një identitet profesional që bën diferencën. boneCV është partneri juaj drejt karrierës së ëndrrave.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-12 gap-6 fade-in" style="animation-delay: 3.5s;">
-                
-                <div class="col-span-12 lg:col-span-8 bento-card p-10 h-[450px] flex flex-col justify-end group cursor-pointer">
-                    <div class="absolute top-10 left-10">
-                        <span class="px-4 py-1.5 rounded-full bg-blue-600 text-[10px] font-black uppercase tracking-widest">Update 2026</span>
-                    </div>
-                    <div class="relative z-10">
-                        <h2 class="text-4xl font-black mb-3 tracking-tighter">Modeli "Metropolis"</h2>
-                        <p class="text-slate-400 max-w-sm mb-6">Dizajni i ri i optimizuar për sistemet moderne të rekrutimit (ATS).</p>
-                        <button class="px-6 py-3 bg-white text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">
-                            Eksploro <i class="fa-solid fa-arrow-right ml-2"></i>
-                        </button>
-                    </div>
-                    <div class="absolute right-[-20px] bottom-[-20px] opacity-10 group-hover:opacity-20 transition-all duration-700">
-                        <i class="fa-solid fa-id-card text-[250px] rotate-12 text-blue-500"></i>
-                    </div>
-                </div>
-
-                <div class="col-span-12 lg:col-span-4 bento-card p-10 bg-gradient-to-br from-blue-600 to-indigo-700 flex flex-col justify-between border-none">
-                    <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                        <i class="fa-solid fa-wand-magic-sparkles text-2xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-black text-white mb-2 leading-tight">Kontrata Inteligjente</h3>
-                        <p class="text-blue-100/70 text-sm">Gjeneroni dokumente ligjore me saktësi 100% në pak sekonda.</p>
-                    </div>
-                </div>
-
-                <div class="col-span-12 md:col-span-6 bento-card p-8 flex items-center justify-between group cursor-pointer">
-                    <div class="flex items-center gap-6">
-                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-2xl group-hover:text-blue-500 transition-colors">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold">Analitika e Karrierës</h4>
-                            <p class="text-[10px] text-blue-500 font-black uppercase tracking-widest mt-1">Së Shpejti</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-700 group-hover:text-white"></i>
-                </div>
-
-                <div class="col-span-12 md:col-span-6 bento-card p-8 flex items-center justify-between group cursor-pointer">
-                    <div class="flex items-center gap-6">
-                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-2xl group-hover:text-blue-500 transition-colors">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold">Cloud Sync</h4>
-                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Aktiv</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-lock text-slate-700"></i>
-                </div>
 
             </div>
-        </div>
+
+
+
+            <div class="grid grid-cols-12 gap-6">
+
+                <div onclick="location.href='cv.html'" class="col-span-12 lg:col-span-8 glass-panel rounded-[32px] p-8 lg:p-12 interactive-card cursor-pointer relative overflow-hidden group">
+
+                    <div class="relative z-10 h-full flex flex-col justify-between">
+
+                        <div>
+
+                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-6">
+
+                                <i class="fa-solid fa-wand-magic-sparkles text-blue-500 text-xl"></i>
+
+                            </div>
+
+                            <h2 class="text-3xl font-bold mb-4">Gjeneratori Inteligjent</h2>
+
+                            <p class="text-slate-400 max-w-md">Krijoni dokumente profesionale brenda pak minutave duke përdorur teknologjinë më të fundit ATS.</p>
+
+                        </div>
+
+                        <div class="mt-12 flex items-center gap-4">
+
+                            <span class="px-6 py-3 bg-white text-black font-extrabold text-xs rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">HAP STUDION</span>
+
+                            <span class="text-xs text-slate-500 font-bold">2.4k përdorues sot</span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="fa-solid fa-id-card absolute -right-10 -bottom-10 text-[200px] text-white/5 rotate-12 group-hover:rotate-0 transition-transform duration-700"></i>
+
+                </div>
+
+
+
+                <div class="col-span-12 lg:col-span-4 space-y-6">
+
+                    <div class="glass-panel rounded-[32px] p-8 interactive-card cursor-pointer group">
+
+                        <div class="flex justify-between items-start">
+
+                            <div>
+
+                                <h3 class="font-bold text-xl">Kontratat</h3>
+
+                                <p class="text-xs text-slate-500 mt-2">Nënshkrim digjital i sigurt.</p>
+
+                            </div>
+
+                            <i class="fa-solid fa-signature text-2xl text-slate-600 group-hover:text-emerald-500 transition-colors"></i>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="glass-panel rounded-[32px] p-8 interactive-card cursor-pointer group">
+
+                        <div class="flex justify-between items-start">
+
+                            <div>
+
+                                <h3 class="font-bold text-xl">Kërkesat</h3>
+
+                                <p class="text-xs text-slate-500 mt-2">Eksporto kërkesat në PDF.</p>
+
+                            </div>
+
+                            <i class="fa-solid fa-paper-plane text-2xl text-slate-600 group-hover:text-amber-500 transition-colors"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
-    <script>
-        const sb = document.getElementById('sidebar');
-        const main = document.getElementById('content-area');
 
-        function toggleSidebar() {
-            sb.classList.toggle('active');
-            if(window.innerWidth > 1024) {
-                main.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0px';
-            }
+
+    <script>
+
+        // MOUSE GLOW EFFECT (përmirësuar)
+
+        const glow = document.getElementById('mouse-glow');
+
+        document.addEventListener('mousemove', (e) => {
+
+            glow.style.left = e.clientX - 250 + 'px';
+
+            glow.style.top = e.clientY - 250 + 'px';
+
+        });
+
+
+
+        // MENU LOGIC
+
+        function toggleMenu() {
+
+            const sidebar = document.getElementById('sidebar');
+
+            const overlay = document.getElementById('overlay');
+
+            sidebar.classList.toggle('open');
+
+            overlay.classList.toggle('active');
+
         }
 
-        // Mouse light effect
-        document.querySelectorAll('.bento-card').forEach(card => {
-            card.onmousemove = e => {
-                const rect = card.getBoundingClientRect();
-                card.style.setProperty('--x', `${e.clientX - rect.left}px`);
-                card.style.setProperty('--y', `${e.clientY - rect.top}px`);
-            };
-        });
 
-        // Initialize view
-        window.addEventListener('resize', () => {
-            if(window.innerWidth < 1024) main.style.paddingLeft = '0px';
-        });
 
-        // Auto-open sidebar on desktop after intro
-        setTimeout(() => {
-            if(window.innerWidth > 1024) toggleSidebar();
-        }, 3500);
+        // REAL TIME CLOCK
+
+        function updateClock() {
+
+            const now = new Date();
+
+            const timeStr = now.toLocaleTimeString('sq-AL', { hour12: false });
+
+            document.getElementById('clock').innerText = timeStr;
+
+        }
+
+        setInterval(updateClock, 1000);
+
+        updateClock();
+
+
+
+        // LANGUAGE SWITCHER
+
+        function setLang(lang) {
+
+            document.getElementById('lang-al').style.opacity = lang === 'al' ? '1' : '0.4';
+
+            document.getElementById('lang-en').style.opacity = lang === 'en' ? '1' : '0.4';
+
+        }
+
+
+
+        // Handle PWA (parandalon hapjen në browser nëse është instaluar)
+
+        if (window.navigator.standalone) {
+
+            document.body.classList.add('pwa-mode');
+
+        }
+
     </script>
+
 </body>
+
 </html>
