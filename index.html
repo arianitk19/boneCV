@@ -3,360 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>boneCV | Elite Studio</title>
+    <title>boneCV | Elite OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <script src="master.js"></script>        
+    <script src="master.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
         
         :root {
             --accent: #2563eb;
-            --accent-glow: rgba(37, 99, 235, 0.3);
-            --bg-dark: #050505;
-            --card-bg: rgba(255, 255, 255, 0.02);
+            --accent-bright: #60a5fa;
+            --bg: #000000;
             --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg-dark); 
+            background: var(--bg); 
             color: #fff; 
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
-            touch-action: manipulation;
         }
 
-        .bg-glow {
-            position: fixed; width: 600px; height: 600px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            top: -200px; right: -200px; z-index: -1; pointer-events: none;
-            filter: blur(80px); opacity: 0.5;
+        /* --- SFONDI "NEBULA" --- */
+        .magic-canvas {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #080808 0%, #000 100%);
+        }
+        .aurora {
+            position: absolute; width: 80vw; height: 80vh;
+            filter: blur(120px); opacity: 0.2; border-radius: 50%;
+            animation: drift 20s infinite alternate ease-in-out;
+        }
+        .aurora-1 { background: var(--accent); top: -20%; left: -20%; }
+        .aurora-2 { background: #4f46e5; bottom: -20%; right: -20%; animation-delay: -10s; }
+
+        @keyframes drift {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(150px, 100px) scale(1.3); }
         }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
+        /* --- INTRO CINEMATIC --- */
         #intro-layer {
             position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-            perspective: 1500px;
-            animation: exitLayer 1s cubic-bezier(0.9, 0, 0.1, 1) forwards 3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            animation: fadeOutLayer 1s cubic-bezier(0.9, 0, 0.1, 1) forwards 3.5s;
+        }
+        .logo-scanner { font-size: clamp(3rem, 10vw, 7rem); font-weight: 800; letter-spacing: -5px; position: relative; color: #111; }
+        .logo-scanner::before {
+            content: 'boneCV'; position: absolute; inset: 0; color: #fff; width: 0%; overflow: hidden;
+            border-right: 4px solid var(--accent); animation: scanText 2s cubic-bezier(0.65, 0, 0.35, 1) forwards 0.5s;
+            filter: drop-shadow(0 0 20px var(--accent));
+        }
+        @keyframes scanText { to { width: 100%; } }
+        @keyframes fadeOutLayer { to { opacity: 0; visibility: hidden; transform: translateY(-100%); } }
+
+        /* --- MENUJA SIDE (DESKTOP) & OVERLAY (MOBILE) --- */
+        #main-nav {
+            position: fixed; left: 25px; top: 50%; transform: translateY(-50%) translateX(-150px);
+            width: 80px; background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(40px);
+            border: 1px solid var(--border); border-radius: 40px;
+            display: flex; flex-direction: column; align-items: center; padding: 35px 0;
+            z-index: 2000; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #main-nav.active { transform: translateY(-50%) translateX(0); }
+        
+        /* Butoni i Menusë për Mobile */
+        .mobile-trigger {
+            display: none; position: fixed; top: 25px; right: 25px; 
+            width: 60px; height: 60px; background: var(--accent);
+            border-radius: 20px; z-index: 3000; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5); cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .mobile-trigger:active { transform: scale(0.9); }
+
+        .nav-item {
+            width: 54px; height: 54px; display: flex; align-items: center; justify-content: center;
+            border-radius: 20px; color: #666; margin-bottom: 20px;
+            transition: all 0.4s; position: relative;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: #fff; background: var(--accent); transform: scale(1.1);
         }
 
-        .super-logo {
-            font-size: clamp(3.5rem, 12vw, 8rem); font-weight: 900; letter-spacing: -8px;
-            color: white; opacity: 0; transform: translateZ(-1000px);
-            animation: logoArrival 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
-            text-shadow: 0 0 50px rgba(37, 99, 235, 0.5);
-            position: relative;
+        /* --- CONTENT & BENTO --- */
+        #viewport {
+            margin-left: 120px; height: 100vh; overflow-y: auto;
+            padding: 80px 60px; transition: 0.5s ease;
         }
-
-        .super-logo::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: translateX(-100%); animation: shine 3s infinite;
-        }
-
-        .sheet {
-            position: absolute; width: 45px; height: 60px;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(8px); pointer-events: none;
-            animation: flyToCenter 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-        }
-
-        @keyframes shine { 100% { transform: translateX(100%); } }
-
-        @keyframes logoArrival {
-            0% { opacity: 0; transform: translateZ(-1000px) rotateX(45deg); letter-spacing: 40px; filter: blur(30px); }
-            60% { opacity: 1; transform: translateZ(150px) rotateX(0deg); filter: blur(0); }
-            100% { opacity: 1; transform: translateZ(0); letter-spacing: -8px; }
-        }
-
-        @keyframes flyToCenter {
-            0% { transform: translate3d(var(--tx), var(--ty), -1500px) rotate(var(--tr)); opacity: 0; }
-            100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
-        }
-
-        @keyframes exitLayer {
-            to { transform: scale(1.2); opacity: 0; visibility: hidden; filter: blur(20px); }
-        }
-
-        .app-icon-main {
-            width: 52px; height: 52px; background: linear-gradient(145deg, #111, #000); 
-            border-radius: 16px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1); position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px var(--accent-glow);
-        }
-        .app-icon-main span {
-            font-size: 26px; font-weight: 900; font-style: italic;
-            background: linear-gradient(to bottom right, #fff, var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        #sidebar {
-            width: 280px; background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(50px);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateX(-100%); z-index: 100;
-        }
-        #sidebar.active { transform: translateX(0); box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
 
         .bento-card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 38px; transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow: hidden; position: relative; backdrop-filter: blur(10px);
-            display: block; /* Siguron që a tag sillet si card */
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border); border-radius: 40px;
+            padding: 40px; position: relative; overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .bento-card::before {
-            content: ""; position: absolute; inset: 0;
-            background: radial-gradient(1000px circle at var(--x) var(--y), rgba(37, 99, 235, 0.2), transparent 45%);
-            opacity: 0; transition: opacity 0.5s;
-        }
-        .bento-card:hover::before { opacity: 1; }
-        .bento-card:hover { 
-            border-color: rgba(37, 99, 235, 0.4); 
-            transform: translateY(-12px) scale(1.01); 
+        .bento-card:hover {
+            transform: translateY(-10px); border-color: var(--accent);
             background: rgba(255,255,255,0.04);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
-        .lang-btn {
-            font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-            padding: 6px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .lang-btn:hover { background: #fff; color: #000; transform: scale(1.1); }
-
-        .fade-in { opacity: 0; transform: translateY(40px) scale(0.95); animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 3.2s; }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0) scale(1); } }
-
-        #content-area { transition: padding-left 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-
+        /* RESPONSIVE DESIGN (MOBILE SPECIFIC) */
         @media (max-width: 1024px) {
-            .super-logo { letter-spacing: -3px; }
-            .bento-card { border-radius: 28px; }
+            .mobile-trigger { display: flex; }
+            #main-nav {
+                left: 0; top: 0; bottom: 0; right: 0; width: 100%; height: 100%;
+                transform: translateY(-100%); border-radius: 0; padding-top: 100px;
+                background: rgba(0, 0, 0, 0.95); transform: scale(0.8); opacity: 0; pointer-events: none;
+            }
+            #main-nav.mobile-active { transform: scale(1); opacity: 1; pointer-events: auto; }
+            
+            #viewport { margin-left: 0; padding: 100px 20px 40px; }
+            .hero-title { font-size: 3.5rem !important; }
+            
+            .nav-item {
+                width: 80%; height: 65px; margin-bottom: 15px;
+                justify-content: flex-start; padding-left: 30px; font-size: 1.2rem;
+            }
+            .nav-item::after { content: attr(data-label); margin-left: 20px; font-weight: 600; }
         }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 800; line-height: 0.9;
+            letter-spacing: -4px; margin-bottom: 2rem;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body>
 
-    <div class="bg-glow"></div>
-
-    <div id="intro-layer">
-        <div id="particles" class="absolute inset-0 overflow-hidden"></div>
-        <div class="flex flex-col items-center">
-            <h1 class="super-logo italic">boneCV</h1>
-            <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent mt-4 opacity-50"></div>
-        </div>
+    <div class="magic-canvas">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
     </div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col p-8">
-        <div class="flex items-center justify-between mb-16">
-            <h2 class="text-2xl font-black italic tracking-tighter bg-gradient-to-r from-white via-white to-blue-500 bg-clip-text text-transparent">boneCV</h2>
-            <button onclick="toggleSidebar()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white transition-all"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+    <div id="intro-layer">
+        <div class="logo-scanner italic">boneCV</div>
+    </div>
 
-        <nav class="flex-1 space-y-3 text-sm font-bold tracking-tight">
-            <p class="text-[10px] text-slate-500 uppercase tracking-[4px] mb-6 ml-2 opacity-40">Main Portal</p>
-            <a href="index.html" class="flex items-center gap-4 p-4 rounded-2xl bg-blue-600 text-white shadow-2xl shadow-blue-600/20 hover:scale-[1.05] transition-all duration-300">
-                <div class="w-6 text-center"><i class="fa-solid fa-house"></i></div> Dashboard
-            </a>
-            <a href="cv.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
-                <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-id-card"></i></div> Studio CV
-            </a>
-            <a href="kontrata.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
-                <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-file-signature"></i></div> Kontratat
-            </a>
-            <a href="kerkesa.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
-                <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-paper-plane"></i></div> Kërkesat
-            </a>
-            <a href="arkiva.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
-                <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-box-archive"></i></div> Arkiva
-            </a>
-            
-            <div class="pt-10">
-                <p class="text-[10px] text-slate-500 uppercase tracking-[4px] mb-6 ml-2 opacity-40">Advanced</p>
-                <a href="cilesimet.html" class="flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
-                    <div class="w-6 text-center group-hover:text-blue-500"><i class="fa-solid fa-gear"></i></div> Cilësimet
-                </a>
-            </div>
-        </nav>
+    <div class="mobile-trigger" onclick="toggleMobileMenu()">
+        <i class="fa-solid fa-bars-staggered text-2xl" id="menu-icon"></i>
+    </div>
 
-        <div class="flex items-center justify-between pt-8 border-t border-white/5">
-            <div class="flex flex-col">
-                <span class="text-[8px] text-slate-600 font-black uppercase tracking-[2px]">Core Engine</span>
-                <span class="text-[10px] text-blue-500 font-bold">v2.0.26 Premium</span>
-            </div>
-            <div class="flex gap-2">
-                <button class="lang-btn">AL</button>
-                <button class="lang-btn opacity-30 hover:opacity-100">EN</button>
-            </div>
-        </div>
-    </aside>
-
-    <main class="flex-1 overflow-y-auto relative" id="content-area">
-        <header class="h-28 flex items-center justify-between px-6 md:px-12 sticky top-0 z-40 bg-black/20 backdrop-blur-2xl border-b border-white/5">
-            <button onclick="toggleSidebar()" class="group w-14 h-14 bg-white/5 rounded-2xl flex flex-col items-center justify-center gap-1.5 hover:bg-white/10 border border-white/10 transition-all active:scale-90">
-                <span class="w-6 h-0.5 bg-white group-hover:bg-blue-500 transition-colors"></span>
-                <span class="w-4 h-0.5 bg-white group-hover:w-6 transition-all group-hover:bg-blue-500"></span>
-                <span class="w-6 h-0.5 bg-white group-hover:bg-blue-500 transition-colors"></span>
-            </button>
-            
-            <div class="flex items-center gap-6">
-                <div class="app-icon-main hidden sm:flex">
-                    <span>b</span>
-                </div>
-                <div class="h-10 w-[1px] bg-white/10 hidden md:block"></div>
-                <div class="text-right hidden md:block">
-                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-[3px] mb-1">Status: Online</p>
-                    <p class="text-sm font-bold">User Premium Elite</p>
-                </div>
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
-                    <div class="relative w-12 h-12 rounded-2xl bg-black border border-white/10 flex items-center justify-center font-black text-lg">B</div>
-                </div>
-            </div>
-        </header>
-
-        <div class="p-6 md:p-12 max-w-7xl mx-auto">
-            <div class="fade-in mb-20">
-                <div class="flex items-center gap-3 mb-6">
-                    <span class="h-[1px] w-12 bg-blue-600"></span>
-                    <span class="text-[10px] font-black uppercase tracking-[5px] text-blue-500">The Future of CV</span>
-                </div>
-                <h1 class="text-6xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.85] bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
-                    Studioja e <br>Gjeneratës.
-                </h1>
-                <p class="text-slate-400 text-xl max-w-2xl font-light leading-relaxed">
-                    Mirësevini në standardin e ri të karrierës. Një ekosistem i projektuar për të transformuar prezantimin tuaj profesional përmes inteligjencës vizuale.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-12 gap-8 fade-in" style="animation-delay: 3.4s;">
-                
-                <a href="cv.html" class="col-span-12 lg:col-span-8 bento-card p-10 md:p-16 h-[500px] md:h-[600px] flex flex-col justify-end group cursor-pointer">
-                    <div class="absolute top-12 left-12 flex items-center gap-4">
-                        <span class="px-6 py-2 rounded-full bg-blue-600 text-[10px] font-black uppercase tracking-[4px] shadow-2xl shadow-blue-600/40">New Metropolis v4</span>
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    </div>
-                    <div class="relative z-10">
-                        <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tighter">AI Optimized<br>Templates</h2>
-                        <p class="text-slate-400 max-w-md mb-10 text-lg font-light leading-relaxed">
-                            Algoritmet tona 2026 sigurojnë që CV-ja juaj të kalojë çdo sistem skanimi premium në tregun botëror.
-                        </p>
-                        <div class="inline-block group/btn relative px-10 py-5 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest overflow-hidden transition-all">
-                            <span class="relative z-10 group-hover/btn:text-white transition-colors">Start Creation <i class="fa-solid fa-arrow-right ml-3"></i></span>
-                            <div class="absolute inset-0 bg-blue-600 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500"></div>
-                        </div>
-                    </div>
-                    <div class="absolute right-[-60px] bottom-[-60px] opacity-5 group-hover:opacity-20 group-hover:rotate-0 transition-all duration-1000 rotate-12 hidden md:block">
-                        <i class="fa-solid fa-briefcase text-[450px] text-blue-600"></i>
-                    </div>
-                </a>
-
-                <a href="cv.html" class="col-span-12 lg:col-span-4 bento-card p-12 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 flex flex-col justify-between group cursor-pointer border-none h-[400px] lg:h-auto">
-                    <div class="w-20 h-20 bg-white/15 rounded-[30px] flex items-center justify-center backdrop-blur-xl group-hover:rotate-[360deg] transition-all duration-1000 border border-white/20">
-                        <i class="fa-solid fa-wand-magic-sparkles text-4xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-4xl font-black mb-4 text-white tracking-tighter leading-tight">Smart<br>Engine</h3>
-                        <p class="text-blue-100/60 text-base font-medium mb-6">Gjenerim automatik me saktësi kirurgjike.</p>
-                        <div class="flex -space-x-3">
-                            <div class="w-10 h-10 rounded-full border-2 border-blue-700 bg-slate-800 flex items-center justify-center text-[10px]">AI</div>
-                            <div class="w-10 h-10 rounded-full border-2 border-blue-700 bg-slate-800 flex items-center justify-center text-[10px]">PDF</div>
-                            <div class="w-10 h-10 rounded-full border-2 border-blue-700 bg-slate-800 flex items-center justify-center text-[10px]">DOC</div>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="arkiva.html" class="col-span-12 md:col-span-6 bento-card p-12 flex items-center justify-between group cursor-pointer">
-                    <div class="flex items-center gap-10">
-                        <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-4xl group-hover:text-blue-500 group-hover:bg-blue-500/10 transition-all duration-500">
-                            <i class="fa-solid fa-chart-pie"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-2xl font-bold mb-1">Impact Analytics</h4>
-                            <p class="text-[10px] text-blue-500 font-black uppercase tracking-[3px]">Real-time Tracking</p>
-                        </div>
-                    </div>
-                    <div class="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </div>
-                </a>
-
-                <a href="cilesimet.html" class="col-span-12 md:col-span-6 bento-card p-12 flex items-center justify-between group cursor-pointer">
-                    <div class="flex items-center gap-10">
-                        <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-4xl group-hover:text-blue-500 group-hover:bg-blue-500/10 transition-all duration-500">
-                            <i class="fa-solid fa-vault"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-2xl font-bold mb-1">Secure Vault</h4>
-                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[3px]">AES-256 Encrypted</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-lock text-slate-800 text-2xl group-hover:text-blue-500 transition-all"></i>
-                </a>
-
-            </div>
+    <nav id="main-nav">
+        <div class="mb-10 hidden lg:block">
+            <div class="w-12 h-12 bg-white text-black rounded-xl flex items-center justify-center font-black">b</div>
         </div>
         
-        <footer class="p-12 text-center opacity-20 hover:opacity-100 transition-opacity">
-            <p class="text-[10px] font-bold tracking-[5px]">BONE CV • ELITE ARCHITECTURE 2026</p>
-        </footer>
+        <div class="flex flex-col items-center w-full gap-2">
+            <a href="index.html" class="nav-item active" data-label="Dashboard">
+                <i class="fa-solid fa-house-chimney"></i>
+            </a>
+            <a href="cv.html" class="nav-item" data-label="Studio CV">
+                <i class="fa-solid fa-id-card-clip"></i>
+            </a>
+            <a href="kontrata.html" class="nav-item" data-label="Kontrata">
+                <i class="fa-solid fa-file-signature"></i>
+            </a>
+            <a href="kerkesa.html" class="nav-item" data-label="Kërkesat">
+                <i class="fa-solid fa-paper-plane"></i>
+            </a>
+            <a href="arkiva.html" class="nav-item" data-label="Arkiva">
+                <i class="fa-solid fa-box-archive"></i>
+            </a>
+            <a href="cilesimet.html" class="nav-item mt-10 lg:mt-auto" data-label="Cilësimet">
+                <i class="fa-solid fa-sliders"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main id="viewport">
+        <div class="max-w-6xl mx-auto">
+            
+            <header class="mb-20 animate-[fadeIn_1.2s_ease_forwards_3.8s] opacity-0">
+                <h2 class="text-blue-500 font-black uppercase tracking-[5px] text-[10px] mb-4">Elite OS Professional</h2>
+                <h1 class="hero-title">
+                    Mendo. <br><span class="text-slate-500">Krijo.</span> <span class="text-blue-600">Eksporto.</span>
+                </h1>
+                <p class="text-slate-400 text-lg max-w-xl font-light">
+                    Sistemi më i avancuar për dokumente profesionale. Përjetoni shpejtësinë dhe elegancën në çdo veprim.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-12 gap-6 animate-[fadeIn_1.2s_ease_forwards_4s] opacity-0">
+                
+                <div class="col-span-12 lg:col-span-8 bento-card min-h-[450px] flex flex-col justify-between group cursor-pointer" onclick="location.href='cv.html'">
+                    <div class="flex justify-between items-start">
+                        <span class="px-4 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-[10px] font-black text-blue-500 uppercase tracking-widest">Studio v4.0</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-700 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">Ndërto CV-në <br>tuaj Master.</h3>
+                        <p class="text-slate-500">E optimizuar për suksesin tuaj karrierist.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-12 lg:col-span-4 bento-card bg-blue-600 border-none flex flex-col justify-between group cursor-pointer" onclick="location.href='arkiva.html'">
+                    <div class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-vault text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-white mb-1">Arkiva</h4>
+                        <p class="text-white/60 text-xs">Siguri e plotë lokale.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-12 md:col-span-6 bento-card flex flex-row items-center gap-6 group cursor-pointer" onclick="location.href='kontrata.html'">
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-600 transition-colors">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl">Kontrata</h4>
+                        <p class="text-slate-500 text-sm">Gjenerim i shpejtë ligjor.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-12 md:col-span-6 bento-card flex flex-row items-center gap-6 group cursor-pointer" onclick="location.href='kerkesa.html'">
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-600 transition-colors">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl">Kërkesa</h4>
+                        <p class="text-slate-500 text-sm">Letra zyrtare në sekonda.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </main>
 
     <script>
-        const pContainer = document.getElementById('particles');
-        for (let i = 0; i < 40; i++) {
-            const s = document.createElement('div');
-            s.className = 'sheet';
-            s.style.left = '50%'; s.style.top = '50%';
-            s.style.setProperty('--tx', (Math.random() - 0.5) * 3000 + 'px');
-            s.style.setProperty('--ty', (Math.random() - 0.5) * 3000 + 'px');
-            s.style.setProperty('--tr', Math.random() * 720 + 'deg');
-            s.style.animationDelay = (Math.random() * 0.8) + 's';
-            pContainer.appendChild(s);
-        }
-
-        const sb = document.getElementById('sidebar');
-        const main = document.getElementById('content-area');
-
-        function toggleSidebar() {
-            sb.classList.toggle('active');
-            if(window.innerWidth > 1024) {
-                main.style.paddingLeft = sb.classList.contains('active') ? '280px' : '0px';
-            }
-        }
-
-        document.querySelectorAll('.bento-card').forEach(card => {
-            card.onmousemove = e => {
-                const rect = card.getBoundingClientRect();
-                card.style.setProperty('--x', `${e.clientX - rect.left}px`);
-                card.style.setProperty('--y', `${e.clientY - rect.top}px`);
-            };
-            
-            card.onclick = () => {
-                card.style.transform = "scale(0.98)";
-                setTimeout(() => card.style.transform = "", 100);
-            };
-        });
-
-        window.addEventListener('resize', () => {
-            if(window.innerWidth < 1024) {
-                main.style.paddingLeft = '0px';
-            } else {
-                if(sb.classList.contains('active')) main.style.paddingLeft = '280px';
-            }
-        });
-
+        // Aktivizimi i menusë Desktop pas intros
         setTimeout(() => {
-            if(window.innerWidth > 1024) toggleSidebar();
-        }, 3800);
+            document.getElementById('main-nav').classList.add('active');
+        }, 3600);
+
+        // Funksioni për Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('main-nav');
+            const icon = document.getElementById('menu-icon');
+            
+            menu.classList.toggle('mobile-active');
+            
+            if(menu.classList.contains('mobile-active')) {
+                icon.classList.replace('fa-bars-staggered', 'fa-xmark');
+                document.body.style.overflow = 'hidden';
+            } else {
+                icon.classList.replace('fa-xmark', 'fa-bars-staggered');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        window.onload = () => {
+            if(typeof applyGlobalSettings === 'function') applyGlobalSettings();
+        };
     </script>
 </body>
 </html>
