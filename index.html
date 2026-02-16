@@ -2,13 +2,11 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>boneCV</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<script src="master.js"></script>        
-
+    <script src="master.js"></script>        
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;500;600;700;800&display=swap');
@@ -27,13 +25,28 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- CUSTOM SCROLLBAR --- */
+        /* IKONA E RE E APP-IT (E STILIZUAR SIÇ E KERKOVE) */
+        .app-icon-box {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* CUSTOM SCROLLBAR */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* --- INTRO KINEMATOGRAFIKE --- */
+        /* INTRO KINEMATOGRAFIKE */
         #intro-layer {
             position: fixed; inset: 0; background: #000; z-index: 1000;
             display: flex; align-items: center; justify-content: center;
@@ -49,19 +62,18 @@
         @keyframes shimmer { to { background-position: 200% center; } }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-        /* --- FLOATING SIDEBAR --- */
+        /* SIDEBAR */
         #sidebar {
             width: 280px;
-            background: rgba(5, 5, 5, 0.8);
+            background: rgba(5, 5, 5, 0.85);
             backdrop-filter: blur(40px) saturate(180%);
             border-right: 1px solid rgba(255, 255, 255, 0.06);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             transform: translateX(-100%);
-            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
         }
         #sidebar.active { transform: translateX(0); }
 
-        /* --- BENTO GRID CARDS --- */
+        /* BENTO CARDS */
         .bento-card {
             background: var(--card-bg);
             border: 1px solid rgba(255,255,255,0.05);
@@ -83,15 +95,13 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* --- LANGUAGE SWITCHER --- */
         .lang-btn {
             font-size: 10px; font-weight: 800; letter-spacing: 1px;
             padding: 5px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s;
         }
-        .lang-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
+        .lang-btn:hover { background: #fff; color: #000; }
 
-        /* --- ANIMATIONS --- */
         .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease forwards 3.3s; }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
@@ -105,9 +115,10 @@
     </div>
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex flex-col p-8">
-        <div class="flex items-center justify-between mb-16">
+        <div class="flex items-center gap-4 mb-16">
+            <div class="app-icon-box">b</div>
             <h2 class="text-2xl font-black italic tracking-tighter bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">boneCV</h2>
-            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-white transition-colors ml-auto"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <nav class="flex-1 space-y-2 text-sm font-bold tracking-tight">
@@ -125,7 +136,6 @@
         </nav>
 
         <div class="flex items-center justify-between pt-8 border-t border-white/5">
-            <span class="text-[9px] text-slate-600 font-bold uppercase tracking-[2px]"></span>
             <div class="flex gap-2">
                 <button class="lang-btn">AL</button>
                 <button class="lang-btn opacity-30 hover:opacity-100">EN</button>
@@ -143,7 +153,7 @@
                     <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Mirëseerdhe</p>
                     <p class="text-sm font-bold">User</p>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-400 flex items-center justify-center font-black shadow-lg shadow-blue-600/20"></div>
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-400 flex items-center justify-center font-black shadow-lg text-white">U</div>
             </div>
         </header>
 
@@ -169,7 +179,7 @@
                            Optimizuar plotësisht për arkitekturën e rekrutimit 2026.
                         </p>
                         <button class="px-8 py-4 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-500">
-                            Provo Dizajnin <i class="fa-solid fa-arrow-right ml-2"></i>
+                           Provo Dizajnin <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
                     <div class="absolute right-[-40px] bottom-[-40px] opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-1000">
@@ -201,9 +211,9 @@
                 <div class="col-span-12 md:col-span-6 bento-card p-10 flex items-center justify-between group cursor-pointer">
                     <div class="flex items-center gap-8">
                         <div class="w-16 h-16 rounded-3xl bg-white/5 flex items-center justify-center text-3xl group-hover:text-blue-500 transition-colors"><i class="fa-solid fa-cloud"></i></div>
-                        <div>
+                        <div class="pr-4">
                             <h4 class="text-xl font-bold">"Qendra e Dokumenteve"</h4>
-                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[2px] mt-2">Çdo dokument ruhet dhe sinkronizohet automatikisht në kohë reale, duke ju garantuar akses të plotë dhe siguri absolute në çdo pajisje.</p>
+                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[2px] mt-2 leading-relaxed">Çdo dokument ruhet dhe sinkronizohet automatikisht në kohë reale, duke ju garantuar akses të plotë dhe siguri absolute në çdo pajisje.</p>
                         </div>
                     </div>
                     <i class="fa-solid fa-lock text-slate-800 group-hover:text-white transition-all"></i>
@@ -224,7 +234,6 @@
             }
         }
 
-        // Mouse light effect for cards
         document.querySelectorAll('.bento-card').forEach(card => {
             card.onmousemove = e => {
                 const rect = card.getBoundingClientRect();
@@ -233,9 +242,12 @@
             };
         });
 
-        // Initial setup
         window.addEventListener('resize', () => {
-            if(window.innerWidth < 1024) main.style.paddingLeft = '0px';
+            if(window.innerWidth < 1024) {
+                main.style.paddingLeft = '0px';
+            } else if (sb.classList.contains('active')) {
+                main.style.paddingLeft = '280px';
+            }
         });
 
         setTimeout(() => {
