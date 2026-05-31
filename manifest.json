@@ -1,0 +1,51 @@
+{
+  "name": "boneCV Pro",
+  "short_name": "boneCV",
+  "description": "Platforma elite për gjenerimin e CV-ve, kontratave dhe kërkesave zyrtare në shqip.",
+  "lang": "sq",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020202",
+  "theme_color": "#020202",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {
+      "src": "https://img.icons8.com/?size=192&id=BB6Nq8E661J1&format=png&color=FFFFFF",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/?size=512&id=BB6Nq8E661J1&format=png&color=FFFFFF",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "CV i ri",
+      "short_name": "CV",
+      "description": "Krijo një CV të re",
+      "url": "./cv.html",
+      "icons": [{ "src": "https://img.icons8.com/?size=96&id=ueNlxa3VUJX0&format=png&color=FFFFFF", "sizes": "96x96" }]
+    },
+    {
+      "name": "Kontratë e re",
+      "short_name": "Kontratë",
+      "description": "Gjenero një kontratë ligjore",
+      "url": "./kontrata.html",
+      "icons": [{ "src": "https://img.icons8.com/?size=96&id=12300&format=png&color=FFFFFF", "sizes": "96x96" }]
+    },
+    {
+      "name": "Arkiva",
+      "short_name": "Arkiva",
+      "description": "Hap dokumentet e ruajtura",
+      "url": "./arkiva.html",
+      "icons": [{ "src": "https://img.icons8.com/?size=96&id=85059&format=png&color=FFFFFF", "sizes": "96x96" }]
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>boneCV Pro — Kërkesa Elite</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#020202">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://img.icons8.com/?size=180&id=BB6Nq8E661J1&format=png&color=FFFFFF">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+:root { --bg:#020202; --border:rgba(255,255,255,0.06); --accent:#f59e0b; }
+* { -webkit-tap-highlight-color: transparent; }
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:#fff; min-height:100vh; overflow-x:hidden; }
+
+#sidebar { position:fixed; top:0; left:0; height:100%; width:280px; z-index:5000; transform:translateX(-100%); transition:transform .5s cubic-bezier(.16,1,.3,1); }
+#sidebar.open { transform:translateX(0); }
+.sidebar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .35s; z-index:4999; }
+.sidebar-overlay.show { opacity:1; pointer-events:auto; }
+@media (min-width:1024px) { #sidebar{transform:translateX(0);} #app{padding-left:280px;} #menuBtn,.sidebar-overlay{display:none!important;} }
+.nav-link{color:rgba(255,255,255,0.6);} .nav-link:hover{background:rgba(255,255,255,0.04);color:#fff;}
+.nav-link.is-active{background:linear-gradient(135deg,rgba(245,158,11,0.18),rgba(245,158,11,0.06));color:#fff;box-shadow:inset 0 0 0 1px rgba(245,158,11,0.25);}
+.nav-link.is-active i{color:#fcd34d;}
+
+.split { display:grid; grid-template-columns:1fr; min-height:100vh; }
+@media (min-width:1024px) { .split { grid-template-columns: 460px 1fr; } }
+
+.editor { background:rgba(8,8,8,0.9); border-right:1px solid var(--border); padding:24px; overflow-y:auto; max-height:100vh; }
+@media (max-width:1023px) { .editor { max-height:none; padding-top:84px; } }
+.editor::-webkit-scrollbar{width:6px;} .editor::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:3px;}
+
+.preview { background:radial-gradient(circle at 30% 20%, #100c08 0%, #020202 70%); padding:40px 20px; overflow-y:auto; max-height:100vh; display:flex; justify-content:center; align-items:flex-start; }
+@media (max-width:1023px) { .preview { max-height:none; padding:20px 12px 60px; } }
+
+.glass-card { background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:20px; padding:20px; margin-bottom:14px; }
+.section-label { font-size:11px; text-transform:uppercase; letter-spacing:.2em; color:rgba(255,255,255,0.4); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.input { width:100%; background:rgba(255,255,255,0.03); border:1px solid transparent; border-radius:12px; padding:12px 14px; color:#fff; font-size:14px; transition:.2s; }
+.input:focus { outline:none; border-color:rgba(245,158,11,0.5); background:rgba(255,255,255,0.05); }
+.input::placeholder { color:rgba(255,255,255,0.3); }
+textarea.input { resize:vertical; min-height:80px; font-family:inherit; }
+.label-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+.btn { transition:transform .15s, background .25s; cursor:pointer; }
+.btn:active { transform:scale(0.97); }
+.btn-primary { background:linear-gradient(135deg,#f59e0b,#b45309); color:#fff; border-radius:14px; padding:14px; font-weight:700; box-shadow:0 10px 30px rgba(245,158,11,0.35); }
+.btn-ghost { background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-size:13px; color:#fff; }
+.btn-ghost:hover { background:rgba(255,255,255,0.07); }
+
+.chip { display:inline-flex; align-items:center; gap:6px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.25); color:#fde68a; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:600; }
+.tpl-btn { padding:10px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); font-size:12px; cursor:pointer; transition:.25s; text-align:left; }
+.tpl-btn.active { background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.05)); border-color:rgba(245,158,11,0.5); color:#fff; }
+
+#paper {
+    width:210mm; min-height:297mm; background:#fff; color:#1a1a1a;
+    padding:25mm 22mm; box-shadow:0 40px 100px rgba(0,0,0,0.5);
+    transform:scale(0.78); transform-origin:top center; transition:transform .4s ease;
+    margin-bottom:-55mm; font-family:'Plus Jakarta Sans',sans-serif;
+}
+@media (max-width:1280px) { #paper { transform:scale(0.65); margin-bottom:-90mm; } }
+@media (max-width:768px) { #paper { transform:scale(0.42); margin-bottom:-160mm; } }
+
+.l-from { font-size:12px; color:#444; margin-bottom:36px; line-height:1.5; white-space:pre-wrap; }
+.l-to { font-size:12.5px; color:#222; margin-bottom:8px; line-height:1.5; white-space:pre-wrap; }
+.l-to b { display:block; font-size:13px; }
+.l-place-date { text-align:right; font-size:12px; color:#444; margin-bottom:18px; }
+.l-subject { font-size:14px; font-weight:700; color:#0f172a; text-align:center; margin:24px 0 18px; }
+.l-subject::before { content:'Subjekti: '; color:#666; font-weight:600; }
+.l-greet { font-size:13px; margin-bottom:12px; font-weight:600; color:#111; }
+.l-body { font-size:12.5px; line-height:1.75; color:#222; white-space:pre-wrap; text-align:justify; }
+.l-close { font-size:13px; margin-top:24px; }
+.l-sign { margin-top:30px; }
+.l-sign .name { font-weight:700; color:#0f172a; }
+.l-sign .line { border-top:1px solid #888; width:50%; margin-top:30px; padding-top:6px; font-size:11px; color:#555; }
+
+.action-bar { position:sticky; bottom:0; background:linear-gradient(to top, rgba(8,8,8,0.98) 60%, rgba(8,8,8,0)); padding:16px 0 8px; margin:16px -24px -24px; padding-left:24px; padding-right:24px; border-top:1px solid var(--border); }
+
+@media print {
+    @page { size: A4; margin: 0; }
+    body { background:#fff !important; color:#000 !important; }
+    #sidebar, .sidebar-overlay, .editor, #menuBtn, .no-print { display:none !important; }
+    .split { display:block !important; }
+    .preview { padding:0 !important; max-height:none !important; background:#fff !important; display:block !important; overflow:visible !important; }
+    #paper { transform:none !important; box-shadow:none !important; margin:0 !important; padding:25mm 22mm !important; width:210mm !important; min-height:297mm !important; }
+    #app { padding-left:0 !important; }
+}
+</style>
+</head>
+<body>
+<button id="menuBtn" class="lg:hidden fixed top-5 left-5 z-[6000] w-12 h-12 rounded-2xl flex items-center justify-center btn no-print" style="background:rgba(10,10,10,0.7);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.06);">
+    <i class="fa-solid fa-bars text-lg"></i>
+</button>
+<div id="sidebar"></div>
+<div class="sidebar-overlay" id="sbOverlay"></div>
+
+<div id="app" class="split">
+    <aside class="editor no-print">
+        <header class="mb-5">
+            <div class="chip mb-2"><i class="fa-solid fa-envelope-open-text"></i> Kërkesa Master</div>
+            <h1 class="text-2xl font-extrabold tracking-tight">Letër zyrtare</h1>
+        </header>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-list"></i> Lloji i kërkesës</div>
+            <div class="grid grid-cols-1 gap-2">
+                <button class="tpl-btn active" data-tpl="punesim">Kërkesë për punësim</button>
+                <button class="tpl-btn" data-tpl="lirim">Kërkesë për lirim nga detyra</button>
+                <button class="tpl-btn" data-tpl="ankese">Ankesë zyrtare</button>
+                <button class="tpl-btn" data-tpl="info">Kërkesë për informacion</button>
+                <button class="tpl-btn" data-tpl="leje">Kërkesë për leje</button>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-user-tie"></i> Dërguesi (Ju)</div>
+            <input class="input mb-2" id="fName" placeholder="Emri Mbiemri">
+            <textarea class="input" id="fAddr" rows="2" placeholder="Adresa / Kontakti (telefon, email)"></textarea>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-building"></i> Marrësi</div>
+            <input class="input mb-2" id="tName" placeholder="Emri i institucionit / kompanisë">
+            <input class="input mb-2" id="tRole" placeholder="Drejtuar (p.sh. Z./Znj. Drejtor)">
+            <textarea class="input" id="tAddr" rows="2" placeholder="Adresa e marrësit"></textarea>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-calendar"></i> Vendi & Data</div>
+            <div class="label-row">
+                <input class="input" id="city" placeholder="Qyteti">
+                <input class="input" id="date" placeholder="Data (p.sh. 29.05.2026)">
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-pen-nib"></i> Përmbajtja</div>
+            <input class="input mb-2" id="subject" placeholder="Subjekti">
+            <input class="input mb-2" id="greet" placeholder="Përshëndetja hyrëse (p.sh. I/E nderuar Drejtor,)">
+            <textarea class="input mb-2" id="body" rows="10" placeholder="Trupi i kërkesës…"></textarea>
+            <input class="input" id="close" placeholder="Mbyllja (p.sh. Me respekt,)">
+        </div>
+
+        <div class="action-bar grid grid-cols-2 gap-2">
+            <button id="saveBtn" class="btn btn-ghost"><i class="fa-solid fa-floppy-disk"></i> Ruaj</button>
+            <button id="genBtn" class="btn btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> SuperGenerate</button>
+        </div>
+    </aside>
+
+    <section class="preview">
+        <div id="paper">
+            <div class="l-from" id="vFrom">Emri Mbiemri\nAdresa…</div>
+            <div class="l-place-date" id="vPlaceDate">—</div>
+            <div class="l-to" id="vTo"></div>
+            <div class="l-subject" id="vSubject">—</div>
+            <div class="l-greet" id="vGreet">I/E nderuar,</div>
+            <div class="l-body" id="vBody"></div>
+            <div class="l-close" id="vClose">Me respekt,</div>
+            <div class="l-sign">
+                <div class="name" id="vName"></div>
+                <div class="line">Nënshkrimi</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="master.js"></script>
+<script>
+bonecv.mountSidebar('sidebar','kerkesa');
+const sb = document.getElementById('sidebar'); const ov = document.getElementById('sbOverlay');
+document.getElementById('menuBtn').onclick = () => { sb.classList.add('open'); ov.classList.add('show'); };
+ov.onclick = () => { sb.classList.remove('open'); ov.classList.remove('show'); };
+
+const TEMPLATES = {
+    punesim: {
+        subject: 'Kërkesë për punësim',
+        greet: 'I/E nderuar Drejtor,',
+        body: 'Përmes kësaj kërkese, dëshiroj të shpreh interesin tim për të aplikuar për një pozicion pune në institucionin/kompaninë Tuaj.\n\nJam i bindur se kualifikimet dhe përvoja ime profesionale përshtaten me kërkesat e pozicionit. Bashkëngjitur me këtë kërkesë gjeni CV-në time të detajuar.\n\nFalënderoj paraprakisht për vëmendjen Tuaj dhe mbetem në pritje të një përgjigjeje pozitive.',
+        close: 'Me respekt,'
+    },
+    lirim: {
+        subject: 'Kërkesë për lirim nga detyra',
+        greet: 'I/E nderuar Drejtor,',
+        body: 'Përmes kësaj kërkese, ju njoftoj zyrtarisht vendimin tim për t\'u liruar nga detyra ime aktuale, duke respektuar afatin paralajmërues të përcaktuar me kontratë.\n\nDëshiroj të falënderoj për mundësinë e ofruar dhe për bashkëpunimin gjatë periudhës së punësimit tim. Jam në gatishmëri për të kryer dorëzimin e detyrave dhe materialeve sipas procedurës së brendshme.\n\nJu lutem konfirmoni datën përfundimtare të lirimit nga detyra.',
+        close: 'Me respekt,'
+    },
+    ankese: {
+        subject: 'Ankesë zyrtare',
+        greet: 'I/E nderuar Drejtor,',
+        body: 'Përmes kësaj letre dëshiroj t\'ju paraqes ankesën time zyrtare lidhur me situatën e mëposhtme:\n\n[Përshkruani këtu situatën konkrete, datën, vendin dhe personat e përfshirë.]\n\nKërkoj që çështja e ngritur të shqyrtohet me kujdesin e duhur dhe të merren masat e nevojshme për zgjidhjen e saj. Mbetem në pritje të një përgjigjeje zyrtare me shkrim brenda afatit ligjor.',
+        close: 'Me respekt,'
+    },
+    info: {
+        subject: 'Kërkesë për informacion',
+        greet: 'I/E nderuar,',
+        body: 'Në bazë të së drejtës për informim, përmes kësaj kërkese kërkoj të më vihen në dispozicion të dhënat/dokumentet e mëposhtme:\n\n1. [Specifikoni dokumentin / informacionin e parë]\n2. [Specifikoni dokumentin / informacionin e dytë]\n\nJu lutem që përgjigjja të më kthehet brenda afatit ligjor në adresën e mësipërme ose me email.',
+        close: 'Me respekt,'
+    },
+    leje: {
+        subject: 'Kërkesë për leje',
+        greet: 'I/E nderuar Drejtor,',
+        body: 'Përmes kësaj kërkese ju lutem të miratoni dhënien e lejes së mëposhtme:\n\nLloji i lejes: [p.sh. leje vjetore / leje pa pagesë / leje shëndetësore]\nNga data: [data e fillimit]\nDeri më: [data e mbarimit]\nArsyeja: [përshkrimi i shkurtër]\n\nGjatë mungesës, detyrat e mia do të kryhen nga [emri i kolegut, nëse ka]. Jam në gatishmëri për çdo informacion shtesë të nevojshëm.',
+        close: 'Me respekt,'
+    }
+};
+
+const state = {
+    tpl: 'punesim',
+    fName:'', fAddr:'',
+    tName:'', tRole:'', tAddr:'',
+    city:'', date:'',
+    subject:'', greet:'', body:'', close:'',
+    _editId: null
+};
+
+const DRAFT = 'boneCV_Kerkesa_Draft';
+function persistDraft(){ try{ localStorage.setItem(DRAFT, JSON.stringify(state)); }catch(e){} }
+function loadDraft(){ try{ const r = localStorage.getItem(DRAFT); if(r) Object.assign(state, JSON.parse(r)); }catch(e){} }
+
+const esc = bonecv.escapeHTML;
+
+function applyTpl(tpl) {
+    state.tpl = tpl;
+    const t = TEMPLATES[tpl];
+    state.subject = t.subject; state.greet = t.greet; state.body = t.body; state.close = t.close;
+    ['subject','greet','body','close'].forEach(k => { const el = document.getElementById(k); if (el) el.value = state[k]; });
+}
+
+function bind(id, key) {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => { state[key] = el.value; render(); persistDraft(); });
+    el.value = state[key] || '';
+}
+
+document.querySelectorAll('.tpl-btn').forEach(b => {
+    b.onclick = () => {
+        document.querySelectorAll('.tpl-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        applyTpl(b.dataset.tpl);
+        render(); persistDraft();
+    };
+});
+
+function render() {
+    document.getElementById('vFrom').textContent = [state.fName, state.fAddr].filter(Boolean).join('\n') || 'Emri Mbiemri\nAdresa…';
+    document.getElementById('vPlaceDate').textContent = `${state.city || '—'}, ${state.date || ''}`;
+    const to = `<b>${esc(state.tName || 'Marrësi')}</b>${state.tRole ? esc(state.tRole) + '\n' : ''}${state.tAddr ? esc(state.tAddr) : ''}`;
+    document.getElementById('vTo').innerHTML = to;
+    document.getElementById('vSubject').textContent = state.subject || '—';
+    document.getElementById('vGreet').textContent = state.greet || '';
+    document.getElementById('vBody').textContent = state.body || '';
+    document.getElementById('vClose').textContent = state.close || '';
+    document.getElementById('vName').textContent = state.fName || '';
+}
+
+function save(silent) {
+    const title = state.subject ? `Kërkesë — ${state.subject}` : 'Kërkesë pa titull';
+    if (state._editId) bonecv.updateArchiveEntry(state._editId, { title, content: state });
+    else { const e = bonecv.saveToArchive('Kërkesë', title, state); state._editId = e.id; }
+    persistDraft();
+    if (!silent) bonecv.toast('Kërkesa u ruajt në arkivë', 'success');
+}
+document.getElementById('saveBtn').onclick = () => save();
+document.getElementById('genBtn').onclick = () => { save(true); bonecv.toast('Po hapet dritarja e printimit…','info'); setTimeout(() => window.print(), 350); };
+
+/* Load */
+const edit = bonecv.consumeEditPayload('Kërkesë');
+loadDraft();
+if (edit && edit.content) { Object.assign(state, edit.content); state._editId = edit.id; }
+if (!state.subject) applyTpl('punesim');
+
+['fName','fAddr','tName','tRole','tAddr','city','date','subject','greet','body','close'].forEach(k => bind(k, k));
+document.querySelectorAll('.tpl-btn').forEach(b => b.classList.toggle('active', b.dataset.tpl === state.tpl));
+render();
+
+if (new URLSearchParams(location.search).get('autoprint') === '1') {
+    setTimeout(() => window.print(), 600);
+}
+</script>
+</body>
+</html>

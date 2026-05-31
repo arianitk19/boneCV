@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>boneCV Pro — CV Elite Builder</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="boneCV">
+<meta name="theme-color" content="#020202">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://img.icons8.com/?size=180&id=BB6Nq8E661J1&format=png&color=FFFFFF">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+    --bg: #020202;
+    --card: rgba(10,10,10,0.7);
+    --border: rgba(255,255,255,0.06);
+    --accent: #2563eb;
+}
+* { -webkit-tap-highlight-color: transparent; }
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg); color: #fff;
+    min-height: 100vh; overflow-x: hidden;
+}
+
+/* Sidebar (shared) */
+#sidebar { position: fixed; top:0; left:0; height:100%; width:280px; z-index:5000; transform: translateX(-100%); transition: transform .5s cubic-bezier(.16,1,.3,1); }
+#sidebar.open { transform: translateX(0); }
+.sidebar-overlay { position: fixed; inset:0; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity:0; pointer-events:none; transition: opacity .35s; z-index:4999; }
+.sidebar-overlay.show { opacity:1; pointer-events:auto; }
+@media (min-width: 1024px) {
+    #sidebar { transform: translateX(0); }
+    #app { padding-left: 280px; }
+    #menuBtn, .sidebar-overlay { display: none !important; }
+}
+.nav-link { color: rgba(255,255,255,0.6); }
+.nav-link:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.nav-link.is-active { background: linear-gradient(135deg, rgba(37,99,235,0.18), rgba(37,99,235,0.06)); color: #fff; box-shadow: inset 0 0 0 1px rgba(59,130,246,0.25); }
+.nav-link.is-active i { color: #60a5fa; }
+
+/* Split layout */
+.split { display: grid; grid-template-columns: 1fr; min-height: 100vh; }
+@media (min-width: 1024px) {
+    .split { grid-template-columns: 460px 1fr; }
+}
+
+/* Editor panel */
+.editor {
+    background: rgba(8,8,8,0.9);
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    overflow-y: auto;
+    max-height: 100vh;
+}
+@media (max-width: 1023px) { .editor { max-height: none; padding-top: 84px; } }
+.editor::-webkit-scrollbar { width: 6px; }
+.editor::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+
+/* Preview panel */
+.preview {
+    background: radial-gradient(circle at 30% 20%, #0c0c10 0%, #020202 70%);
+    padding: 40px 20px;
+    overflow-y: auto; max-height: 100vh;
+    display: flex; justify-content: center; align-items: flex-start;
+}
+@media (max-width: 1023px) { .preview { max-height: none; padding: 20px 12px 60px; } }
+
+.glass-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 14px;
+}
+.section-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+}
+.input {
+    width: 100%; background: rgba(255,255,255,0.03);
+    border: 1px solid transparent; border-radius: 12px;
+    padding: 12px 14px; color: #fff; font-size: 14px;
+    transition: border-color .2s, background .2s;
+}
+.input:focus { outline: none; border-color: rgba(59,130,246,0.5); background: rgba(255,255,255,0.05); }
+.input::placeholder { color: rgba(255,255,255,0.3); }
+textarea.input { resize: vertical; min-height: 80px; font-family: inherit; }
+.label-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.btn { transition: transform .15s, background .25s; cursor: pointer; }
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8); color:#fff;
+    border-radius: 14px; padding: 14px; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(59,130,246,0.35);
+}
+.btn-ghost {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 14px; font-size: 13px; color:#fff;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.07); }
+
+.chip {
+    display:inline-flex; align-items:center; gap:6px;
+    background: rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25);
+    color:#bfdbfe; border-radius: 999px; padding:4px 12px; font-size: 12px; font-weight:600;
+}
+
+/* Photo upload */
+.photo-drop {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer; overflow: hidden; flex-shrink: 0;
+}
+.photo-drop img { width:100%; height:100%; object-fit: cover; }
+
+/* CV Paper */
+#paper {
+    width: 210mm;
+    min-height: 297mm;
+    background: #fff; color: #1a1a1a;
+    padding: 18mm 16mm;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    transform: scale(0.78); transform-origin: top center;
+    transition: transform .4s ease;
+    margin-bottom: -55mm;
+}
+@media (max-width: 1280px) { #paper { transform: scale(0.65); margin-bottom: -90mm; } }
+@media (max-width: 768px) { #paper { transform: scale(0.42); margin-bottom: -160mm; } }
+
+/* CV Templates */
+.cv-modern .cv-header {
+    display: flex; align-items: center; gap: 20px;
+    padding-bottom: 16px; border-bottom: 2px solid var(--cv-accent, #2563eb);
+}
+.cv-modern .cv-photo {
+    width: 100px; height: 100px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+    box-shadow: 0 0 0 3px var(--cv-accent, #2563eb);
+}
+.cv-modern h1 { font-size: 28px; font-weight: 800; color: #111; letter-spacing: -0.02em; }
+.cv-modern .role { color: var(--cv-accent, #2563eb); font-weight: 600; margin-top: 4px; font-size: 14px; }
+.cv-modern .contacts { display:flex; flex-wrap:wrap; gap: 14px; font-size: 11px; color:#555; margin-top: 8px; }
+.cv-modern .sect-title { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cv-accent, #2563eb); margin: 18px 0 8px; }
+.cv-modern .body { color: #333; font-size: 12.5px; line-height: 1.55; }
+
+/* Classic */
+.cv-classic { font-family: 'Playfair Display', serif; }
+.cv-classic .cv-header { text-align: center; padding-bottom: 16px; border-bottom: 1px solid #aaa; }
+.cv-classic .cv-photo { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; display: block; }
+.cv-classic h1 { font-size: 32px; font-weight: 800; color: #111; letter-spacing: 0.04em; }
+.cv-classic .role { font-family: 'Plus Jakarta Sans', sans-serif; color: #555; font-style: italic; margin-top: 6px; font-size: 13px; }
+.cv-classic .contacts { font-family: 'Plus Jakarta Sans', sans-serif; display:flex; flex-wrap:wrap; justify-content:center; gap: 14px; font-size: 11px; color:#555; margin-top: 10px; }
+.cv-classic .sect-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; text-align: center; color: #1a1a1a; margin: 18px 0 8px; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+.cv-classic .body { font-family: 'Plus Jakarta Sans', sans-serif; color: #333; font-size: 12.5px; line-height: 1.6; }
+
+/* Minimal */
+.cv-minimal { font-family: 'JetBrains Mono', monospace; }
+.cv-minimal .cv-header { padding-bottom: 12px; border-bottom: 1px solid #333; }
+.cv-minimal .cv-photo { display: none; }
+.cv-minimal h1 { font-size: 24px; font-weight: 700; color: #111; }
+.cv-minimal .role { color: #666; font-size: 12px; margin-top: 4px; }
+.cv-minimal .contacts { display:flex; flex-wrap:wrap; gap: 14px; font-size: 11px; color:#555; margin-top: 6px; }
+.cv-minimal .sect-title { font-size: 11px; font-weight: 700; color: #111; margin: 16px 0 6px; text-transform: uppercase; letter-spacing: 0.1em; }
+.cv-minimal .sect-title::before { content: '// '; color: var(--cv-accent, #2563eb); }
+.cv-minimal .body { color: #333; font-size: 11.5px; line-height: 1.55; }
+
+/* Shared CV blocks */
+.cv-item { margin-bottom: 12px; }
+.cv-item-head { display:flex; justify-content:space-between; align-items: baseline; gap: 12px; font-size: 12.5px; }
+.cv-item-head .title { font-weight: 700; color: #111; }
+.cv-item-head .sub { color: #555; }
+.cv-item-head .date { font-size: 11px; color: #777; white-space: nowrap; }
+.cv-item-desc { font-size: 12px; color: #444; margin-top: 4px; line-height: 1.5; }
+
+.skill-row { display:flex; align-items:center; gap:10px; margin-bottom: 6px; font-size: 12px; }
+.skill-row .name { flex: 1; }
+.skill-bar { flex: 1.4; height: 6px; background:#eee; border-radius: 3px; overflow:hidden; }
+.skill-bar .fill { height: 100%; background: var(--cv-accent, #2563eb); border-radius: 3px; }
+.skill-row .lvl { width: 36px; text-align: right; color:#777; font-size: 11px; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { display:inline-block; background: rgba(0,0,0,0.05); color:#333; font-size: 11px; padding: 3px 10px; border-radius: 999px; }
+
+/* Template selector */
+.tpl-btn { padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: .25s; }
+.tpl-btn.active { background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05)); border-color: rgba(59,130,246,0.5); color: #fff; }
+
+/* Color swatches */
+.swatch { width: 28px; height: 28px; border-radius: 50%; cursor:pointer; border: 2px solid transparent; transition: .2s; }
+.swatch.active { border-color: #fff; transform: scale(1.1); }
+
+/* Sticky bar */
+.action-bar {
+    position: sticky; bottom: 0;
+    background: linear-gradient(to top, rgba(8,8,8,0.98) 60%, rgba(8,8,8,0));
+    padding: 16px 0 8px;
+    margin: 16px -24px -24px;
+    padding-left: 24px; padding-right: 24px;
+    border-top: 1px solid var(--border);
+}
+
+/* Item delete on dynamic rows */
+.dyn-row { position: relative; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 12px; }
+.dyn-row:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.dyn-del {
+    position: absolute; top: 14px; right: 0;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
+    color: #fca5a5; font-size: 12px; cursor: pointer; transition: .2s;
+}
+.dyn-del:hover { background: rgba(239,68,68,0.2); }
+
+/* PRINT */
+@media print {
+    @page { size: A4; margin: 0; }
+    body { background: #fff !important; color: #000 !important; }
+    #sidebar, .sidebar-overlay, .editor, #menuBtn, .no-print { display: none !important; }
+    .split { display: block !important; }
+    .preview { padding: 0 !important; max-height: none !important; background: #fff !important; display: block !important; overflow: visible !important; }
+    #paper {
+        transform: none !important;
+        box-shadow: none !important;
+        margin: 0 !important; padding: 18mm 16mm !important;
+        width: 210mm !important; min-height: 297mm !important;
+    }
+    #app { padding-left: 0 !important; }
+}
+</style>
+</head>
+<body>
+
+<button id="menuBtn" class="lg:hidden fixed top-5 left-5 z-[6000] w-12 h-12 rounded-2xl flex items-center justify-center btn no-print" style="background:rgba(10,10,10,0.7);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.06);">
+    <i class="fa-solid fa-bars text-lg"></i>
+</button>
+
+<div id="sidebar"></div>
+<div class="sidebar-overlay" id="sbOverlay"></div>
+
+<div id="app" class="split">
+    <!-- EDITOR -->
+    <aside class="editor no-print">
+        <header class="flex items-center justify-between mb-5">
+            <div>
+                <div class="chip mb-2"><i class="fa-solid fa-id-badge"></i> CV Elite Builder</div>
+                <h1 class="text-2xl font-extrabold tracking-tight">Krijo CV-në tënde</h1>
+            </div>
+        </header>
+
+        <!-- Template + color -->
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-palette"></i> Stili</div>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <button class="tpl-btn active" data-tpl="modern">Modern</button>
+                <button class="tpl-btn" data-tpl="classic">Klasik</button>
+                <button class="tpl-btn" data-tpl="minimal">Minimal</button>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs text-white/50 mr-2">Ngjyra:</span>
+                <button class="swatch active" data-color="#2563eb" style="background:#2563eb"></button>
+                <button class="swatch" data-color="#7c3aed" style="background:#7c3aed"></button>
+                <button class="swatch" data-color="#059669" style="background:#059669"></button>
+                <button class="swatch" data-color="#d97706" style="background:#d97706"></button>
+                <button class="swatch" data-color="#dc2626" style="background:#dc2626"></button>
+                <button class="swatch" data-color="#0f172a" style="background:#0f172a"></button>
+            </div>
+        </div>
+
+        <!-- Personal -->
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-user"></i> Të dhëna personale</div>
+            <div class="flex gap-4 items-center mb-3">
+                <label class="photo-drop">
+                    <input type="file" accept="image/*" id="photoInput" hidden>
+                    <span id="photoPlaceholder"><i class="fa-solid fa-camera text-white/40"></i></span>
+                    <img id="photoPreview" hidden alt="">
+                </label>
+                <div class="flex-1 space-y-2">
+                    <input class="input" id="fullName" placeholder="Emri Mbiemri">
+                    <input class="input" id="role" placeholder="Pozicioni i kërkuar (p.sh. Inxhinier Software)">
+                </div>
+            </div>
+            <div class="label-row mb-2">
+                <input class="input" id="email" placeholder="Email">
+                <input class="input" id="phone" placeholder="Telefoni">
+            </div>
+            <div class="label-row mb-2">
+                <input class="input" id="city" placeholder="Qyteti">
+                <input class="input" id="dob" placeholder="Datëlindja">
+            </div>
+            <input class="input mb-2" id="linkedin" placeholder="LinkedIn / Portofoli (URL)">
+        </div>
+
+        <!-- About -->
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-quote-left"></i> Rreth meje</div>
+            <textarea class="input" id="about" rows="4" placeholder="Një paragraf i shkurtër profesional…"></textarea>
+        </div>
+
+        <!-- Experience -->
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-briefcase"></i> Përvoja e punës
+                <button class="btn-ghost ml-auto" data-add="exp"><i class="fa-solid fa-plus"></i> Shto</button>
+            </div>
+            <div id="expList"></div>
+        </div>
+
+        <!-- Education -->
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-graduation-cap"></i> Edukimi
+                <button class="btn-ghost ml-auto" data-add="edu"><i class="fa-solid fa-plus"></i> Shto</button>
+            </div>
+            <div id="eduList"></div>
+        </div>
+
+        <!-- Skills -->
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-chart-simple"></i> Aftësitë
+                <button class="btn-ghost ml-auto" data-add="skill"><i class="fa-solid fa-plus"></i> Shto</button>
+            </div>
+            <div id="skillList"></div>
+        </div>
+
+        <!-- Languages -->
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-language"></i> Gjuhët
+                <button class="btn-ghost ml-auto" data-add="lang"><i class="fa-solid fa-plus"></i> Shto</button>
+            </div>
+            <div id="langList"></div>
+        </div>
+
+        <!-- Projects -->
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-rocket"></i> Projekte
+                <button class="btn-ghost ml-auto" data-add="proj"><i class="fa-solid fa-plus"></i> Shto</button>
+            </div>
+            <div id="projList"></div>
+        </div>
+
+        <!-- Certificates -->
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-award"></i> Certifikata
+                <button class="btn-ghost ml-auto" data-add="cert"><i class="fa-solid fa-plus"></i> Shto</button>
+            </div>
+            <div id="certList"></div>
+        </div>
+
+        <div class="action-bar grid grid-cols-2 gap-2">
+            <button id="saveBtn" class="btn btn-ghost"><i class="fa-solid fa-floppy-disk"></i> Ruaj</button>
+            <button id="genBtn" class="btn btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> SuperGenerate</button>
+        </div>
+    </aside>
+
+    <!-- PREVIEW -->
+    <section class="preview">
+        <div id="paper" class="cv-modern" style="--cv-accent:#2563eb;">
+            <div class="cv-header">
+                <img class="cv-photo" id="cvPhoto" src="https://via.placeholder.com/200/eee/aaa?text=+" alt="">
+                <div class="flex-1">
+                    <h1 id="cvName">Emri Mbiemri</h1>
+                    <div class="role" id="cvRole">Pozicioni</div>
+                    <div class="contacts" id="cvContacts"></div>
+                </div>
+            </div>
+            <div id="cvAboutWrap" hidden>
+                <div class="sect-title">Rreth Meje</div>
+                <div class="body" id="cvAbout"></div>
+            </div>
+            <div id="cvExpWrap" hidden>
+                <div class="sect-title">Përvoja e Punës</div>
+                <div id="cvExp"></div>
+            </div>
+            <div id="cvEduWrap" hidden>
+                <div class="sect-title">Edukimi</div>
+                <div id="cvEdu"></div>
+            </div>
+            <div id="cvSkillWrap" hidden>
+                <div class="sect-title">Aftësitë</div>
+                <div id="cvSkill"></div>
+            </div>
+            <div id="cvLangWrap" hidden>
+                <div class="sect-title">Gjuhët</div>
+                <div id="cvLang" class="tag-row"></div>
+            </div>
+            <div id="cvProjWrap" hidden>
+                <div class="sect-title">Projekte</div>
+                <div id="cvProj"></div>
+            </div>
+            <div id="cvCertWrap" hidden>
+                <div class="sect-title">Certifikata</div>
+                <div id="cvCert"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="master.js"></script>
+<script>
+/* Sidebar */
+bonecv.mountSidebar('sidebar','cv');
+const sb = document.getElementById('sidebar');
+const ov = document.getElementById('sbOverlay');
+document.getElementById('menuBtn').onclick = () => { sb.classList.add('open'); ov.classList.add('show'); };
+ov.onclick = () => { sb.classList.remove('open'); ov.classList.remove('show'); };
+
+/* ----- State ----- */
+const state = {
+    template: 'modern',
+    accent: '#2563eb',
+    photo: '',
+    fullName: '', role: '', email: '', phone: '', city: '', dob: '', linkedin: '',
+    about: '',
+    exp: [], edu: [], skill: [], lang: [], proj: [], cert: [],
+    _editId: null
+};
+
+/* ----- Persist (auto-save draft) ----- */
+const DRAFT_KEY = 'boneCV_CV_Draft';
+function persistDraft() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); } catch(e){} }
+function loadDraft() {
+    try {
+        const r = localStorage.getItem(DRAFT_KEY);
+        if (r) Object.assign(state, JSON.parse(r));
+    } catch(e){}
+}
+
+/* ----- Field helpers ----- */
+const bind = (id, key) => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => { state[key] = el.value; render(); persistDraft(); });
+    el.value = state[key] || '';
+};
+
+/* ----- Templates for rows ----- */
+function rowExp(item={}, i) {
+    return `<div class="dyn-row" data-i="${i}">
+        <button class="dyn-del" data-del="exp" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+        <div class="label-row mb-2">
+            <input class="input" data-k="company" placeholder="Kompania" value="${esc(item.company)}">
+            <input class="input" data-k="title" placeholder="Pozicioni" value="${esc(item.title)}">
+        </div>
+        <div class="label-row mb-2">
+            <input class="input" data-k="from" placeholder="Nga (p.sh. Janar 2022)" value="${esc(item.from)}">
+            <input class="input" data-k="to" placeholder="Deri (ose 'Aktual')" value="${esc(item.to)}">
+        </div>
+        <textarea class="input" data-k="desc" rows="2" placeholder="Përshkrim i shkurtër">${esc(item.desc)}</textarea>
+    </div>`;
+}
+function rowEdu(item={}, i) {
+    return `<div class="dyn-row" data-i="${i}">
+        <button class="dyn-del" data-del="edu" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+        <div class="label-row mb-2">
+            <input class="input" data-k="school" placeholder="Institucioni" value="${esc(item.school)}">
+            <input class="input" data-k="degree" placeholder="Diploma" value="${esc(item.degree)}">
+        </div>
+        <div class="label-row">
+            <input class="input" data-k="from" placeholder="Nga" value="${esc(item.from)}">
+            <input class="input" data-k="to" placeholder="Deri" value="${esc(item.to)}">
+        </div>
+    </div>`;
+}
+function rowSkill(item={}, i) {
+    const lvl = Number(item.level || 70);
+    return `<div class="dyn-row" data-i="${i}">
+        <button class="dyn-del" data-del="skill" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+        <div class="flex gap-2 items-center">
+            <input class="input flex-1" data-k="name" placeholder="P.sh. JavaScript" value="${esc(item.name)}">
+            <input type="range" min="10" max="100" value="${lvl}" data-k="level" class="w-28">
+            <span class="text-xs text-white/60 w-10 text-right" data-pct>${lvl}%</span>
+        </div>
+    </div>`;
+}
+function rowLang(item={}, i) {
+    return `<div class="dyn-row" data-i="${i}">
+        <button class="dyn-del" data-del="lang" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+        <div class="label-row">
+            <input class="input" data-k="name" placeholder="Gjuha" value="${esc(item.name)}">
+            <input class="input" data-k="level" placeholder="Niveli (A1–C2)" value="${esc(item.level)}">
+        </div>
+    </div>`;
+}
+function rowProj(item={}, i) {
+    return `<div class="dyn-row" data-i="${i}">
+        <button class="dyn-del" data-del="proj" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+        <input class="input mb-2" data-k="name" placeholder="Emri i projektit" value="${esc(item.name)}">
+        <textarea class="input" data-k="desc" rows="2" placeholder="Përshkrim">${esc(item.desc)}</textarea>
+    </div>`;
+}
+function rowCert(item={}, i) {
+    return `<div class="dyn-row" data-i="${i}">
+        <button class="dyn-del" data-del="cert" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+        <div class="label-row">
+            <input class="input" data-k="name" placeholder="Emri i certifikatës" value="${esc(item.name)}">
+            <input class="input" data-k="year" placeholder="Viti" value="${esc(item.year)}">
+        </div>
+    </div>`;
+}
+
+function esc(s) { return bonecv.escapeHTML(s); }
+
+/* ----- Render rows ----- */
+function renderRows() {
+    const map = { exp: rowExp, edu: rowEdu, skill: rowSkill, lang: rowLang, proj: rowProj, cert: rowCert };
+    const listMap = { exp:'expList', edu:'eduList', skill:'skillList', lang:'langList', proj:'projList', cert:'certList' };
+    for (const key of Object.keys(map)) {
+        const arr = state[key] || [];
+        const html = arr.length ? arr.map((x,i) => map[key](x,i)).join('') : `<div class="text-xs text-white/40 italic">Asnjë regjistrim. Klikoni "Shto".</div>`;
+        document.getElementById(listMap[key]).innerHTML = html;
+    }
+    attachRowEvents();
+}
+
+function attachRowEvents() {
+    document.querySelectorAll('.dyn-row').forEach(row => {
+        const list = row.parentElement.id;
+        const key = ({expList:'exp',eduList:'edu',skillList:'skill',langList:'lang',projList:'proj',certList:'cert'})[list];
+        const i = +row.dataset.i;
+        row.querySelectorAll('[data-k]').forEach(inp => {
+            inp.addEventListener('input', () => {
+                const k = inp.dataset.k;
+                state[key][i][k] = inp.type === 'range' ? +inp.value : inp.value;
+                if (inp.type === 'range') {
+                    const pct = row.querySelector('[data-pct]');
+                    if (pct) pct.textContent = inp.value + '%';
+                }
+                render(); persistDraft();
+            });
+        });
+    });
+    document.querySelectorAll('[data-del]').forEach(btn => {
+        btn.onclick = () => {
+            const key = btn.dataset.del; const i = +btn.dataset.i;
+            state[key].splice(i, 1);
+            renderRows(); render(); persistDraft();
+        };
+    });
+}
+
+/* ----- Add buttons ----- */
+document.querySelectorAll('[data-add]').forEach(b => {
+    b.onclick = () => {
+        const k = b.dataset.add;
+        const blanks = {
+            exp:{company:'',title:'',from:'',to:'',desc:''},
+            edu:{school:'',degree:'',from:'',to:''},
+            skill:{name:'',level:75},
+            lang:{name:'',level:''},
+            proj:{name:'',desc:''},
+            cert:{name:'',year:''}
+        };
+        state[k].push(Object.assign({}, blanks[k]));
+        renderRows(); render(); persistDraft();
+    };
+});
+
+/* ----- Photo upload ----- */
+document.getElementById('photoInput').addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+        state.photo = r.result;
+        document.getElementById('photoPreview').src = r.result;
+        document.getElementById('photoPreview').hidden = false;
+        document.getElementById('photoPlaceholder').hidden = true;
+        render(); persistDraft();
+    };
+    r.readAsDataURL(f);
+});
+
+/* ----- Template / Color ----- */
+document.querySelectorAll('.tpl-btn').forEach(b => {
+    b.onclick = () => {
+        document.querySelectorAll('.tpl-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        state.template = b.dataset.tpl;
+        render(); persistDraft();
+    };
+});
+document.querySelectorAll('.swatch').forEach(b => {
+    b.onclick = () => {
+        document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        state.accent = b.dataset.color;
+        render(); persistDraft();
+    };
+});
+
+/* ----- Render preview ----- */
+function render() {
+    const p = document.getElementById('paper');
+    p.className = 'cv-' + state.template;
+    p.style.setProperty('--cv-accent', state.accent);
+
+    document.getElementById('cvName').textContent = state.fullName || 'Emri Mbiemri';
+    document.getElementById('cvRole').textContent = state.role || 'Pozicioni';
+
+    const photo = document.getElementById('cvPhoto');
+    photo.src = state.photo || 'https://via.placeholder.com/200/f0f0f0/cccccc?text=+';
+
+    const contacts = [];
+    if (state.email) contacts.push(`<span><i class="fa-solid fa-envelope mr-1"></i>${esc(state.email)}</span>`);
+    if (state.phone) contacts.push(`<span><i class="fa-solid fa-phone mr-1"></i>${esc(state.phone)}</span>`);
+    if (state.city) contacts.push(`<span><i class="fa-solid fa-location-dot mr-1"></i>${esc(state.city)}</span>`);
+    if (state.linkedin) contacts.push(`<span><i class="fa-solid fa-link mr-1"></i>${esc(state.linkedin)}</span>`);
+    if (state.dob) contacts.push(`<span><i class="fa-solid fa-cake-candles mr-1"></i>${esc(state.dob)}</span>`);
+    document.getElementById('cvContacts').innerHTML = contacts.join('');
+
+    // About
+    document.getElementById('cvAboutWrap').hidden = !state.about;
+    document.getElementById('cvAbout').textContent = state.about;
+
+    // Exp
+    document.getElementById('cvExpWrap').hidden = !state.exp.length;
+    document.getElementById('cvExp').innerHTML = state.exp.map(x => `
+        <div class="cv-item">
+            <div class="cv-item-head">
+                <div><span class="title">${esc(x.title)}</span> <span class="sub">— ${esc(x.company)}</span></div>
+                <div class="date">${esc(x.from)} ${x.to ? '– ' + esc(x.to) : ''}</div>
+            </div>
+            ${x.desc ? `<div class="cv-item-desc">${esc(x.desc)}</div>` : ''}
+        </div>`).join('');
+
+    // Edu
+    document.getElementById('cvEduWrap').hidden = !state.edu.length;
+    document.getElementById('cvEdu').innerHTML = state.edu.map(x => `
+        <div class="cv-item">
+            <div class="cv-item-head">
+                <div><span class="title">${esc(x.degree)}</span> <span class="sub">— ${esc(x.school)}</span></div>
+                <div class="date">${esc(x.from)} ${x.to ? '– ' + esc(x.to) : ''}</div>
+            </div>
+        </div>`).join('');
+
+    // Skills
+    document.getElementById('cvSkillWrap').hidden = !state.skill.length;
+    document.getElementById('cvSkill').innerHTML = state.skill.map(s => `
+        <div class="skill-row">
+            <div class="name">${esc(s.name)}</div>
+            <div class="skill-bar"><div class="fill" style="width:${Math.min(100,Math.max(0,+s.level||0))}%;"></div></div>
+            <div class="lvl">${+s.level||0}%</div>
+        </div>`).join('');
+
+    // Languages
+    document.getElementById('cvLangWrap').hidden = !state.lang.length;
+    document.getElementById('cvLang').innerHTML = state.lang.map(l => `<span class="tag">${esc(l.name)} ${l.level ? '· ' + esc(l.level) : ''}</span>`).join('');
+
+    // Projects
+    document.getElementById('cvProjWrap').hidden = !state.proj.length;
+    document.getElementById('cvProj').innerHTML = state.proj.map(p => `
+        <div class="cv-item">
+            <div class="cv-item-head"><div><span class="title">${esc(p.name)}</span></div></div>
+            ${p.desc ? `<div class="cv-item-desc">${esc(p.desc)}</div>` : ''}
+        </div>`).join('');
+
+    // Certs
+    document.getElementById('cvCertWrap').hidden = !state.cert.length;
+    document.getElementById('cvCert').innerHTML = state.cert.map(c => `
+        <div class="cv-item">
+            <div class="cv-item-head">
+                <div><span class="title">${esc(c.name)}</span></div>
+                <div class="date">${esc(c.year)}</div>
+            </div>
+        </div>`).join('');
+}
+
+/* ----- Save / Generate ----- */
+function saveToArchive(silent) {
+    const title = state.fullName ? `CV — ${state.fullName}` : 'CV pa titull';
+    if (state._editId) {
+        bonecv.updateArchiveEntry(state._editId, { title, content: state });
+    } else {
+        const entry = bonecv.saveToArchive('CV', title, state);
+        state._editId = entry.id;
+    }
+    persistDraft();
+    if (!silent) bonecv.toast('CV-ja u ruajt në arkivë', 'success');
+}
+document.getElementById('saveBtn').onclick = () => saveToArchive();
+document.getElementById('genBtn').onclick = () => {
+    saveToArchive(true);
+    bonecv.toast('Po hapet dritarja e printimit…', 'info');
+    setTimeout(() => window.print(), 350);
+};
+
+/* ----- Load edit payload if present ----- */
+const edit = bonecv.consumeEditPayload('CV');
+loadDraft();
+if (edit && edit.content) {
+    Object.assign(state, edit.content);
+    state._editId = edit.id;
+}
+
+/* ----- Initial bind & render ----- */
+['fullName','role','email','phone','city','dob','linkedin','about'].forEach(k => bind(k, k));
+if (state.photo) {
+    document.getElementById('photoPreview').src = state.photo;
+    document.getElementById('photoPreview').hidden = false;
+    document.getElementById('photoPlaceholder').hidden = true;
+}
+document.querySelectorAll('.tpl-btn').forEach(b => b.classList.toggle('active', b.dataset.tpl === state.template));
+document.querySelectorAll('.swatch').forEach(b => b.classList.toggle('active', b.dataset.color === state.accent));
+
+renderRows();
+render();
+
+if (new URLSearchParams(location.search).get('autoprint') === '1') {
+    setTimeout(() => window.print(), 600);
+}
+</script>
+</body>
+</html>
