@@ -1,9 +1,0 @@
-<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="boneCV">
-  <path d="M182 120h120l60 60v212a20 20 0 0 1-20 20H182a20 20 0 0 1-20-20V140a20 20 0 0 1 20-20z" fill="#000000"/>
-  <path d="M302 120v52a8 8 0 0 0 8 8h52" fill="#000000" opacity="0.35"/>
-  <circle cx="212" cy="212" r="20" fill="#ffffff"/>
-  <rect x="246" y="200" width="86" height="16" rx="8" fill="#ffffff"/>
-  <rect x="192" y="262" width="140" height="14" rx="7" fill="#ffffff"/>
-  <rect x="192" y="292" width="140" height="14" rx="7" fill="#ffffff"/>
-  <rect x="192" y="322" width="96" height="14" rx="7" fill="#ffffff"/>
-</svg>
