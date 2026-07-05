@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>boneCV Pro — Kontrata Master</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#020202">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<script>(function(){try{var s=JSON.parse(localStorage.getItem('boneCV_Settings')||'{}');var th=s.theme||'dark';if(th==='auto'){th=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}var r=document.documentElement;r.setAttribute('data-theme',th);r.setAttribute('lang',s.lang||'sq');if(s.accent)r.style.setProperty('--accent',s.accent);r.style.fontSize=({sm:'15px',md:'16px',lg:'18px',xl:'20px'}[s.textScale||'md']);}catch(e){}})();</script>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="mask-icon" href="icon.svg" color="#2563eb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#020202">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+:root { --bg:#020202; --border:rgba(255,255,255,0.06); --accent:#059669; }
+* { -webkit-tap-highlight-color: transparent; }
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:#fff; min-height:100vh; overflow-x:hidden; }
+
+#sidebar { position:fixed; top:0; left:0; height:100%; width:280px; z-index:5000; transform:translateX(-100%); transition:transform .5s cubic-bezier(.16,1,.3,1); }
+#sidebar.open { transform:translateX(0); }
+.sidebar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .35s; z-index:4999; }
+.sidebar-overlay.show { opacity:1; pointer-events:auto; }
+@media (min-width:1024px) { #sidebar{transform:translateX(0);} #app{padding-left:280px;} #menuBtn,.sidebar-overlay{display:none!important;} }
+.nav-link{color:rgba(255,255,255,0.6);}
+.nav-link:hover{background:rgba(255,255,255,0.04);color:#fff;}
+.nav-link.is-active{background:linear-gradient(135deg,rgba(5,150,105,0.18),rgba(5,150,105,0.06));color:#fff;box-shadow:inset 0 0 0 1px rgba(16,185,129,0.25);}
+.nav-link.is-active i{color:#34d399;}
+
+.split { display:grid; grid-template-columns:1fr; min-height:100vh; }
+@media (min-width:1024px) { .split { grid-template-columns: 460px 1fr; } }
+
+.editor { background:rgba(8,8,8,0.9); border-right:1px solid var(--border); padding:24px; overflow-y:auto; max-height:100vh; }
+@media (max-width:1023px) { .editor { max-height:none; padding-top:84px; } }
+.editor::-webkit-scrollbar{width:6px;} .editor::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:3px;}
+
+.preview { background:radial-gradient(circle at 30% 20%, #0a100d 0%, #020202 70%); padding:40px 20px; overflow-y:auto; max-height:100vh; display:flex; justify-content:center; align-items:flex-start; }
+@media (max-width:1023px) { .preview { max-height:none; padding:20px 12px 60px; } }
+
+.glass-card { background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:20px; padding:20px; margin-bottom:14px; }
+.section-label { font-size:11px; text-transform:uppercase; letter-spacing:.2em; color:rgba(255,255,255,0.4); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.input { width:100%; background:rgba(255,255,255,0.03); border:1px solid transparent; border-radius:12px; padding:12px 14px; color:#fff; font-size:14px; transition:.2s; }
+.input:focus { outline:none; border-color:rgba(16,185,129,0.5); background:rgba(255,255,255,0.05); }
+.input::placeholder { color:rgba(255,255,255,0.3); }
+textarea.input { resize:vertical; min-height:80px; font-family:inherit; }
+.label-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+.btn { transition:transform .15s, background .25s; cursor:pointer; }
+.btn:active { transform:scale(0.97); }
+.btn-primary { background:linear-gradient(135deg,#10b981,#047857); color:#fff; border-radius:14px; padding:14px; font-weight:700; box-shadow:0 10px 30px rgba(16,185,129,0.35); }
+.btn-ghost { background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-size:13px; color:#fff; }
+.btn-ghost:hover { background:rgba(255,255,255,0.07); }
+
+.chip { display:inline-flex; align-items:center; gap:6px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); color:#a7f3d0; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:600; }
+.kind-btn { padding:10px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); font-size:12px; cursor:pointer; transition:.25s; }
+.kind-btn.active { background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05)); border-color:rgba(16,185,129,0.5); color:#fff; }
+
+/* PAPER */
+#paper {
+    width:210mm; min-height:297mm; background:#fff; color:#1a1a1a;
+    padding:22mm 20mm; box-shadow:0 40px 100px rgba(0,0,0,0.5);
+    transform:scale(0.78); transform-origin:top center; transition:transform .4s ease;
+    margin-bottom:-55mm; font-family:'Plus Jakarta Sans',sans-serif;
+}
+@media (max-width:1280px) { #paper { transform:scale(0.65); margin-bottom:-90mm; } }
+@media (max-width:768px) { #paper { transform:scale(0.42); margin-bottom:-160mm; } }
+
+.k-title { text-align:center; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:0.04em; }
+.k-subtitle { text-align:center; font-size:12px; color:#666; margin-top:4px; margin-bottom:14px; }
+.k-bar { height:3px; background:linear-gradient(to right, #059669, #10b981); margin-bottom:18px; border-radius:2px; }
+.k-meta { display:flex; justify-content:space-between; font-size:11px; color:#555; margin-bottom:12px; }
+.k-body { font-size:12.5px; line-height:1.7; color:#222; }
+.k-parties { background:#f7faf9; border-left:3px solid #10b981; padding:12px 14px; border-radius:6px; margin:10px 0 16px; font-size:12px; }
+.k-parties div { margin-bottom:4px; }
+.k-parties b { color:#0f172a; }
+.k-article { margin-bottom:12px; }
+.k-article h3 { font-size:12px; font-weight:800; color:#047857; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px; }
+.k-article p { font-size:12px; line-height:1.65; color:#333; white-space:pre-wrap; }
+.k-sign { display:flex; justify-content:space-between; margin-top:34px; font-size:11.5px; color:#444; }
+.k-sign .col { width:45%; text-align:center; }
+.k-sign .line { border-top:1px solid #888; margin-bottom:6px; height:1px; }
+
+/* Article editor row */
+.art-row { position:relative; padding:12px 0; border-top:1px solid rgba(255,255,255,0.05); }
+.art-row:first-child { border-top:none; padding-top:0; }
+.art-del { position:absolute; top:14px; right:0; width:28px; height:28px; border-radius:8px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); color:#fca5a5; font-size:12px; cursor:pointer; }
+.art-del:hover { background:rgba(239,68,68,0.2); }
+
+.action-bar { position:sticky; bottom:0; background:linear-gradient(to top, rgba(8,8,8,0.98) 60%, rgba(8,8,8,0)); padding:16px 0 8px; margin:16px -24px -24px; padding-left:24px; padding-right:24px; border-top:1px solid var(--border); }
+
+@media print {
+    @page { size: A4; margin: 0; }
+    body { background:#fff !important; color:#000 !important; }
+    #sidebar, .sidebar-overlay, .editor, #menuBtn, .no-print { display:none !important; }
+    .split { display:block !important; }
+    .preview { padding:0 !important; max-height:none !important; background:#fff !important; display:block !important; overflow:visible !important; }
+    #paper { transform:none !important; box-shadow:none !important; margin:0 !important; padding:22mm 20mm !important; width:210mm !important; min-height:297mm !important; }
+    #app { padding-left:0 !important; }
+}
+</style>
+</head>
+<body>
+<button id="menuBtn" class="lg:hidden fixed top-5 left-5 z-[6000] w-12 h-12 rounded-2xl flex items-center justify-center btn no-print" style="top:calc(env(safe-area-inset-top) + 14px);background:rgba(10,10,10,0.7);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.06);">
+    <i class="fa-solid fa-bars text-lg"></i>
+</button>
+<div id="sidebar"></div>
+<div class="sidebar-overlay" id="sbOverlay"></div>
+
+<div id="app" class="split">
+    <aside class="editor no-print">
+        <header class="mb-5">
+            <div class="chip mb-2"><i class="fa-solid fa-file-signature"></i> Kontrata Master Pro</div>
+            <h1 class="text-2xl font-extrabold tracking-tight">Gjenero kontratë ligjore</h1>
+        </header>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-shapes"></i> Lloji i kontratës</div>
+            <div class="grid grid-cols-3 gap-2">
+                <button class="kind-btn active" data-kind="pune">Pune</button>
+                <button class="kind-btn" data-kind="sherbim">Shërbimi</button>
+                <button class="kind-btn" data-kind="bashk">Bashkëpunimi</button>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-buildings"></i> Palët</div>
+            <div class="text-xs text-white/50 mb-2 mt-1">Pala A — Punëdhënësi / Porositësi</div>
+            <input class="input mb-2" id="aName" placeholder="Emri / Kompania">
+            <div class="label-row mb-2">
+                <input class="input" id="aId" placeholder="NIPT / Nr. Personal">
+                <input class="input" id="aRep" placeholder="Përfaqësuar nga">
+            </div>
+            <input class="input mb-3" id="aAddr" placeholder="Adresa">
+
+            <div class="text-xs text-white/50 mb-2">Pala B — Punëmarrësi / Kryerësi</div>
+            <input class="input mb-2" id="bName" placeholder="Emri Mbiemri">
+            <div class="label-row mb-2">
+                <input class="input" id="bId" placeholder="Nr. Personal">
+                <input class="input" id="bRole" placeholder="Pozicioni">
+            </div>
+            <input class="input" id="bAddr" placeholder="Adresa">
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label"><i class="fa-solid fa-calendar"></i> Kushtet bazë</div>
+            <div class="label-row mb-2">
+                <input class="input" id="dStart" placeholder="Data e fillimit (p.sh. 01.06.2026)">
+                <input class="input" id="dEnd" placeholder="Data e mbarimit (ose 'pa afat')">
+            </div>
+            <div class="label-row mb-2">
+                <input class="input" id="salary" placeholder="Paga / Vlera (Lek)">
+                <input class="input" id="city" placeholder="Vendi i nënshkrimit">
+            </div>
+            <input class="input" id="signDate" placeholder="Data e nënshkrimit">
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label">
+                <i class="fa-solid fa-scale-balanced"></i> Nenet
+                <button class="btn-ghost ml-auto" id="addArt"><i class="fa-solid fa-plus"></i> Shto nen</button>
+            </div>
+            <div id="artList"></div>
+        </div>
+
+        <div class="action-bar grid grid-cols-2 gap-2">
+            <button id="saveBtn" class="btn btn-ghost"><i class="fa-solid fa-floppy-disk"></i> Ruaj</button>
+            <button id="genBtn" class="btn btn-primary"><i class="fa-solid fa-file-arrow-down"></i> Gjenero PDF</button>
+        </div>
+    </aside>
+
+    <section class="preview">
+        <div id="paper">
+            <div class="k-title" id="kTitle">KONTRATË PUNE</div>
+            <div class="k-subtitle" id="kSubtitle">në bazë të Kodit të Punës së Republikës së Shqipërisë</div>
+            <div class="k-bar"></div>
+            <div class="k-meta">
+                <div>Vendi: <b id="vCity">—</b></div>
+                <div>Data: <b id="vDate">—</b></div>
+            </div>
+
+            <div class="k-parties">
+                <div><b>Ndërmjet:</b></div>
+                <div id="vA">Pala A…</div>
+                <div style="margin-top:6px;"><b>dhe</b></div>
+                <div id="vB">Pala B…</div>
+            </div>
+
+            <div class="k-body">
+                <div id="vIntro" style="margin-bottom:14px;"></div>
+                <div id="vArticles"></div>
+            </div>
+
+            <div class="k-sign">
+                <div class="col"><div class="line"></div>Pala A<br><span id="vSignA"></span></div>
+                <div class="col"><div class="line"></div>Pala B<br><span id="vSignB"></span></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="master.js"></script>
+<script>bonecv.boot('kontrata');</script>
+<script>
+bonecv.mountSidebar('sidebar','kontrata');
+const sb = document.getElementById('sidebar'); const ov = document.getElementById('sbOverlay');
+document.getElementById('menuBtn').onclick = () => { sb.classList.add('open'); ov.classList.add('show'); };
+ov.onclick = () => { sb.classList.remove('open'); ov.classList.remove('show'); };
+
+/* Templates of legal articles per kind */
+const TEMPLATES = {
+    pune: {
+        title: 'KONTRATË PUNE',
+        sub: 'në bazë të Kodit të Punës së Republikës së Shqipërisë',
+        intro: 'Palët, pas leximit të kushteve të mëposhtme, ranë dakord për lidhjen e kësaj kontrate pune me dëshirën e tyre të lirë, pa asnjë presion apo influencë.',
+        articles: [
+            { h: 'Neni 1 — Objekti', t: 'Objekt i kësaj kontrate është rregullimi i marrëdhënies së punës ndërmjet Punëdhënësit dhe Punëmarrësit, sipas pozicionit, përgjegjësive dhe afatit të dakordësuar.' },
+            { h: 'Neni 2 — Kohëzgjatja', t: 'Kontrata fillon në datën e fillimit të punës dhe vazhdon sipas afatit të përcaktuar. Periudha provuese është deri në 3 (tre) muaj.' },
+            { h: 'Neni 3 — Detyrat dhe përgjegjësitë', t: 'Punëmarrësi angazhohet të kryejë detyrat e pozicionit me përkushtim, profesionalizëm dhe në përputhje me rregulloret e brendshme të Punëdhënësit.' },
+            { h: 'Neni 4 — Paga dhe përfitimet', t: 'Punëdhënësi i paguan Punëmarrësit pagën mujore bruto sipas vlerës së dakordësuar, brenda datës 10 të çdo muaji, përmes transfertës bankare. Pagat janë subjekt i tatimit dhe sigurimeve shoqërore sipas legjislacionit në fuqi.' },
+            { h: 'Neni 5 — Orari i punës', t: 'Orari javor i punës është 40 orë, i shpërndarë nga e hëna në të premte, sipas orarit zyrtar të Punëdhënësit.' },
+            { h: 'Neni 6 — Pushimi vjetor', t: 'Punëmarrësi ka të drejtën e pushimit vjetor të paguar prej 20 ditë pune në vit, sipas Kodit të Punës.' },
+            { h: 'Neni 7 — Konfidencialiteti', t: 'Punëmarrësi detyrohet të ruajë konfidencialitetin e plotë mbi informacionet e brendshme të Punëdhënësit, edhe pas përfundimit të kësaj kontrate.' },
+            { h: 'Neni 8 — Zgjidhja e kontratës', t: 'Kontrata mund të zgjidhet me marrëveshje të ndërsjellë ose me njoftim paraprak prej 30 ditësh nga secila palë, përveç rasteve të parashikuara nga ligji.' },
+            { h: 'Neni 9 — Dispozita të fundit', t: 'Për çdo mosmarrëveshje që mund të lindë, palët bien dakord ta zgjidhin me mirëkuptim. Në të kundërt, kompetente është Gjykata e Rrethit Gjyqësor përkatës. Kjo kontratë hartohet në 2 (dy) kopje origjinale, nga një për secilën palë.' }
+        ]
+    },
+    sherbim: {
+        title: 'KONTRATË SHËRBIMI',
+        sub: 'për kryerjen e shërbimeve profesionale',
+        intro: 'Palët bien dakord që Kryerësi i Shërbimit të kryejë në favor të Porositësit shërbimet e përshkruara në këtë kontratë, kundrejt shpërblimit të dakordësuar.',
+        articles: [
+            { h: 'Neni 1 — Objekti', t: 'Objekt i kontratës është kryerja e shërbimit profesional të specifikuar, brenda afateve dhe standardeve të dakordësuara.' },
+            { h: 'Neni 2 — Afati', t: 'Kryerësi merr përsipër ta përfundojë shërbimin brenda afatit të përcaktuar, sipas planit të rënë dakord paraprakisht.' },
+            { h: 'Neni 3 — Vlera dhe pagesa', t: 'Porositësi i paguan Kryerësit vlerën totale të dakordësuar, sipas mënyrës dhe afateve të mëposhtme: pagesa bëhet me transfertë bankare, brenda 15 ditëve nga lëshimi i faturës.' },
+            { h: 'Neni 4 — Detyrimet e palëve', t: 'Kryerësi garanton cilësinë profesionale të shërbimit. Porositësi siguron informacionin, materialet dhe akseset e nevojshme për ekzekutimin e punës.' },
+            { h: 'Neni 5 — Pronësia intelektuale', t: 'Të gjitha rezultatet e shërbimit i kalojnë në pronësi Porositësit pas pagesës së plotë të vlerës së kontratës.' },
+            { h: 'Neni 6 — Konfidencialiteti', t: 'Palët angazhohen të mos zbulojnë informacionin e brendshëm të tjetrës palë gjatë dhe pas zbatimit të kontratës.' },
+            { h: 'Neni 7 — Zgjidhja e mosmarrëveshjeve', t: 'Mosmarrëveshjet zgjidhen me mirëkuptim. Në mungesë të zgjidhjes, kompetente është gjykata e rrethit gjyqësor përkatës.' }
+        ]
+    },
+    bashk: {
+        title: 'KONTRATË BASHKËPUNIMI',
+        sub: 'për partneritet biznesi midis palëve',
+        intro: 'Palët, me dëshirën e tyre të lirë, lidhin këtë kontratë bashkëpunimi për të rregulluar marrëdhëniet e tyre tregtare/profesionale me objektivin e përbashkët të arritjes së rezultateve të dakordësuara.',
+        articles: [
+            { h: 'Neni 1 — Objekti i bashkëpunimit', t: 'Palët bashkëpunojnë në fushën e aktivitetit të dakordësuar, duke kombinuar burimet, ekspertizën dhe kapacitetet e tyre.' },
+            { h: 'Neni 2 — Kohëzgjatja', t: 'Bashkëpunimi fillon në datën e nënshkrimit dhe vazhdon për periudhën e përcaktuar, me mundësi rinovimi me marrëveshje me shkrim.' },
+            { h: 'Neni 3 — Detyrimet e palëve', t: 'Secila palë angazhohet të kontribuojë sipas roleve dhe përgjegjësive të rëna dakord, duke respektuar standardet e cilësisë dhe afatet kohore.' },
+            { h: 'Neni 4 — Ndarja e fitimit / vlerës', t: 'Të ardhurat e gjeneruara nga ky bashkëpunim ndahen sipas përqindjeve të dakordësuara në një aneks të kësaj kontrate ose siç specifikohet me shkrim.' },
+            { h: 'Neni 5 — Konfidencialiteti', t: 'Palët angazhohen të ruajnë konfidencialitetin e plotë të informacionit të ndarë gjatë bashkëpunimit.' },
+            { h: 'Neni 6 — Zgjidhja e kontratës', t: 'Kontrata mund të zgjidhet me marrëveshje të ndërsjellë ose me njoftim 30-ditor nga secila palë.' },
+            { h: 'Neni 7 — Mosmarrëveshjet', t: 'Mosmarrëveshjet zgjidhen me bisedime. Në mungesë, kompetente është gjykata e rrethit gjyqësor përkatës.' }
+        ]
+    }
+};
+
+const state = {
+    kind: 'pune',
+    aName:'', aId:'', aRep:'', aAddr:'',
+    bName:'', bId:'', bRole:'', bAddr:'',
+    dStart:'', dEnd:'', salary:'', city:'', signDate:'',
+    title:'', sub:'', intro:'',
+    articles: [],
+    _editId: null
+};
+
+const DRAFT = 'boneCV_Kontrata_Draft';
+function persistDraft(){ try{ localStorage.setItem(DRAFT, JSON.stringify(state)); }catch(e){} }
+function loadDraft(){ try{ const r = localStorage.getItem(DRAFT); if(r) Object.assign(state, JSON.parse(r)); }catch(e){} }
+
+const esc = bonecv.escapeHTML;
+
+function applyKind(kind) {
+    state.kind = kind;
+    const t = TEMPLATES[kind];
+    state.title = t.title;
+    state.sub = t.sub;
+    state.intro = t.intro;
+    state.articles = t.articles.map(a => Object.assign({}, a));
+}
+
+function bind(id, key) {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => { state[key] = el.value; render(); persistDraft(); });
+    el.value = state[key] || '';
+}
+
+function renderArticles() {
+    const el = document.getElementById('artList');
+    el.innerHTML = state.articles.map((a,i) => `
+        <div class="art-row" data-i="${i}">
+            <button class="art-del" data-i="${i}"><i class="fa-solid fa-trash"></i></button>
+            <input class="input mb-2" data-k="h" placeholder="Titulli i nenit" value="${esc(a.h)}">
+            <textarea class="input" data-k="t" rows="3" placeholder="Përmbajtja…">${esc(a.t)}</textarea>
+        </div>`).join('') || '<div class="text-xs text-white/40 italic">Asnjë nen. Klikoni "Shto nen".</div>';
+
+    el.querySelectorAll('.art-row').forEach(row => {
+        const i = +row.dataset.i;
+        row.querySelectorAll('[data-k]').forEach(inp => {
+            inp.addEventListener('input', () => {
+                state.articles[i][inp.dataset.k] = inp.value;
+                render(); persistDraft();
+            });
+        });
+    });
+    el.querySelectorAll('.art-del').forEach(b => {
+        b.onclick = () => { state.articles.splice(+b.dataset.i, 1); renderArticles(); render(); persistDraft(); };
+    });
+}
+
+document.getElementById('addArt').onclick = () => {
+    state.articles.push({ h: `Neni ${state.articles.length + 1}`, t: '' });
+    renderArticles(); render(); persistDraft();
+};
+
+document.querySelectorAll('.kind-btn').forEach(b => {
+    b.onclick = () => {
+        document.querySelectorAll('.kind-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        applyKind(b.dataset.kind);
+        renderArticles(); render(); persistDraft();
+    };
+});
+
+function render() {
+    document.getElementById('kTitle').textContent = state.title || '';
+    document.getElementById('kSubtitle').textContent = state.sub || '';
+    document.getElementById('vCity').textContent = state.city || '—';
+    document.getElementById('vDate').textContent = state.signDate || '—';
+
+    const lA = `<b>${esc(state.aName || 'Pala A')}</b>${state.aId ? `, ID/NIPT: ${esc(state.aId)}` : ''}${state.aRep ? `, përfaqësuar nga ${esc(state.aRep)}` : ''}${state.aAddr ? `, me adresë ${esc(state.aAddr)}` : ''}.`;
+    const lB = `<b>${esc(state.bName || 'Pala B')}</b>${state.bId ? `, ID: ${esc(state.bId)}` : ''}${state.bRole ? `, në pozicionin ${esc(state.bRole)}` : ''}${state.bAddr ? `, me adresë ${esc(state.bAddr)}` : ''}.`;
+    document.getElementById('vA').innerHTML = lA;
+    document.getElementById('vB').innerHTML = lB;
+
+    let intro = state.intro || '';
+    if (state.dStart) intro += ` Data e fillimit: <b>${esc(state.dStart)}</b>.`;
+    if (state.dEnd) intro += ` Afati: <b>${esc(state.dEnd)}</b>.`;
+    if (state.salary) intro += ` Vlera/paga: <b>${esc(state.salary)} Lekë</b>.`;
+    document.getElementById('vIntro').innerHTML = intro;
+
+    document.getElementById('vArticles').innerHTML = state.articles.map(a => `
+        <div class="k-article"><h3>${esc(a.h)}</h3><p>${esc(a.t)}</p></div>
+    `).join('');
+
+    document.getElementById('vSignA').textContent = state.aName || '';
+    document.getElementById('vSignB').textContent = state.bName || '';
+}
+
+/* Save / Generate */
+function save(silent) {
+    const title = `Kontratë ${state.kind === 'pune' ? 'Pune' : state.kind === 'sherbim' ? 'Shërbimi' : 'Bashkëpunimi'} — ${state.bName || state.aName || 'Pa emër'}`;
+    if (state._editId) bonecv.updateArchiveEntry(state._editId, { title, content: state });
+    else { const e = bonecv.saveToArchive('Kontratë', title, state); state._editId = e.id; }
+    persistDraft();
+    if (!silent) bonecv.toast('Kontrata u ruajt në arkivë', 'success');
+}
+document.getElementById('saveBtn').onclick = () => save();
+document.getElementById('genBtn').onclick = () => { save(true); bonecv.toast('Po hapet dritarja e printimit…','info'); setTimeout(()=>window.print(), 350); };
+
+/* Load edit or initialize */
+const edit = bonecv.consumeEditPayload('Kontratë');
+loadDraft();
+if (edit && edit.content) { Object.assign(state, edit.content); state._editId = edit.id; }
+if (!state.title) applyKind('pune');
+
+['aName','aId','aRep','aAddr','bName','bId','bRole','bAddr','dStart','dEnd','salary','city','signDate'].forEach(k => bind(k, k));
+document.querySelectorAll('.kind-btn').forEach(b => b.classList.toggle('active', b.dataset.kind === state.kind));
+
+renderArticles();
+render();
+
+if (new URLSearchParams(location.search).get('autoprint') === '1') {
+    setTimeout(() => window.print(), 600);
+}
+</script>
+</body>
+</html>
+                                                                                                                          
